@@ -17,12 +17,11 @@ export default function CabecalhoHeader({ navigation }) {
       <View style={styles.logoContainer}>
         <Image 
           style={styles.logo} 
-          source={require('../../assets/Pulse.png')} // Ajuste o caminho
+          source={require('../../assets/Pulse.png')} 
           resizeMode="contain"
         />
       </View>
 
-      {/* Espaço vazio à direita (para balancear o botão esquerdo) */}
       <View style={styles.menuButton}></View>
     </SafeAreaView>
   );
@@ -30,7 +29,7 @@ export default function CabecalhoHeader({ navigation }) {
 
 const styles = StyleSheet.create({
   header: {
-    backgroundColor: '#0000000',
+    backgroundColor: '#000000',
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
