@@ -1,8 +1,8 @@
 import React from 'react';
-import { View, Text, StyleSheet, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, Dimensions, Image } from 'react-native';
 import { useFonts, DarkerGrotesque_700Bold, DarkerGrotesque_500Medium } from '@expo-google-fonts/darker-grotesque';
 
-const { height } = Dimensions.get('window');
+const { width } = Dimensions.get('window');
 
 export default function TelaInicial() {
   let [fontsLoaded] = useFonts({
@@ -16,37 +16,46 @@ export default function TelaInicial() {
 
   return (
     <View style={styles.container}>
-      {/* View verde ocupando metade da tela */}
+      {/* View verde */}
       <View style={styles.greenSection}>
         <Text style={styles.tituloPrincipal}>
           O <Text style={styles.textoBranco}>Gerenciador</Text> da Maior Frota de
         </Text>
         
         <Text style={styles.tituloDestaque}>
-          Motos da <Text style={styles.textoBranco}>América Latina</Text>
+          Motos da <Text style={styles.textoBranco}>América Latina</Text> 
         </Text>
 
         <View style={styles.statsContainer}>
-          <View style={styles.statItem}>
+          <View style={{ marginTop: 10, marginBottom: 20, alignItems: 'center' }}>
             <Text style={styles.statNumber}>+100K</Text>
-            <Text style={styles.statText}>motos com desespero inteligente</Text>
+            <Text style={styles.statText}>motos com alocação inteligente</Text>
           </View>
 
-          <View style={styles.statItem}>
+          <View style={{ marginBottom: 3, alignItems: 'center', marginLeft: 'auto' }}>
             <Text style={styles.statNumber}>+100K</Text>
-            <Text style={styles.statText}>motos com colocado inteligente</Text>
+            <Text style={styles.statText}>motos com alocação inteligente</Text>
           </View>
 
-          <View style={styles.statItem}>
+          <View style={{ marginBottom: 30, alignItems: 'center', marginRight: 'auto' }}>
             <Text style={styles.statNumber}>+100K</Text>
-            <Text style={styles.statText}>motos com desespero inteligente</Text>
+            <Text style={styles.statText}>motos com alocação inteligente</Text>
           </View>
         </View>
       </View>
 
-      {/* Footer abaixo da seção verde */}
-      <Text style={styles.footerText}>
-        Organização que acelera sua moto
+ 
+      <View style={styles.imageContainer}>
+        <Image 
+          source={require('../../assets/moto.png')} 
+          style={styles.image}
+          resizeMode="contain"
+        />
+      </View>
+
+
+      <Text style={styles.outText}>
+        Organização que <Text style={{color:'#11881d'}}>acelera</Text> sua moto
       </Text>
     </View>
   );
@@ -56,70 +65,64 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#000',
+    alignItems: 'center',
   },
   greenSection: {
     backgroundColor: '#11881D',
-    height: 400, // Ocupa exatamente metade da tela
     width: '100%',
-    justifyContent: 'center',
+    height:350,
     paddingHorizontal: 20,
+    paddingTop: 10,
+    paddingBottom: 30,
   },
   tituloPrincipal: {
-    fontFamily: 'DarkerGrotesque_500Medium',
-    fontSize: 24,
-    color: '#fff',
+    fontFamily: 'DarkerGrotesque_700Bold',
+    fontSize: 28,
+    color: '#000',
     textAlign: 'center',
-    marginBottom: 10,
-  },
-  tituloPrincipal: {
-    fontFamily: 'DarkerGrotesque_500Medium',
-    fontSize: 24,
-    color: '#11881D', // Verde para o texto geral
-    textAlign: 'center',
-    marginBottom: 10,
   },
   tituloDestaque: {
     fontFamily: 'DarkerGrotesque_700Bold',
     fontSize: 28,
-    color: '#11881D', // Verde para o texto geral
+    color: '#000',
     textAlign: 'center',
-    marginBottom: 30,
+    marginBottom: 20,
   },
   textoBranco: {
-    color: '#fff', // Branco para palavras específicas
-  },
-  tituloDestaque: {
-    fontFamily: 'DarkerGrotesque_700Bold',
-    fontSize: 28,
     color: '#fff',
-    textAlign: 'center',
-    marginBottom: 30,
   },
   statsContainer: {
     marginTop: 20,
   },
-  statItem: {
-    marginBottom: 20,
-    alignItems: 'center',
-  },
   statNumber: {
     fontFamily: 'DarkerGrotesque_700Bold',
-    fontSize: 36,
+    fontSize: 23,
     color: '#fff',
     marginBottom: 5,
   },
   statText: {
     fontFamily: 'DarkerGrotesque_500Medium',
-    fontSize: 16,
-    color: '#fff',
+    fontSize: 10,
+    color: '#000',
     textAlign: 'center',
   },
-  footerText: {
+  imageContainer: {
+    width: '100%',
+    alignItems: 'center',
+    marginTop: -175, // Sobreposição com a view verde
+    marginBottom: 10,
+    zIndex: 1, // Faz com que a imagem fiqui em cima da view
+  },
+  image: {
+    width: 400, // Largura fixa
+    height: 400,
+  },
+  outText: {
     fontFamily: 'DarkerGrotesque_500Medium',
     fontSize: 18,
     color: '#fff',
     textAlign: 'center',
-    marginTop: 30,
+    marginTop: 10,
     paddingHorizontal: 20,
   },
 });
