@@ -91,60 +91,89 @@ export default function TelaInicial() {
 
       <View style={styles.Patios}>
         <Text style={{ color: '#fff', marginBottom: 20, fontFamily: 'DarkerGrotesque_700Bold', fontSize: 20 }}>Mapeamento e Gestão dos Pátios</Text>
-        <Text style={{ color: '#fff', fontFamily: 'DarkerGrotesque_500Medium', fontSize:17}}>Entenda como o Pulse garante um</Text>
-        <Text style={{ color: '#fff', fontFamily: 'DarkerGrotesque_500Medium', fontSize:17, marginTop:2}}>gerenciamento preciso</Text>
+        <Text style={{ color: '#fff', fontFamily: 'DarkerGrotesque_500Medium', fontSize: 17 }}>Entenda como o Pulse garante um</Text>
+        <Text style={{ color: '#fff', fontFamily: 'DarkerGrotesque_500Medium', fontSize: 17, marginTop: 2 }}>gerenciamento preciso</Text>
       </View>
-       <View style={styles.listaContainer}>
-          <View style={styles.listaItem}>
-            <Image
-              source={require('../../assets/check.png')}
-              style={styles.checkIcon}
-            />
-            <Text style={styles.listaTexto}>
-              Identificação Inteligente das Motos com Uso de Tecnologias IoT
-            </Text>
-          </View>
-
-          <View style={styles.listaItem}>
-            <Image
-              source={require('../../assets/check.png')}
-              style={styles.checkIcon}
-            />
-            <Text style={styles.listaTexto}>
-              Alocação Automatizada das Motos com base em especificações
-            </Text>
-          </View>
-
-          <View style={styles.listaItem}>
-            <Image
-              source={require('../../assets/check.png')}
-              style={styles.checkIcon}
-            />
-            <Text style={styles.listaTexto}>
-              Visualização dinâmica em tempo real das divisões do pátio
-            </Text>
-          </View>
-
-          <View style={styles.listaItem}>
-            <Image
-              source={require('../../assets/check.png')}
-              style={styles.checkIcon}
-            />
-            <Text style={styles.listaTexto}>
-              Integração com Câmeras de Segurança
-            </Text>
-          </View>
-
-          <View style={styles.listaItem}>
-            <Image
-              source={require('../../assets/check.png')}
-              style={styles.checkIcon}
-            />
-            <Text style={styles.listaTexto}>
-              Análise de dados para melhoria contínua
-            </Text>
-          </View>
+      <View style={styles.listaContainer}>
+        <View style={styles.listaItem}>
+          <Image
+            source={require('../../assets/check.png')}
+            style={styles.checkIcon}
+          />
+          <Text style={styles.listaTexto}>
+            Identificação Inteligente das Motos com Uso de Tecnologias IoT
+          </Text>
         </View>
+
+        <View style={styles.listaItem}>
+          <Image
+            source={require('../../assets/check.png')}
+            style={styles.checkIcon}
+          />
+          <Text style={styles.listaTexto}>
+            Alocação Automatizada das Motos com base em especificações
+          </Text>
+        </View>
+
+        <View style={styles.listaItem}>
+          <Image
+            source={require('../../assets/check.png')}
+            style={styles.checkIcon}
+          />
+          <Text style={styles.listaTexto}>
+            Visualização dinâmica em tempo real das divisões do pátio
+          </Text>
+        </View>
+
+        <View style={styles.listaItem}>
+          <Image
+            source={require('../../assets/check.png')}
+            style={styles.checkIcon}
+          />
+          <Text style={styles.listaTexto}>
+            Integração com Câmeras de Segurança
+          </Text>
+        </View>
+
+        <View style={styles.listaItem}>
+          <Image
+            source={require('../../assets/check.png')}
+            style={styles.checkIcon}
+          />
+          <Text style={styles.listaTexto}>
+            Análise de dados para melhoria contínua
+          </Text>
+        </View>
+      </View>
+
+      <View style={styles.identificacaoSection}>
+        <Text style={styles.identificacaoTitulo}>Tecnologia de identificação</Text>
+        <Text style={styles.identificacaoSubtitulo}>
+          Conheça a tecnologia usada que permite a{'\n'}identificação das motos
+        </Text>
+
+        <View style={styles.identificacaoConteudo}>
+          <View style={styles.imageStack}>
+            <Image
+              source={require('../../assets/Bluetoo.png')}
+              style={styles.identificacaoImagem}
+              resizeMode="contain"
+            />
+            <Image
+              source={require('../../assets/NrF.png')}
+              style={styles.identificacaoImagem}
+              resizeMode="contain"
+            />
+          </View>
+
+          <Text style={styles.identificacaoTexto}>
+            O Bluetooth Low Energy (BLE), modelo Nrf52810, é uma tecnologia de
+            comunicação sem fio de baixo consumo. Com o uso do mesmo, o sistema
+            capacita as motos e facilita o processo de identificação de cada moto
+            pertencente ao pátio.
+          </Text>
+        </View>
+      </View>
 
     </ScrollView>
   );
@@ -266,7 +295,58 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontFamily: 'DarkerGrotesque_500Medium',
     flex: 1,
-  }
+  },
+  identificacaoSection: {
+    marginTop: 40,
+    paddingHorizontal: 20,
+  },
+  identificacaoTitulo: {
+    color: '#fff',
+    fontFamily: 'DarkerGrotesque_700Bold',
+    fontSize: 20,
+    marginBottom: 10,
+    textAlign: 'right'
+  },
+  identificacaoSubtitulo: {
+    color: '#fff',
+    fontFamily: 'DarkerGrotesque_500Medium',
+    fontSize: 16,
+    marginBottom: 20,
+    textAlign: 'right',
+  },
+  identificacaoConteudo: {
+    gap: 16,
+    marginLeft: 80
+  },
+  identificacaoImagem: {
+    width: 100,
+    height: 100,
+  },
+  identificacaoTexto: {
+    color: '#fff',
+    fontFamily: 'DarkerGrotesque_500Medium',
+    fontSize: 13,
+    flex: 1,
+    textAlign: 'right',
+  },
+  identificacaoConteudo: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: 16,
+  },
+
+  imageStack: {
+    flexDirection: 'column',
+    gap: 10,
+  },
+
+  identificacaoTexto: {
+    color: '#fff',
+    fontFamily: 'DarkerGrotesque_500Medium',
+    fontSize: 13,
+    flex: 1,
+    textAlign: 'right', // pode ser 'right' se quiser alinhar o texto à direita
+  },
 
 
 });
