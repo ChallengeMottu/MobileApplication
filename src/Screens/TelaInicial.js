@@ -75,7 +75,7 @@ export default function TelaInicial() {
               style={styles.smallImage}
               resizeMode="contain"
             />
-            <Text style={styles.imageCaption}>Gestão</Text>
+            <Text style={styles.imageCaption}>Gestão Eficiente</Text>
           </View>
         </View>
 
