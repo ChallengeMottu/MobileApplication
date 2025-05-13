@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, Dimensions, Image, ScrollView } from 'react-native';
 import { useFonts, DarkerGrotesque_700Bold, DarkerGrotesque_500Medium } from '@expo-google-fonts/darker-grotesque';
-
+import { Ionicons } from '@expo/vector-icons';
 
 const { width } = Dimensions.get('window');
 
@@ -82,7 +82,7 @@ export default function TelaInicial() {
         <View style={styles.imageTextWrapper}>
           <Image
             source={require('../../assets/com.png')}
-            style={styles.fullImage}
+            style={styles.smallImage2}
             resizeMode="contain"
           />
           <Text style={styles.imageCaption}>Comunicação</Text>
@@ -90,9 +90,9 @@ export default function TelaInicial() {
       </View>
 
       <View style={styles.Patios}>
-        <Text style={{ color: '#fff', marginBottom: 20, fontFamily: 'DarkerGrotesque_700Bold', fontSize: 20 }}>Mapeamento e Gestão dos Pátios</Text>
-        <Text style={{ color: '#fff', fontFamily: 'DarkerGrotesque_500Medium', fontSize: 17 }}>Entenda como o Pulse garante um</Text>
-        <Text style={{ color: '#fff', fontFamily: 'DarkerGrotesque_500Medium', fontSize: 17, marginTop: 2 }}>gerenciamento preciso</Text>
+        <Text style={{ color: '#fff', marginBottom: 20, fontFamily: 'DarkerGrotesque_700Bold', fontSize: 20, marginLeft: 10 }}>Mapeamento e Gestão dos Pátios</Text>
+        <Text style={{ color: '#fff', fontFamily: 'DarkerGrotesque_500Medium', fontSize: 17, marginLeft: 10 }}>Entenda como o Pulse garante um</Text>
+        <Text style={{ color: '#fff', fontFamily: 'DarkerGrotesque_500Medium', fontSize: 17, marginTop: 2, marginLeft: 10 }}>gerenciamento preciso</Text>
       </View>
       <View style={styles.listaContainer}>
         <View style={styles.listaItem}>
@@ -175,6 +175,52 @@ export default function TelaInicial() {
         </View>
       </View>
 
+      <View style={{ marginTop: 100, marginLeft: 50, marginBottom: 17 }}>
+        <Text style={{ fontFamily: 'DarkerGrotesque_700Bold', color: '#fff', fontSize: 20 }}>Parceiros que impulsionam{'\n'} a inovação</Text>
+      </View>
+      <View style={styles.rowImages2}>
+        <View style={styles.imageTextWrapper}>
+          <Image
+            source={require('../../assets/mottu.png')}
+            style={styles.partnershipImage}
+            resizeMode="contain"
+          />
+        </View>
+
+        <View style={{ height: 92, width: 120, alignItems: 'center', justifyContent: 'center' }}>
+          <Image
+            source={require('../../assets/fiap.png')}
+            style={styles.partnershipImage}
+            resizeMode="contain"
+          />
+        </View>
+      </View>
+
+      <View style={styles.greenSectionFooter}>
+        <View style={styles.footerContent}>
+          <Image
+            source={require('../../assets/Pulse.png')} 
+            style={styles.footerLogoImage}
+            resizeMode="contain"
+          />
+
+          <Text style={styles.footerSlogan}>Onde a Eficiência Encontra a Velocidade</Text>
+
+          <Text style={styles.footerContactTitle}>Não hesite em nos contactar</Text>
+
+          <View style={styles.contactRow}>
+            <Ionicons name="mail-outline" size={16} color="#fff" style={styles.icon} />
+            <Text style={styles.contactText}>pulsehelp@hotmail.com</Text>
+          </View>
+
+          <View style={styles.contactRow}>
+            <Ionicons name="call-outline" size={16} color="#fff" style={styles.icon} />
+            <Text style={styles.contactText}>0800-448-222</Text>
+          </View>
+        </View>
+      </View>
+
+
     </ScrollView>
   );
 }
@@ -239,18 +285,26 @@ const styles = StyleSheet.create({
   },
   rowImages: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
     gap: 10,
     marginVertical: 10,
+  },
+  rowImages2: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: 30,
+    marginVertical: 10,
+    marginBottom: 40
+
   },
   smallImage: {
     width: width * 0.4,
     height: 100,
   },
-  fullImage: {
-    width: width * 0.85,
-    height: 120,
-    marginTop: 10,
+  smallImage2: {
+    width: width * 0.4,
+    height: 100,
+    marginTop: 15,
   },
   imageTextWrapper: {
     alignItems: 'center',
@@ -345,8 +399,59 @@ const styles = StyleSheet.create({
     fontFamily: 'DarkerGrotesque_500Medium',
     fontSize: 13,
     flex: 1,
-    textAlign: 'right', // pode ser 'right' se quiser alinhar o texto à direita
+    textAlign: 'right',
   },
+  partnershipImage: {
+    width: 120,
+    height: 80,
+    resizeMode: 'contain',
+  },
+  greenSectionFooter: {
+  backgroundColor: '#11881D',
+  width: '100%',
+  height: 190,
+  justifyContent: 'center',
+  paddingHorizontal: 20,
+},
 
+footerContent: {
+  justifyContent: 'center',
+},
 
+footerLogoImage: {
+  width: 90,
+  height: 30,
+  marginBottom: 4,
+},
+
+footerSlogan: {
+  fontFamily: 'DarkerGrotesque_500Medium',
+  color: '#fff',
+  fontSize: 16,
+  marginBottom: 14,
+},
+
+footerContactTitle: {
+  fontFamily: 'DarkerGrotesque_700Bold',
+  color: '#fff',
+  fontWeight: 'bold',
+  marginBottom: 6,
+  fontSize:15
+},
+
+contactRow: {
+  flexDirection: 'row',
+  alignItems: 'center',
+  marginBottom: 6,
+},
+
+icon: {
+  marginRight: 8,
+},
+
+contactText: {
+  color: '#fff',
+  fontSize: 13,
+  
+},
 });
