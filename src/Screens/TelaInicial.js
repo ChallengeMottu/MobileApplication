@@ -91,8 +91,8 @@ export default function TelaInicial() {
 
       <View style={styles.Patios}>
         <Text style={{ color: '#fff', marginBottom: 20, fontFamily: 'DarkerGrotesque_700Bold', fontSize: 20, marginLeft: 10 }}>Mapeamento e Gestão dos Pátios</Text>
-        <Text style={{ color: '#fff', fontFamily: 'DarkerGrotesque_500Medium', fontSize: 17, marginLeft: 10 }}>Entenda como o Pulse garante um</Text>
-        <Text style={{ color: '#fff', fontFamily: 'DarkerGrotesque_500Medium', fontSize: 17, marginTop: 2, marginLeft: 10 }}>gerenciamento preciso</Text>
+        <Text style={{ color: '#fff', fontFamily: 'DarkerGrotesque_500Medium', fontSize: 18, marginLeft: 10 }}>Entenda como o Pulse garante um</Text>
+        <Text style={{ color: '#fff', fontFamily: 'DarkerGrotesque_500Medium', fontSize: 18, marginTop: 2, marginLeft: 10 }}>gerenciamento preciso</Text>
       </View>
       <View style={styles.listaContainer}>
         <View style={styles.listaItem}>
@@ -348,7 +348,7 @@ const styles = StyleSheet.create({
   },
   listaTexto: {
     color: '#fff',
-    fontSize: 14,
+    fontSize: 17,
     fontFamily: 'DarkerGrotesque_500Medium',
     flex: 1,
   },
@@ -366,7 +366,7 @@ const styles = StyleSheet.create({
   identificacaoSubtitulo: {
     color: '#fff',
     fontFamily: 'DarkerGrotesque_500Medium',
-    fontSize: 16,
+    fontSize: 17,
     marginBottom: 20,
     textAlign: 'right',
   },
@@ -381,7 +381,7 @@ const styles = StyleSheet.create({
   identificacaoTexto: {
     color: '#fff',
     fontFamily: 'DarkerGrotesque_500Medium',
-    fontSize: 13,
+    fontSize: 16,
     flex: 1,
     textAlign: 'right',
   },
@@ -395,14 +395,6 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     gap: 10,
     marginTop: -75,
-  },
-
-  identificacaoTexto: {
-    color: '#fff',
-    fontFamily: 'DarkerGrotesque_500Medium',
-    fontSize: 14,
-    flex: 1,
-    textAlign: 'right',
   },
   partnershipImage: {
     width: 120,
