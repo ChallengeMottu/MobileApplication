@@ -198,13 +198,15 @@ export default function TelaInicial() {
 
       <View style={styles.greenSectionFooter}>
         <View style={styles.footerContent}>
-          <Image
-            source={require('../../assets/Pulse.png')} 
-            style={styles.footerLogoImage}
-            resizeMode="contain"
-          />
+          <View style={{marginBottom:20}}>
+            <Image
+              source={require('../../assets/Pulse.png')}
+              style={styles.footerLogoImage}
+              resizeMode="contain"
+            />
 
-          <Text style={styles.footerSlogan}>Onde a Eficiência Encontra a Velocidade</Text>
+            <Text style={styles.footerSlogan}>Onde a Eficiência Encontra a Velocidade</Text>
+          </View>
 
           <Text style={styles.footerContactTitle}>Não hesite em nos contactar</Text>
 
@@ -373,8 +375,8 @@ const styles = StyleSheet.create({
     marginLeft: 80
   },
   identificacaoImagem: {
-    width: 100,
-    height: 100,
+    width: 70,
+    height: 70,
   },
   identificacaoTexto: {
     color: '#fff',
@@ -392,6 +394,7 @@ const styles = StyleSheet.create({
   imageStack: {
     flexDirection: 'column',
     gap: 10,
+    marginTop: -75,
   },
 
   identificacaoTexto: {
@@ -407,51 +410,51 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
   },
   greenSectionFooter: {
-  backgroundColor: '#11881D',
-  width: '100%',
-  height: 190,
-  justifyContent: 'center',
-  paddingHorizontal: 20,
-},
+    backgroundColor: '#11881D',
+    width: '100%',
+    height: 190,
+    justifyContent: 'center',
+    paddingHorizontal: 20,
+  },
 
-footerContent: {
-  justifyContent: 'center',
-},
+  footerContent: {
+    justifyContent: 'center',
+    marginBottom:20
+  },
 
-footerLogoImage: {
-  width: 90,
-  height: 30,
-  marginBottom: 4,
-},
+  footerLogoImage: {
+    width: 80,
+    height: 30,
+  },
 
-footerSlogan: {
-  fontFamily: 'DarkerGrotesque_500Medium',
-  color: '#fff',
-  fontSize: 16,
-  marginBottom: 14,
-},
+  footerSlogan: {
+    fontFamily: 'DarkerGrotesque_500Medium',
+    color: '#fff',
+    fontSize: 16,
+    marginBottom: 14,
+  },
 
-footerContactTitle: {
-  fontFamily: 'DarkerGrotesque_700Bold',
-  color: '#fff',
-  fontWeight: 'bold',
-  marginBottom: 6,
-  fontSize:15
-},
+  footerContactTitle: {
+    fontFamily: 'DarkerGrotesque_700Bold',
+    color: '#fff',
+    fontWeight: 'bold',
+    marginBottom: 6,
+    fontSize: 15
+  },
 
-contactRow: {
-  flexDirection: 'row',
-  alignItems: 'center',
-  marginBottom: 6,
-},
+  contactRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 6,
+  },
 
-icon: {
-  marginRight: 8,
-},
+  icon: {
+    marginRight: 8,
+  },
 
-contactText: {
-  color: '#fff',
-  fontSize: 13,
-  
-},
+  contactText: {
+    color: '#fff',
+    fontSize: 13,
+
+  },
 });
