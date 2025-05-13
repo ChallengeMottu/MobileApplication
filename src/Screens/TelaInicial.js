@@ -394,7 +394,7 @@ const styles = StyleSheet.create({
   imageStack: {
     flexDirection: 'column',
     gap: 10,
-    marginTop: -75,
+    marginTop: -67,
   },
   partnershipImage: {
     width: 120,
