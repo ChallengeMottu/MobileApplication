@@ -37,7 +37,7 @@ export default function TelaInicial() {
             <Text style={styles.statText}>motos com alocação inteligente</Text>
           </View>
 
-          <View style={{ marginBottom: 30, alignItems: 'center', marginRight: 'auto' }}>
+          <View style={{ marginBottom: 30, alignItems: 'center', marginRight: 'auto', marginTop: -30 }}>
             <Text style={styles.statNumber}>+100K</Text>
             <Text style={styles.statText}>motos com alocação inteligente</Text>
           </View>
@@ -261,13 +261,13 @@ const styles = StyleSheet.create({
   },
   statNumber: {
     fontFamily: 'DarkerGrotesque_700Bold',
-    fontSize: 23,
+    fontSize: 26,
     color: '#fff',
     marginBottom: 5,
   },
   statText: {
     fontFamily: 'DarkerGrotesque_500Medium',
-    fontSize: 10,
+    fontSize: 13,
     color: '#000',
     textAlign: 'center',
   },
