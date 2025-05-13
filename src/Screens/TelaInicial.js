@@ -400,7 +400,7 @@ const styles = StyleSheet.create({
   identificacaoTexto: {
     color: '#fff',
     fontFamily: 'DarkerGrotesque_500Medium',
-    fontSize: 13,
+    fontSize: 14,
     flex: 1,
     textAlign: 'right',
   },
