@@ -274,13 +274,13 @@ const styles = StyleSheet.create({
   imageContainer: {
     width: '100%',
     alignItems: 'center',
-    marginTop: -175, // Sobreposição com a view verde
+    marginTop: -130, // Sobreposição com a view verde
     marginBottom: 10,
     zIndex: 1, // Faz com que a imagem fiqui em cima da view
   },
   image: {
-    width: 400, // Largura fixa
-    height: 400,
+    width: 300, // Largura fixa
+    height: 300,
   },
   image2: {
     alignItems: 'center'
