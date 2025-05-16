@@ -8,6 +8,7 @@ import { StyleSheet, Text, View, ActivityIndicator } from 'react-native';
 import CabecalhoHeader from './src/Components/CabecalhoHeader';
 import TelaInicial from './src/Screens/TelaInicial';
 import TelaEquipe from './src/Screens/TelaEquipe';
+import TelaLogin from './src/Screens/TelaLogin';
 
 const Drawer = createDrawerNavigator();
 
@@ -26,7 +27,7 @@ function CustomDrawerContent(props) {
         icon={() => (
           <Ionicons name="home" size={24} color="#11881D" style={{ marginRight: 10 }} />
         )}
-        onPress={() => props.navigation.navigate('TelaInicial')} // Correto
+        onPress={() => props.navigation.navigate('TelaInicial')} 
         labelStyle={styles.drawerLabel}
         style={styles.drawerItem}
       />
@@ -36,10 +37,11 @@ function CustomDrawerContent(props) {
         icon={() => (
           <Ionicons name="people" size={24} color="#11881D" style={{ marginRight: 10 }} />
         )}
-        onPress={() => props.navigation.navigate('TelaEquipe')} // Alterado para navegar direto para TelaEquipe
+        onPress={() => props.navigation.navigate('TelaEquipe')} 
         labelStyle={styles.drawerLabel}
         style={styles.drawerItem}
       />
+
     </DrawerContentScrollView>
   );
 }
@@ -87,6 +89,12 @@ export default function App() {
           name="TelaEquipe" 
           component={TelaEquipe} 
           options={{ title: 'Equipe'}}
+        />
+
+        <Drawer.Screen 
+          name="TelaLogin" 
+          component={TelaLogin} 
+          options={{ title: 'Login'}}
         />
       </Drawer.Navigator>
     </NavigationContainer>
