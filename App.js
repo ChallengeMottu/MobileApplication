@@ -9,6 +9,7 @@ import CabecalhoHeader from './src/Components/CabecalhoHeader';
 import TelaInicial from './src/Screens/TelaInicial';
 import TelaEquipe from './src/Screens/TelaEquipe';
 import TelaLogin from './src/Screens/TelaLogin';
+import TelaCadastroF from './src/Screens/TelaCadastroF';
 
 const Drawer = createDrawerNavigator();
 
@@ -95,6 +96,12 @@ export default function App() {
           name="TelaLogin" 
           component={TelaLogin} 
           options={{ title: 'Login'}}
+        />
+        
+        <Drawer.Screen 
+          name="TelaCadastroF" 
+          component={TelaCadastroF} 
+          options={{ title: 'Cadastro'}}
         />
       </Drawer.Navigator>
     </NavigationContainer>

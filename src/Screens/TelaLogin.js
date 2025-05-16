@@ -1,4 +1,5 @@
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import { useState } from 'react';
 import { useFonts, DarkerGrotesque_500Medium, DarkerGrotesque_700Bold } from '@expo-google-fonts/darker-grotesque';
 
 export default function TelaLogin({ navigation }) {
@@ -7,9 +8,22 @@ export default function TelaLogin({ navigation }) {
     DarkerGrotesque_700Bold
   });
 
+  const [usuario, setUsuario] = useState('');
+  const [senha, setSenha] = useState('');
+
   if (!fontsLoaded) {
     return null;
   }
+
+  const handleLogin = () => {
+    if (!usuario || !senha) {
+      Alert.alert('Campos obrigatórios', 'Por favor, preencha o usuário e a senha.');
+      return;
+    }
+
+
+    Alert.alert('Login realizado', 'Você entrou no sistema com sucesso!');
+  };
 
   return (
     <View style={styles.container}>
@@ -23,6 +37,8 @@ export default function TelaLogin({ navigation }) {
               style={styles.input}
               placeholder="Digite seu usuário"
               placeholderTextColor="#888"
+              value={usuario}
+              onChangeText={setUsuario}
             />
           </View>
 
@@ -33,16 +49,18 @@ export default function TelaLogin({ navigation }) {
               placeholder="Digite sua senha"
               placeholderTextColor="#888"
               secureTextEntry
+              value={senha}
+              onChangeText={setSenha}
             />
           </View>
 
-          <TouchableOpacity style={styles.botao}>
+          <TouchableOpacity style={styles.botao} onPress={handleLogin}>
             <Text style={styles.textoBotao}>LOGAR</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
             style={styles.linkContainer}
-            onPress={() => navigation.navigate('Cadastro')}
+            onPress={() => navigation.navigate('TelaCadastroF')}
           >
             <Text style={styles.linkTexto}>Criar Conta</Text>
           </TouchableOpacity>
@@ -51,6 +69,7 @@ export default function TelaLogin({ navigation }) {
     </View>
   );
 }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -112,21 +131,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontFamily: 'DarkerGrotesque_700Bold',
     letterSpacing: 1,
-  },
-  botaoCadastro: {
-    backgroundColor: 'transparent',
-    borderWidth: 1,
-    borderColor: '#11881D',
-    borderRadius: 8,
-    padding: 15,
-    alignItems: 'center',
-    marginTop: 15,
-  },
-  textoBotaoCadastro: {
-    color: '#11881D',
-    fontSize: 16,
-    fontFamily: 'DarkerGrotesque_700Bold',
-    letterSpacing: 0.5,
   },
   linkContainer: {
     alignItems: 'center',
