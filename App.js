@@ -10,6 +10,7 @@ import TelaInicial from './src/Screens/TelaInicial';
 import TelaEquipe from './src/Screens/TelaEquipe';
 import TelaLogin from './src/Screens/TelaLogin';
 import TelaCadastroF from './src/Screens/TelaCadastroF';
+import TelaInfos from './src/Screens/TelaInfos';
 
 const Drawer = createDrawerNavigator();
 
@@ -102,6 +103,12 @@ export default function App() {
           name="TelaCadastroF" 
           component={TelaCadastroF} 
           options={{ title: 'Cadastro'}}
+        />
+
+        <Drawer.Screen 
+          name="TelaInfos" 
+          component={TelaInfos} 
+          options={{ title: 'Informações'}}
         />
       </Drawer.Navigator>
     </NavigationContainer>

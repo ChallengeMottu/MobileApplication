@@ -2,8 +2,11 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Alert 
 import { useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFonts, DarkerGrotesque_500Medium, DarkerGrotesque_700Bold } from '@expo-google-fonts/darker-grotesque';
+import { useNavigation } from '@react-navigation/native'; 
 
-export default function TelaCadastroFuncionario() {
+export default function TelaCadastroF() {
+  const navigation = useNavigation(); 
+
   let [fontsLoaded] = useFonts({
     DarkerGrotesque_500Medium,
     DarkerGrotesque_700Bold
@@ -112,8 +115,18 @@ export default function TelaCadastroFuncionario() {
 
     await salvarDados();
 
-    Alert.alert('Cadastro realizado', 'Funcionário cadastrado com sucesso!');
+    Alert.alert(
+      'Cadastro realizado',
+      'Funcionário cadastrado com sucesso!',
+      [
+        {
+          text: 'Voltar para Login',
+          onPress: () => navigation.navigate('TelaLogin') 
+        }
+      ]
+    );
   };
+
 
   return (
     <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>

@@ -1,6 +1,7 @@
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import { useState } from 'react';
 import { useFonts, DarkerGrotesque_500Medium, DarkerGrotesque_700Bold } from '@expo-google-fonts/darker-grotesque';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function TelaLogin({ navigation }) {
   let [fontsLoaded] = useFonts({
@@ -15,14 +16,40 @@ export default function TelaLogin({ navigation }) {
     return null;
   }
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     if (!usuario || !senha) {
       Alert.alert('Campos obrigatórios', 'Por favor, preencha o usuário e a senha.');
       return;
     }
 
+    try {
 
-    Alert.alert('Login realizado', 'Você entrou no sistema com sucesso!');
+      const dadosSalvos = await AsyncStorage.getItem('dadosFuncionario');
+
+      if (!dadosSalvos) {
+        Alert.alert('Erro', 'Nenhum usuário cadastrado. Crie uma conta primeiro.');
+        return;
+      }
+
+      const dadosFuncionario = JSON.parse(dadosSalvos);
+
+
+      if (dadosFuncionario.email === usuario && dadosFuncionario.senha === senha) {
+
+        await AsyncStorage.setItem('usuarioLogado', JSON.stringify(dadosFuncionario));
+
+        Alert.alert('Login realizado', 'Você entrou no sistema com sucesso!');
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'TelaInfos' }], 
+        });
+      } else {
+        Alert.alert('Erro', 'Usuário ou senha incorretos.');
+      }
+    } catch (error) {
+      console.error('Erro ao fazer login:', error);
+      Alert.alert('Erro', 'Não foi possível fazer login.');
+    }
   };
 
   return (
@@ -35,7 +62,7 @@ export default function TelaLogin({ navigation }) {
             <Text style={styles.label}>Usuário</Text>
             <TextInput
               style={styles.input}
-              placeholder="Digite seu usuário"
+              placeholder="Digite o seu Email"
               placeholderTextColor="#888"
               value={usuario}
               onChangeText={setUsuario}

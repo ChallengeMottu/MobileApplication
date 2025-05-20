@@ -107,7 +107,7 @@ export default function CabecalhoHeader({ navigation }) {
                 style={styles.dropdownItem}
                 onPress={() => {
                   toggleDropdown();
-                  navigation.navigate('Conta');
+                  navigation.navigate('TelaInfos');
                 }}
               >
                 <Ionicons name="information-circle-outline" size={20} color="#fff" />
