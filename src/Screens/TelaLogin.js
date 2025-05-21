@@ -2,6 +2,7 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'reac
 import { useState } from 'react';
 import { useFonts, DarkerGrotesque_500Medium, DarkerGrotesque_700Bold } from '@expo-google-fonts/darker-grotesque';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { CommonActions } from '@react-navigation/native';
 
 export default function TelaLogin({ navigation }) {
   let [fontsLoaded] = useFonts({
@@ -21,34 +22,52 @@ export default function TelaLogin({ navigation }) {
       Alert.alert('Campos obrigatórios', 'Por favor, preencha o usuário e a senha.');
       return;
     }
-
+  
     try {
-
       const dadosSalvos = await AsyncStorage.getItem('dadosFuncionario');
-
+  
       if (!dadosSalvos) {
         Alert.alert('Erro', 'Nenhum usuário cadastrado. Crie uma conta primeiro.');
         return;
       }
-
-      const dadosFuncionario = JSON.parse(dadosSalvos);
-
-
+  
+      let dadosFuncionario;
+      try {
+        dadosFuncionario = JSON.parse(dadosSalvos);
+        
+        if (!dadosFuncionario || !dadosFuncionario.email || !dadosFuncionario.senha) {
+          throw new Error('Dados inválidos');
+        }
+      } catch (e) {
+        console.error('Erro ao analisar dados:', e);
+        Alert.alert('Erro', 'Dados de usuário corrompidos. Por favor, crie uma nova conta.');
+        await AsyncStorage.removeItem('dadosFuncionario');
+        return;
+      }
+  
       if (dadosFuncionario.email === usuario && dadosFuncionario.senha === senha) {
-
         await AsyncStorage.setItem('usuarioLogado', JSON.stringify(dadosFuncionario));
-
-        Alert.alert('Login realizado', 'Você entrou no sistema com sucesso!');
-        navigation.reset({
-          index: 0,
-          routes: [{ name: 'TelaInfos' }], 
-        });
+        
+        Alert.alert('Login realizado', 'Você entrou no sistema com sucesso!', [
+          {
+            text: 'OK',
+            onPress: () => {
+              // Redireciona para TelaInfos e limpa a pilha de navegação
+              navigation.dispatch(
+                CommonActions.reset({
+                  index: 0,
+                  routes: [{ name: 'TelaInfos' }],
+                })
+              );
+            }
+          }
+        ]);
       } else {
         Alert.alert('Erro', 'Usuário ou senha incorretos.');
       }
     } catch (error) {
       console.error('Erro ao fazer login:', error);
-      Alert.alert('Erro', 'Não foi possível fazer login.');
+      Alert.alert('Erro', 'Não foi possível fazer login. Tente novamente.');
     }
   };
 

@@ -1,12 +1,16 @@
 import { Ionicons } from '@expo/vector-icons';
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { StyleSheet, TouchableOpacity, View, Image, Text, Animated, Modal, Pressable } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function CabecalhoHeader({ navigation }) {
   const [showDropdown, setShowDropdown] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [animation] = useState(new Animated.Value(0));
   const scaleAnim = useRef(new Animated.Value(1)).current;
+
+  
 
   const toggleDropdown = () => {
     if (showDropdown) {
@@ -52,6 +56,20 @@ export default function CabecalhoHeader({ navigation }) {
     inputRange: [0, 1],
     outputRange: [0, 1],
   });
+
+  useEffect(() => {
+    const checkLoginStatus = async () => {
+      const usuarioLogado = await AsyncStorage.getItem('usuarioLogado');
+      setIsLoggedIn(!!usuarioLogado);
+    };
+    
+    checkLoginStatus();
+    
+    
+    const unsubscribe = navigation.addListener('focus', checkLoginStatus);
+    
+    return unsubscribe;
+  }, [navigation]);
 
   return (
     <SafeAreaView style={styles.header}>
@@ -103,29 +121,46 @@ export default function CabecalhoHeader({ navigation }) {
                 }
               ]}
             >
-              <TouchableOpacity 
-                style={styles.dropdownItem}
-                onPress={() => {
-                  toggleDropdown();
-                  navigation.navigate('TelaInfos');
-                }}
-              >
-                <Ionicons name="information-circle-outline" size={20} color="#fff" />
-                <Text style={styles.dropdownText}>Informações da Conta</Text>
-              </TouchableOpacity>
-              
-              <View style={styles.divider} />
-              
-              <TouchableOpacity 
-                style={styles.dropdownItem}
-                onPress={() => {
-                  toggleDropdown();
-                  navigation.navigate('TelaLogin');
-                }}
-              >
-                <Ionicons name="log-in-outline" size={20} color="#fff" />
-                <Text style={styles.dropdownText}>Login</Text>
-              </TouchableOpacity>
+              {isLoggedIn ? (
+                <>
+                  <TouchableOpacity 
+                    style={styles.dropdownItem}
+                    onPress={() => {
+                      toggleDropdown();
+                      navigation.navigate('TelaInfos');
+                    }}
+                  >
+                    <Ionicons name="information-circle-outline" size={20} color="#fff" />
+                    <Text style={styles.dropdownText}>Informações da Conta</Text>
+                  </TouchableOpacity>
+                  
+                  <View style={styles.divider} />
+                  
+                  <TouchableOpacity 
+                    style={styles.dropdownItem}
+                    onPress={async () => {
+                      await AsyncStorage.removeItem('usuarioLogado');
+                      setIsLoggedIn(false);
+                      toggleDropdown();
+                      navigation.navigate('TelaInicial');
+                    }}
+                  >
+                    <Ionicons name="log-out-outline" size={20} color="#fff" />
+                    <Text style={styles.dropdownText}>Logout</Text>
+                  </TouchableOpacity>
+                </>
+              ) : (
+                <TouchableOpacity 
+                  style={styles.dropdownItem}
+                  onPress={() => {
+                    toggleDropdown();
+                    navigation.navigate('TelaLogin');
+                  }}
+                >
+                  <Ionicons name="log-in-outline" size={20} color="#fff" />
+                  <Text style={styles.dropdownText}>Login</Text>
+                </TouchableOpacity>
+              )}
             </Animated.View>
           </TouchableOpacity>
         </Modal>
@@ -133,6 +168,7 @@ export default function CabecalhoHeader({ navigation }) {
     </SafeAreaView>
   );
 }
+
 
 const styles = StyleSheet.create({
   header: {

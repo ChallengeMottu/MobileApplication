@@ -13,22 +13,23 @@ export default function TelaInfos({ navigation }) {
     const [usuario, setUsuario] = useState(null);
     const [carregando, setCarregando] = useState(true);
 
+    // Verificar login e carregar dados do usuário
     useEffect(() => {
-        const carregarDadosUsuario = async () => {
+        const carregarDados = async () => {
             try {
-                
-                let dadosSalvos = await AsyncStorage.getItem('usuarioLogado');
-
-                if (!dadosSalvos) {
-                    dadosSalvos = await AsyncStorage.getItem('dadosFuncionario');
+                // Verificar se está logado
+                const usuarioLogado = await AsyncStorage.getItem('usuarioLogado');
+                if (!usuarioLogado) {
+                    navigation.reset({
+                        index: 0,
+                        routes: [{ name: 'TelaLogin' }],
+                    });
+                    return;
                 }
 
-                if (dadosSalvos) {
-                    const dadosUsuario = JSON.parse(dadosSalvos);
-                    setUsuario(dadosUsuario);
-                } else {
-                    throw new Error('Nenhum usuário logado encontrado');
-                }
+                // Carregar dados do usuário
+                const dadosUsuario = JSON.parse(usuarioLogado);
+                setUsuario(dadosUsuario);
             } catch (error) {
                 console.error('Erro ao carregar dados:', error);
                 Alert.alert('Erro', 'Sessão expirada. Faça login novamente.', [{
@@ -43,8 +44,14 @@ export default function TelaInfos({ navigation }) {
             }
         };
 
-        carregarDadosUsuario();
-    }, []);
+        // Carregar dados quando a tela receber foco
+        const unsubscribe = navigation.addListener('focus', carregarDados);
+        
+        // Carregar dados inicialmente
+        carregarDados();
+
+        return unsubscribe;
+    }, [navigation]);
 
     const handleLogout = async () => {
         try {
@@ -56,10 +63,10 @@ export default function TelaInfos({ navigation }) {
                 {
                     text: 'Sair',
                     onPress: async () => {
-                        await AsyncStorage.removeItem('dadosFuncionario');
+                        await AsyncStorage.removeItem('usuarioLogado');
                         navigation.reset({
                             index: 0,
-                            routes: [{ name: 'TelaLogin' }],
+                            routes: [{ name: 'TelaInicial' }],
                         });
                     }
                 }
@@ -155,16 +162,15 @@ export default function TelaInfos({ navigation }) {
                     <Text style={styles.label}>ID Colaborador</Text>
                     <Text style={styles.valor}>{usuario.id || 'Não informado'}</Text>
                 </View>
-
-                {/* Adicione mais campos conforme necessário */}
             </View>
 
-            {/* Botão de Logout */}
-            <TouchableOpacity
+            {/* Botão de Logout melhorado */}
+            <TouchableOpacity 
                 style={styles.botaoSair}
                 onPress={handleLogout}
             >
-                <Text style={styles.textoBotaoSair}>Sair da Conta</Text>
+                <Ionicons name="log-out-outline" size={24} color="#ff4444" />
+                <Text style={styles.textoBotaoSair}>Sair da conta</Text>
             </TouchableOpacity>
         </ScrollView>
     );
@@ -195,7 +201,7 @@ const styles = StyleSheet.create({
         marginBottom: 8,
     },
     subtitulo: {
-        fontSize: 18,
+        fontSize: 20,
         fontFamily: 'DarkerGrotesque_500Medium',
         color: '#fff',
         opacity: 0.9,
@@ -240,21 +246,24 @@ const styles = StyleSheet.create({
     label: {
         color: '#11881D',
         fontFamily: 'DarkerGrotesque_700Bold',
-        fontSize: 14,
+        fontSize: 19,
         marginBottom: 4,
     },
     valor: {
         color: '#fff',
         fontFamily: 'DarkerGrotesque_500Medium',
-        fontSize: 16,
+        fontSize: 18,
     },
     botaoSair: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
         backgroundColor: 'transparent',
         borderWidth: 1,
         borderColor: '#ff4444',
         borderRadius: 8,
         padding: 16,
-        alignItems: 'center',
+        gap: 10,
     },
     textoBotaoSair: {
         color: '#ff4444',

@@ -1,9 +1,10 @@
-import { useFonts, DarkerGrotesque_300Light, DarkerGrotesque_400Regular, DarkerGrotesque_500Medium, DarkerGrotesque_700Bold, DarkerGrotesque_800ExtraBold } from '@expo-google-fonts/darker-grotesque';
+import { useFonts, DarkerGrotesque_500Medium, DarkerGrotesque_800ExtraBold } from '@expo-google-fonts/darker-grotesque';
 import { Ionicons } from '@expo/vector-icons';
 import { createDrawerNavigator, DrawerContentScrollView, DrawerItem } from '@react-navigation/drawer';
-import { NavigationContainer } from "@react-navigation/native";
-import React from 'react';
+import { NavigationContainer, useNavigation } from "@react-navigation/native";
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, ActivityIndicator } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import CabecalhoHeader from './src/Components/CabecalhoHeader';
 import TelaInicial from './src/Screens/TelaInicial';
@@ -15,13 +16,36 @@ import TelaInfos from './src/Screens/TelaInfos';
 const Drawer = createDrawerNavigator();
 
 function CustomDrawerContent(props) {
+  const navigation = useNavigation();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const checkLoginStatus = async () => {
+      const usuarioLogado = await AsyncStorage.getItem('usuarioLogado');
+      setIsLoggedIn(!!usuarioLogado);
+    };
+
+    checkLoginStatus();
+  }, [navigation, props.state]);
+
+  const handleNavigation = (routeName) => {
+    if (routeName === 'TelaInfos' && !isLoggedIn) {
+      Alert.alert('Acesso negado', 'Você precisa fazer login primeiro');
+      return;
+    }
+    navigation.navigate(routeName);
+  };
+
+
   return (
     <DrawerContentScrollView {...props} style={styles.drawerContainer}>
       <View style={styles.drawerHeader}>
         <View style={styles.userIconContainer}>
           <Ionicons name="person" size={48} color="white" />
         </View>
-        <Text style={styles.drawerTitle}>Funcionário</Text>
+        <Text style={styles.drawerTitle}>
+          {isLoggedIn ? 'Funcionário' : 'Visitante'}
+        </Text>
       </View>
 
       <DrawerItem
@@ -29,7 +53,7 @@ function CustomDrawerContent(props) {
         icon={() => (
           <Ionicons name="home" size={24} color="#11881D" style={{ marginRight: 10 }} />
         )}
-        onPress={() => props.navigation.navigate('TelaInicial')} 
+        onPress={() => navigation.navigate('TelaInicial')}
         labelStyle={styles.drawerLabel}
         style={styles.drawerItem}
       />
@@ -39,12 +63,113 @@ function CustomDrawerContent(props) {
         icon={() => (
           <Ionicons name="people" size={24} color="#11881D" style={{ marginRight: 10 }} />
         )}
-        onPress={() => props.navigation.navigate('TelaEquipe')} 
+        onPress={() => navigation.navigate('TelaEquipe')}
         labelStyle={styles.drawerLabel}
         style={styles.drawerItem}
       />
 
+      {isLoggedIn ? (
+        <>
+          <DrawerItem
+            label="Minhas Informações"
+            icon={() => (
+              <Ionicons name="information-circle" size={24} color="#11881D" style={{ marginRight: 10 }} />
+            )}
+            onPress={() => handleNavigation('TelaInfos')}
+            labelStyle={styles.drawerLabel}
+            style={styles.drawerItem}
+          />
+
+          <DrawerItem
+            label="Sair"
+            icon={() => (
+              <Ionicons name="log-out" size={24} color="#ff4444" style={{ marginRight: 10 }} />
+            )}
+            onPress={async () => {
+              await AsyncStorage.removeItem('usuarioLogado');
+              navigation.navigate('TelaInicial');
+            }} 
+            labelStyle={[styles.drawerLabel, { color: '#ff4444' }]}
+            style={styles.drawerItem}
+          />
+        </>
+      ) : (
+        <DrawerItem
+          label="Login"
+          icon={() => (
+            <Ionicons name="log-in" size={24} color="#11881D" style={{ marginRight: 10 }} />
+          )}
+          onPress={() => navigation.navigate('TelaLogin')}
+          labelStyle={styles.drawerLabel}
+          style={styles.drawerItem}
+        />
+      )}
     </DrawerContentScrollView>
+  );
+}
+
+function MainNavigator() {
+  const navigation = useNavigation();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const checkLoginStatus = async () => {
+      const usuarioLogado = await AsyncStorage.getItem('usuarioLogado');
+      setIsLoggedIn(!!usuarioLogado);
+    };
+
+    checkLoginStatus();
+    
+    const unsubscribe = navigation.addListener('state', checkLoginStatus);
+    
+    return unsubscribe;
+  }, [navigation]);
+
+  return (
+    <Drawer.Navigator
+      drawerContent={(props) => <CustomDrawerContent {...props} />}
+      screenOptions={{
+        drawerActiveBackgroundColor: '#333',
+        drawerActiveTintColor: 'white',
+        drawerInactiveTintColor: '#ccc',
+        drawerStyle: {
+          backgroundColor: '#000',
+          width: 280,
+        },
+        header: (props) => <CabecalhoHeader {...props} />,
+      }}
+    >
+      <Drawer.Screen 
+        name="TelaInicial" 
+        component={TelaInicial} 
+        options={{ 
+          title: 'Início',
+          drawerIcon: ({ color }) => (
+            <Ionicons name="home" size={24} color={color} />
+          )
+        }}
+      />
+      <Drawer.Screen 
+        name="TelaEquipe" 
+        component={TelaEquipe} 
+        options={{ title: 'Equipe'}}
+      />
+      <Drawer.Screen 
+        name="TelaLogin" 
+        component={TelaLogin} 
+        options={{ title: 'Login' }}
+      />
+      <Drawer.Screen 
+        name="TelaCadastroF" 
+        component={TelaCadastroF} 
+        options={{ title: 'Cadastro' }}
+      />
+      <Drawer.Screen 
+        name="TelaInfos" 
+        component={TelaInfos} 
+        options={{ title: 'Informações' }}
+      />
+    </Drawer.Navigator>
   );
 }
 
@@ -64,53 +189,7 @@ export default function App() {
 
   return (
     <NavigationContainer>
-      <Drawer.Navigator
-        drawerContent={(props) => <CustomDrawerContent {...props} />}
-        screenOptions={{
-          drawerActiveBackgroundColor: '#333',
-          drawerActiveTintColor: 'white',
-          drawerInactiveTintColor: '#ccc',
-          drawerStyle: {
-            backgroundColor: '#000',
-            width: 280,
-          },
-          header: (props) => <CabecalhoHeader {...props} />,
-        }}
-      >
-        <Drawer.Screen 
-          name="TelaInicial" 
-          component={TelaInicial} 
-          options={{ 
-            title: 'Início',
-            drawerIcon: ({ color }) => (
-              <Ionicons name="home" size={24} color={color} />
-            )
-          }}
-        />
-        <Drawer.Screen 
-          name="TelaEquipe" 
-          component={TelaEquipe} 
-          options={{ title: 'Equipe'}}
-        />
-
-        <Drawer.Screen 
-          name="TelaLogin" 
-          component={TelaLogin} 
-          options={{ title: 'Login'}}
-        />
-        
-        <Drawer.Screen 
-          name="TelaCadastroF" 
-          component={TelaCadastroF} 
-          options={{ title: 'Cadastro'}}
-        />
-
-        <Drawer.Screen 
-          name="TelaInfos" 
-          component={TelaInfos} 
-          options={{ title: 'Informações'}}
-        />
-      </Drawer.Navigator>
+      <MainNavigator />
     </NavigationContainer>
   );
 }

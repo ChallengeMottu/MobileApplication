@@ -37,7 +37,7 @@ export default function TelaInicial() {
             <Text style={styles.statText}>motos com alocação inteligente</Text>
           </View>
 
-          <View style={{ marginBottom: 30, alignItems: 'center', marginRight: 'auto', marginTop: -30 }}>
+          <View style={{ marginBottom: 30, alignItems: 'center', marginRight: 'auto', marginTop: -40 }}>
             <Text style={styles.statNumber}>+100K</Text>
             <Text style={styles.statText}>motos com alocação inteligente</Text>
           </View>
@@ -90,9 +90,9 @@ export default function TelaInicial() {
       </View>
 
       <View style={styles.Patios}>
-        <Text style={{ color: '#fff', marginBottom: 20, fontFamily: 'DarkerGrotesque_700Bold', fontSize: 20, marginLeft: 10 }}>Mapeamento e Gestão dos Pátios</Text>
-        <Text style={{ color: '#fff', fontFamily: 'DarkerGrotesque_500Medium', fontSize: 18, marginLeft: 10 }}>Entenda como o Pulse garante um</Text>
-        <Text style={{ color: '#fff', fontFamily: 'DarkerGrotesque_500Medium', fontSize: 18, marginTop: 2, marginLeft: 10 }}>gerenciamento preciso</Text>
+        <Text style={{ color: '#fff', marginBottom: 20, fontFamily: 'DarkerGrotesque_700Bold', fontSize: 25, marginLeft: 10 }}>Mapeamento e Gestão dos Pátios</Text>
+        <Text style={{ color: '#fff', fontFamily: 'DarkerGrotesque_500Medium', fontSize: 19, marginLeft: 10 }}>Entenda como o Pulse garante um</Text>
+        <Text style={{ color: '#fff', fontFamily: 'DarkerGrotesque_500Medium', fontSize: 19, marginTop: 2, marginLeft: 10 }}>gerenciamento preciso</Text>
       </View>
       <View style={styles.listaContainer}>
         <View style={styles.listaItem}>
@@ -176,7 +176,7 @@ export default function TelaInicial() {
       </View>
 
       <View style={{ marginTop: 100, marginLeft: 50, marginBottom: 17 }}>
-        <Text style={{ fontFamily: 'DarkerGrotesque_700Bold', color: '#fff', fontSize: 20 }}>Parceiros que impulsionam{'\n'} a inovação</Text>
+        <Text style={{ fontFamily: 'DarkerGrotesque_700Bold', color: '#fff', fontSize: 22 }}>Parceiros que impulsionam{'\n'} a inovação</Text>
       </View>
       <View style={styles.rowImages2}>
         <View style={styles.imageTextWrapper}>
@@ -267,7 +267,7 @@ const styles = StyleSheet.create({
   },
   statText: {
     fontFamily: 'DarkerGrotesque_500Medium',
-    fontSize: 13,
+    fontSize: 15,
     color: '#000',
     textAlign: 'center',
   },
@@ -314,13 +314,13 @@ const styles = StyleSheet.create({
   imageCaption: {
     color: '#fff',
     fontFamily: 'DarkerGrotesque_500Medium',
-    fontSize: 14,
+    fontSize: 18,
     marginTop: 4,
     textAlign: 'center',
   },
   outText: {
     fontFamily: 'DarkerGrotesque_500Medium',
-    fontSize: 18,
+    fontSize: 20,
     color: '#fff',
     textAlign: 'center',
     marginTop: 10,
@@ -348,12 +348,12 @@ const styles = StyleSheet.create({
   },
   listaTexto: {
     color: '#fff',
-    fontSize: 17,
+    fontSize: 19,
     fontFamily: 'DarkerGrotesque_500Medium',
     flex: 1,
   },
   identificacaoSection: {
-    marginTop: 40,
+    marginTop: 55,
     paddingHorizontal: 20,
   },
   identificacaoTitulo: {
@@ -366,7 +366,7 @@ const styles = StyleSheet.create({
   identificacaoSubtitulo: {
     color: '#fff',
     fontFamily: 'DarkerGrotesque_500Medium',
-    fontSize: 17,
+    fontSize: 18,
     marginBottom: 20,
     textAlign: 'right',
   },
@@ -381,7 +381,7 @@ const styles = StyleSheet.create({
   identificacaoTexto: {
     color: '#fff',
     fontFamily: 'DarkerGrotesque_500Medium',
-    fontSize: 16,
+    fontSize: 17,
     flex: 1,
     textAlign: 'right',
   },
@@ -422,7 +422,7 @@ const styles = StyleSheet.create({
   footerSlogan: {
     fontFamily: 'DarkerGrotesque_500Medium',
     color: '#fff',
-    fontSize: 16,
+    fontSize: 18,
     marginBottom: 14,
   },
 
