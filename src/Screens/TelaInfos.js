@@ -27,7 +27,7 @@ export default function TelaInfos({ navigation }) {
                     return;
                 }
 
-                // Carregar dados do usuário
+
                 const dadosUsuario = JSON.parse(usuarioLogado);
                 setUsuario(dadosUsuario);
             } catch (error) {
@@ -44,10 +44,8 @@ export default function TelaInfos({ navigation }) {
             }
         };
 
-        // Carregar dados quando a tela receber foco
         const unsubscribe = navigation.addListener('focus', carregarDados);
         
-        // Carregar dados inicialmente
         carregarDados();
 
         return unsubscribe;
@@ -104,7 +102,7 @@ export default function TelaInfos({ navigation }) {
                 <Text style={styles.subtitulo}>O que deseja realizar hoje?</Text>
             </View>
 
-            {/* Botões de ação */}
+
             <View style={styles.botoesContainer}>
                 <TouchableOpacity
                     style={styles.botaoGrande}
@@ -123,48 +121,48 @@ export default function TelaInfos({ navigation }) {
                 </TouchableOpacity>
             </View>
 
-            {/* Seção de dados pessoais */}
+
             <View style={styles.secaoDados}>
                 <Text style={styles.tituloSecao}>Dados Pessoais</Text>
 
-                {/* Campo Nome Completo */}
+
                 <View style={styles.itemDado}>
                     <Text style={styles.label}>Nome Completo</Text>
                     <Text style={styles.valor}>{usuario.nome || 'Não informado'}</Text>
                 </View>
 
-                {/* Campo Email */}
+
                 <View style={styles.itemDado}>
                     <Text style={styles.label}>Email</Text>
                     <Text style={styles.valor}>{usuario.email || 'Não informado'}</Text>
                 </View>
 
-                {/* Campo CPF */}
+
                 <View style={styles.itemDado}>
                     <Text style={styles.label}>CPF</Text>
                     <Text style={styles.valor}>{usuario.cpf || 'Não informado'}</Text>
                 </View>
 
-                {/* Campo Data de Nascimento */}
+
                 <View style={styles.itemDado}>
                     <Text style={styles.label}>Data de Nascimento</Text>
                     <Text style={styles.valor}>{usuario.dataNascimento || 'Não informada'}</Text>
                 </View>
 
-                {/* Campo Pátio */}
+
                 <View style={styles.itemDado}>
                     <Text style={styles.label}>Pátio</Text>
                     <Text style={styles.valor}>{usuario.patio || 'Não informado'}</Text>
                 </View>
 
-                {/* Campo ID Colaborador */}
+
                 <View style={styles.itemDado}>
                     <Text style={styles.label}>ID Colaborador</Text>
                     <Text style={styles.valor}>{usuario.id || 'Não informado'}</Text>
                 </View>
             </View>
 
-            {/* Botão de Logout melhorado */}
+
             <TouchableOpacity 
                 style={styles.botaoSair}
                 onPress={handleLogout}

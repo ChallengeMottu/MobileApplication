@@ -52,7 +52,7 @@ export default function TelaLogin({ navigation }) {
           {
             text: 'OK',
             onPress: () => {
-              // Redireciona para TelaInfos e limpa a pilha de navegação
+
               navigation.dispatch(
                 CommonActions.reset({
                   index: 0,
