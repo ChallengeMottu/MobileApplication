@@ -1,18 +1,19 @@
-import { useFonts, DarkerGrotesque_500Medium, DarkerGrotesque_800ExtraBold } from '@expo-google-fonts/darker-grotesque';
+import { DarkerGrotesque_500Medium, DarkerGrotesque_800ExtraBold, useFonts } from '@expo-google-fonts/darker-grotesque';
 import { Ionicons } from '@expo/vector-icons';
-import { createDrawerNavigator, DrawerContentScrollView, DrawerItem } from '@react-navigation/drawer';
-import { NavigationContainer, useNavigation } from "@react-navigation/native";
-import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, ActivityIndicator } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { DrawerContentScrollView, DrawerItem, createDrawerNavigator } from '@react-navigation/drawer';
+import { NavigationContainer, useNavigation } from "@react-navigation/native";
+import React, { useEffect, useState } from 'react';
+import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 
 import CabecalhoHeader from './src/Components/CabecalhoHeader';
-import TelaInicial from './src/Screens/TelaInicial';
-import TelaEquipe from './src/Screens/TelaEquipe';
-import TelaLogin from './src/Screens/TelaLogin';
 import TelaCadastroF from './src/Screens/TelaCadastroF';
-import TelaInfos from './src/Screens/TelaInfos';
 import TelaCadastroM from './src/Screens/TelaCadastroM';
+import TelaEquipe from './src/Screens/TelaEquipe';
+import TelaInfos from './src/Screens/TelaInfos';
+import TelaInicial from './src/Screens/TelaInicial';
+import TelaLogin from './src/Screens/TelaLogin';
+import TelaScanner from './src/Screens/TelaScanner';
 
 const Drawer = createDrawerNavigator();
 
@@ -69,7 +70,7 @@ function CustomDrawerContent(props) {
         style={styles.drawerItem}
       />
 
-      
+
 
       {isLoggedIn ? (
         <>
@@ -84,14 +85,24 @@ function CustomDrawerContent(props) {
           />
 
           <DrawerItem
-        label="Cadastro Moto"
-        icon={() => (
-          <Ionicons name="people" size={24} color="#11881D" style={{ marginRight: 10 }} />
-        )}
-        onPress={() => navigation.navigate('TelaCadastroM')}
-        labelStyle={styles.drawerLabel}
-        style={styles.drawerItem}
-      />
+            label="Cadastro Moto"
+            icon={() => (
+              <Ionicons name="bicycle" size={24} color="#11881D" style={{ marginRight: 10 }} />
+            )}
+            onPress={() => navigation.navigate('TelaCadastroM')}
+            labelStyle={styles.drawerLabel}
+            style={styles.drawerItem}
+          />
+
+          <DrawerItem
+            label="Rastrear Moto"
+            icon={() => (
+              <Ionicons name="bluetooth" size={24} color="#11881D" style={{ marginRight: 10 }} />
+            )}
+            onPress={() => navigation.navigate('TelaScanner')}
+            labelStyle={styles.drawerLabel}
+            style={styles.drawerItem}
+          />
 
           <DrawerItem
             label="Sair"
@@ -101,7 +112,7 @@ function CustomDrawerContent(props) {
             onPress={async () => {
               await AsyncStorage.removeItem('usuarioLogado');
               navigation.navigate('TelaInicial');
-            }} 
+            }}
             labelStyle={[styles.drawerLabel, { color: '#ff4444' }]}
             style={styles.drawerItem}
           />
@@ -132,9 +143,9 @@ function MainNavigator() {
     };
 
     checkLoginStatus();
-    
+
     const unsubscribe = navigation.addListener('state', checkLoginStatus);
-    
+
     return unsubscribe;
   }, [navigation]);
 
@@ -152,39 +163,44 @@ function MainNavigator() {
         header: (props) => <CabecalhoHeader {...props} />,
       }}
     >
-      <Drawer.Screen 
-        name="TelaInicial" 
-        component={TelaInicial} 
-        options={{ 
+      <Drawer.Screen
+        name="TelaInicial"
+        component={TelaInicial}
+        options={{
           title: 'Início',
           drawerIcon: ({ color }) => (
             <Ionicons name="home" size={24} color={color} />
           )
         }}
       />
-      <Drawer.Screen 
-        name="TelaEquipe" 
-        component={TelaEquipe} 
-        options={{ title: 'Equipe'}}
+      <Drawer.Screen
+        name="TelaEquipe"
+        component={TelaEquipe}
+        options={{ title: 'Equipe' }}
       />
-      <Drawer.Screen 
-        name="TelaLogin" 
-        component={TelaLogin} 
+      <Drawer.Screen
+        name="TelaLogin"
+        component={TelaLogin}
         options={{ title: 'Login' }}
       />
-      <Drawer.Screen 
-        name="TelaCadastroF" 
-        component={TelaCadastroF} 
+      <Drawer.Screen
+        name="TelaCadastroF"
+        component={TelaCadastroF}
         options={{ title: 'Cadastro' }}
       />
-      <Drawer.Screen 
-        name="TelaInfos" 
-        component={TelaInfos} 
+      <Drawer.Screen
+        name="TelaInfos"
+        component={TelaInfos}
         options={{ title: 'Informações' }}
       />
-      <Drawer.Screen 
-        name="TelaCadastroM" 
-        component={TelaCadastroM} 
+      <Drawer.Screen
+        name="TelaScanner"
+        component={TelaScanner}
+        options={{ title: 'Informações' }}
+      />
+      <Drawer.Screen
+        name="TelaCadastroM"
+        component={TelaCadastroM}
         options={{ title: 'CadastroMoto' }}
       />
     </Drawer.Navigator>
