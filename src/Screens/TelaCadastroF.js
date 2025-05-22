@@ -121,7 +121,7 @@ export default function TelaCadastroF() {
       [
         {
           text: 'Voltar para Login',
-          onPress: () => navigation.navigate('TelaLogin') 
+          onPress: () => navigation.navigate('TelaCadastroM') 
         }
       ]
     );
