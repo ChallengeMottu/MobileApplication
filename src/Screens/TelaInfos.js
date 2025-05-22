@@ -1,12 +1,11 @@
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Alert } from 'react-native';
-import { useFonts, DarkerGrotesque_500Medium, DarkerGrotesque_700Bold } from '@expo-google-fonts/darker-grotesque';
+import { DarkerGrotesque_500Medium, DarkerGrotesque_700Bold, useFonts } from '@expo-google-fonts/darker-grotesque';
 import { Ionicons } from '@expo/vector-icons';
-import { useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useNavigation } from '@react-navigation/native';
+import { useEffect, useState } from 'react';
+import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 export default function TelaInfos({ navigation }) {
-    
+
     const [fontsLoaded] = useFonts({
         DarkerGrotesque_500Medium,
         DarkerGrotesque_700Bold
@@ -47,7 +46,7 @@ export default function TelaInfos({ navigation }) {
         };
 
         const unsubscribe = navigation.addListener('focus', carregarDados);
-        
+
         carregarDados();
 
         return unsubscribe;
@@ -116,7 +115,7 @@ export default function TelaInfos({ navigation }) {
 
                 <TouchableOpacity
                     style={styles.botaoGrande}
-                    onPress={() => navigation.navigate('RastrearMotos')}
+                    onPress={() => navigation.navigate('TelaScanner')}
                 >
                     <Ionicons name="search" size={32} color="#fff" />
                     <Text style={styles.textoBotao}>Rastrear motos</Text>
@@ -165,7 +164,7 @@ export default function TelaInfos({ navigation }) {
             </View>
 
 
-            <TouchableOpacity 
+            <TouchableOpacity
                 style={styles.botaoSair}
                 onPress={handleLogout}
             >

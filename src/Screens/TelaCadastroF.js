@@ -1,11 +1,11 @@
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Alert } from 'react-native';
-import { useState, useEffect } from 'react';
+import { DarkerGrotesque_500Medium, DarkerGrotesque_700Bold, useFonts } from '@expo-google-fonts/darker-grotesque';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useFonts, DarkerGrotesque_500Medium, DarkerGrotesque_700Bold } from '@expo-google-fonts/darker-grotesque';
-import { useNavigation } from '@react-navigation/native'; 
+import { useNavigation } from '@react-navigation/native';
+import { useEffect, useState } from 'react';
+import { Alert, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
 export default function TelaCadastroF() {
-  const navigation = useNavigation(); 
+  const navigation = useNavigation();
 
   let [fontsLoaded] = useFonts({
     DarkerGrotesque_500Medium,
@@ -121,7 +121,7 @@ export default function TelaCadastroF() {
       [
         {
           text: 'Voltar para Login',
-          onPress: () => navigation.navigate('TelaCadastroM') 
+          onPress: () => navigation.navigate('TelaLogin')
         }
       ]
     );
