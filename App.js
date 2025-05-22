@@ -12,6 +12,7 @@ import TelaEquipe from './src/Screens/TelaEquipe';
 import TelaLogin from './src/Screens/TelaLogin';
 import TelaCadastroF from './src/Screens/TelaCadastroF';
 import TelaInfos from './src/Screens/TelaInfos';
+import TelaCadastroM from './src/Screens/TelaCadastroM';
 
 const Drawer = createDrawerNavigator();
 
@@ -68,6 +69,8 @@ function CustomDrawerContent(props) {
         style={styles.drawerItem}
       />
 
+      
+
       {isLoggedIn ? (
         <>
           <DrawerItem
@@ -79,6 +82,16 @@ function CustomDrawerContent(props) {
             labelStyle={styles.drawerLabel}
             style={styles.drawerItem}
           />
+
+          <DrawerItem
+        label="Cadastro Moto"
+        icon={() => (
+          <Ionicons name="people" size={24} color="#11881D" style={{ marginRight: 10 }} />
+        )}
+        onPress={() => navigation.navigate('TelaCadastroM')}
+        labelStyle={styles.drawerLabel}
+        style={styles.drawerItem}
+      />
 
           <DrawerItem
             label="Sair"
@@ -168,6 +181,11 @@ function MainNavigator() {
         name="TelaInfos" 
         component={TelaInfos} 
         options={{ title: 'Informações' }}
+      />
+      <Drawer.Screen 
+        name="TelaCadastroM" 
+        component={TelaCadastroM} 
+        options={{ title: 'CadastroMoto' }}
       />
     </Drawer.Navigator>
   );

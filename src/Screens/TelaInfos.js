@@ -3,8 +3,10 @@ import { useFonts, DarkerGrotesque_500Medium, DarkerGrotesque_700Bold } from '@e
 import { Ionicons } from '@expo/vector-icons';
 import { useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useNavigation } from '@react-navigation/native';
 
 export default function TelaInfos({ navigation }) {
+    
     const [fontsLoaded] = useFonts({
         DarkerGrotesque_500Medium,
         DarkerGrotesque_700Bold
@@ -106,7 +108,7 @@ export default function TelaInfos({ navigation }) {
             <View style={styles.botoesContainer}>
                 <TouchableOpacity
                     style={styles.botaoGrande}
-                    onPress={() => navigation.navigate('CadastrarMoto')}
+                    onPress={() => navigation.navigate('TelaCadastroM')}
                 >
                     <Ionicons name="bicycle" size={32} color="#fff" />
                     <Text style={styles.textoBotao}>Cadastrar nova moto</Text>
