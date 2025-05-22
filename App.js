@@ -9,6 +9,7 @@ import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 import CabecalhoHeader from './src/Components/CabecalhoHeader';
 import TelaCadastroF from './src/Screens/TelaCadastroF';
 import TelaCadastroM from './src/Screens/TelaCadastroM';
+import TelaDadosM from './src/Screens/TelaDadosM';
 import TelaEquipe from './src/Screens/TelaEquipe';
 import TelaInfos from './src/Screens/TelaInfos';
 import TelaInicial from './src/Screens/TelaInicial';
@@ -103,6 +104,19 @@ function CustomDrawerContent(props) {
             labelStyle={styles.drawerLabel}
             style={styles.drawerItem}
           />
+
+          <DrawerItem
+            label="Dados da Moto"
+            icon={() => (
+              <Ionicons name="information-circle-outline" size={24} color="#11881D" style={{ marginRight: 10 }} />
+            )}
+            onPress={() => navigation.navigate('TelaDadosM')}
+            labelStyle={styles.drawerLabel}
+            style={styles.drawerItem}
+          />
+
+
+
 
           <DrawerItem
             label="Sair"
@@ -202,6 +216,11 @@ function MainNavigator() {
         name="TelaCadastroM"
         component={TelaCadastroM}
         options={{ title: 'CadastroMoto' }}
+      />
+      <Drawer.Screen
+        name="TelaDadosM"
+        component={TelaDadosM}
+        options={{ title: 'Equipe' }}
       />
     </Drawer.Navigator>
   );
