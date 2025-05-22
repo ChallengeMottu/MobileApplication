@@ -67,18 +67,30 @@ export default function TelaCadastroM() {
       Alert.alert('Campos obrigatórios', 'Por favor preencha todos os campos antes de cadastrar.');
       return;
     }
+
     await salvarDados();
+
+
+    setPlaca('');
+    setModelo('');
+    setNumeroChassi('');
+    setCodigoBeacon('');
+    setCondicaoMecanica('');
+    setStatus('');
+    setAnoFabricacao('');
+
     Alert.alert(
       'Cadastro realizado',
       'Moto cadastrada com sucesso!',
       [
         {
-          text: 'Realizar rastreamento da moto',
-          onPress: () => navigation.navigate('TelaDadosM')
-        }
+          text: 'OK!',
+          onPress: () => navigation.navigate('TelaDadosM'),
+        },
       ]
     );
   };
+
 
   if (!fontsLoaded) return null;
 
@@ -213,5 +225,3 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   }
 })
-
-

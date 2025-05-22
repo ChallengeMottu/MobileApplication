@@ -1,9 +1,14 @@
-import { useNavigation } from "@react-navigation/native";
-import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { useState } from 'react';
+import { ActivityIndicator, Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 
 export default function TelaScanner() {
-    const navigation = useNavigation();
+    const [rastreandoStatus, setRastreandoStatus] = useState(false);
+
+    const toggleRastreando = () => {
+        setRastreandoStatus(prevStatus => !prevStatus);
+    }
+
     return (
         <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
             <View style={styles.card}>
@@ -13,22 +18,36 @@ export default function TelaScanner() {
 
                 <Text style={styles.titulo}>Entrada de Motos no Pátio</Text>
                 <Text style={styles.subtitulo}>Identifique o código de uso da moto mais próxima ao dispositivo</Text>
-                <TouchableOpacity onPress={() => navigation.navigate('TelaDadosM')} style={styles.botao}>
-                    <Text style={styles.textoBotao}>RASTREAR</Text>
-                </TouchableOpacity>
+
+
+                {!rastreandoStatus ? (
+                    <TouchableOpacity onPress={toggleRastreando} style={styles.botao}>
+                        <Text style={styles.textoBotao}>RASTREAR</Text>
+                    </TouchableOpacity>
+                ) : (
+                    <TouchableOpacity onPress={toggleRastreando} style={styles.botao}>
+                        <Text style={styles.textoBotao}>PARAR RASTREAMENTO</Text>
+                    </TouchableOpacity>
+                )}
+
+
+                {rastreandoStatus && (
+                    <View style={styles.rastreandoContainer}>
+                        <Text style={{ color: '#ffff', textAlign: 'center' }}>Rastreando Motos...</Text>
+                        <ActivityIndicator size="large" color="#fff" style={styles.spinner} />
+                    </View>
+                )}
             </View>
         </ScrollView>
-    )
+    );
 }
 
 const styles = StyleSheet.create({
     scrollView: {
         backgroundColor: '#000',
-
     },
     scrollContent: {
         marginTop: 80,
-
     },
     containerImagem: {
         flex: 1,
@@ -37,7 +56,6 @@ const styles = StyleSheet.create({
     iconeMoto: {
         width: 80,
         height: 60,
-
     },
     card: {
         backgroundColor: '#332f2f',
@@ -78,5 +96,15 @@ const styles = StyleSheet.create({
         color: '#fff',
         textAlign: 'center',
         marginBottom: 30
+    },
+    rastreandoContainer: {
+        marginTop: 20,
+        padding: 10,
+        backgroundColor: '#2d2d2d',
+        borderRadius: 8,
+        alignItems: 'center',
+    },
+    spinner: {
+        marginTop: 20,
     }
-})
+});
