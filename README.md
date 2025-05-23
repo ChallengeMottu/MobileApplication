@@ -48,7 +48,7 @@ npx expo start
 ```
 
 ## 👥 Grupo Desenvolvedor
-- Gabriela de Sousa Reis
-- Laura Amadeu Soares
-- Raphael Lamaison Kim
+- Gabriela de Sousa Reis - RM558830
+- Laura Amadeu Soares - RM556690
+- Raphael Lamaison Kim - RM557914
 
