@@ -266,20 +266,20 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   statText: {
-    fontFamily: 'DarkerGrotesque_500Medium',
-    fontSize: 15,
+    fontFamily: 'DarkerGrotesque_700Bold',
+    fontSize: 14,
     color: '#000',
     textAlign: 'center',
   },
   imageContainer: {
     width: '100%',
     alignItems: 'center',
-    marginTop: -130, // Sobreposição com a view verde
+    marginTop: -130, 
     marginBottom: 10,
-    zIndex: 1, // Faz com que a imagem fiqui em cima da view
+    zIndex: 1, 
   },
   image: {
-    width: 300, // Largura fixa
+    width: 300, 
     height: 300,
   },
   image2: {
