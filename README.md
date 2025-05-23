@@ -31,8 +31,8 @@ Para esse objetivo, o desenvolvimento da nossa interface Front end é de grande 
 1. **Clone o repositório do aplicativo:**
 
 ```bash
-git clone https://github.com/RaphaelKim21/projetoMobile.git
-cd projetoMobile
+git clone https://github.com/ChallengeMottu/MobileApplication.git
+cd MobileApplication
 ```
 
 2. **Instale as dependências**
