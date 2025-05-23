@@ -1,5 +1,6 @@
 import { DarkerGrotesque_500Medium, DarkerGrotesque_700Bold, useFonts } from '@expo-google-fonts/darker-grotesque';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Picker } from '@react-native-picker/picker';
 import { useNavigation } from '@react-navigation/native';
 import { useEffect, useState } from "react";
 import { Alert, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
@@ -106,7 +107,20 @@ export default function TelaCadastroM() {
 
         <View style={styles.inputContainer}>
           <Text style={styles.label}>Modelo</Text>
-          <TextInput style={styles.input} value={modelo} onChangeText={setModelo} placeholder="Modelo da Moto" placeholderTextColor="#aaa" />
+          <View style={styles.pickerContainer}>
+            <Picker
+              selectedValue={modelo}
+              onValueChange={(itemValue) => setModelo(itemValue)}
+              style={styles.picker}
+              dropdownIconColor='#fff'
+              >
+                <Picker.Item style={{fontSize: 12}}label='Selecione' value=''/>
+                <Picker.Item style={{fontSize: 12}} label='Sport 110i' value='Sport 110i'/>
+                <Picker.Item style={{fontSize: 12}} label='Mottu E' value='Mottu E'/>
+                <Picker.Item style={{fontSize: 12}} label='Mottu Pop 110i' value='Mottu Pop 110i'/>
+            </Picker>  
+
+          </View>
         </View>
 
         <View style={styles.inputContainer}>
@@ -130,12 +144,40 @@ export default function TelaCadastroM() {
 
         <View style={styles.inputContainer}>
           <Text style={styles.labelPergunta}>Qual é a condição mecânica atual da moto?</Text>
-          <TextInput style={styles.input} value={condicaoMecanica} onChangeText={setCondicaoMecanica} placeholderTextColor="#aaa" />
+          <View style={styles.pickerContainer}>
+            <Picker
+              selectedValue={condicaoMecanica}
+              onValueChange={(itemValue) => setCondicaoMecanica(itemValue)}
+              style={styles.picker}
+              dropdownIconColor='#fff'
+              >
+                <Picker.Item style={{fontSize: 12}}label='Selecione' value=''/>
+                <Picker.Item style={{fontSize: 12}} label='Bom Estado Mecânico' value='Moto em bom estado mecânico'/>
+                <Picker.Item style={{fontSize: 12}} label='Gravemente Danificada' value='Moto com graves danificações'/>
+                <Picker.Item style={{fontSize: 12}} label='Inoperante' value='Moto sem utilidade'/>
+                <Picker.Item style={{fontSize: 12}} label='Necessita de Revisão' value='Moto precisa ser diagnosticada'/>
+                <Picker.Item style={{fontSize: 12}} label='Pequenos Reparos' value='Moto com pequenos reparos de funcionamento'/>
+            </Picker>  
+
+          </View>
         </View>
 
         <View style={styles.inputContainer}>
           <Text style={styles.labelPergunta}>Está com falta de algum aparato físico?</Text>
-          <TextInput style={styles.input} value={status} onChangeText={setStatus} placeholderTextColor="#aaa" />
+          <View style={styles.pickerContainer}>
+          <Picker
+              selectedValue={status}
+              onValueChange={(itemValue) => setStatus(itemValue)}
+              style={styles.picker}
+              dropdownIconColor='#fff'
+              >
+                <Picker.Item style={{fontSize: 12}}label='Selecione' value=''/>
+                <Picker.Item style={{fontSize: 12}} label='Sem Placa' value='Moto sem placa'/>
+                <Picker.Item style={{fontSize: 12}} label='Com Placa' value='Moto normal com placa'/>
+                <Picker.Item style={{fontSize: 12}} label='Situação de Furto' value='Moto parada por situação de furto'/>
+                <Picker.Item style={{fontSize: 12}} label='Situação de Acidente' value='Moto parada por situação de acidente'/>
+            </Picker>
+            </View>
         </View>
 
 
@@ -223,5 +265,18 @@ const styles = StyleSheet.create({
     marginTop: 10,
     flex: 1,
     alignItems: 'center'
-  }
+  },
+  pickerContainer: {
+  backgroundColor: '#433e3e',
+  borderRadius: 8,
+  overflow: 'hidden',
+  height: 50,
+  fontSize:10
+},
+picker: {
+  color: '#fff',
+  fontFamily: 'DarkerGrotesque_500Medium',
+  fontSize: 14
+}
+
 })
