@@ -5,6 +5,7 @@ A Solução Pulse é uma proposta para otimizar a gestão dos pátios da empresa
 solucionar o gerenciamento e identificação das motos. 
 
 Para esse objetivo, o desenvolvimento da nossa interface Front end é de grande importância, visto que por meio desta, haverá o acesso dos colaboradores Mottu para a inspeção diária dos pátios.
+
 ---
 
 ## 🖥️ Telas da Interface
