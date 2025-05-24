@@ -78,7 +78,7 @@ export default function TelaLogin({ navigation }) {
           <Text style={styles.subtitulo}>Preencha os dados para entrar no sistema</Text>
 
           <View style={styles.inputContainer}>
-            <Text style={styles.label}>Usuário</Text>
+            <Text style={styles.label}>E-mail de Usuário</Text>
             <TextInput
               style={styles.input}
               placeholder="Digite o seu Email"
