@@ -194,7 +194,7 @@ const styles = StyleSheet.create({
   scrollView: {
     flex: 1,
     backgroundColor: '#000',
-    marginBottom: 50
+    marginBottom: 0
 
   },
   scrollContent: {

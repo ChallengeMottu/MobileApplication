@@ -15,6 +15,8 @@ import TelaInfos from './src/Screens/TelaInfos';
 import TelaInicial from './src/Screens/TelaInicial';
 import TelaLogin from './src/Screens/TelaLogin';
 import TelaScanner from './src/Screens/TelaScanner';
+import TelaAssociacao from './src/Screens/TelaAssociacao';
+import TelaDesassociacao from './src/Screens/TelaDesassociacao';
 
 const Drawer = createDrawerNavigator();
 
@@ -111,6 +113,26 @@ function CustomDrawerContent(props) {
               <Ionicons name="information-circle-outline" size={24} color="#11881D" style={{ marginRight: 10 }} />
             )}
             onPress={() => navigation.navigate('TelaDadosM')}
+            labelStyle={styles.drawerLabel}
+            style={styles.drawerItem}
+          />
+
+          <DrawerItem
+            label="Associar Beacon"
+            icon={() => (
+              <Ionicons name="information-circle-outline" size={24} color="#11881D" style={{ marginRight: 10 }} />
+            )}
+            onPress={() => navigation.navigate('TelaAssociacao')}
+            labelStyle={styles.drawerLabel}
+            style={styles.drawerItem}
+          />
+
+          <DrawerItem
+            label="Desassociar Beacon"
+            icon={() => (
+              <Ionicons name="information-circle-outline" size={24} color="#11881D" style={{ marginRight: 10 }} />
+            )}
+            onPress={() => navigation.navigate('TelaDesassociacao')}
             labelStyle={styles.drawerLabel}
             style={styles.drawerItem}
           />
@@ -220,6 +242,17 @@ function MainNavigator() {
       <Drawer.Screen
         name="TelaDadosM"
         component={TelaDadosM}
+        options={{ title: 'Equipe' }}
+      />
+      <Drawer.Screen
+        name="TelaAssociacao"
+        component={TelaAssociacao}
+        options={{ title: 'Equipe' }}
+      />
+
+      <Drawer.Screen
+        name="TelaDesassociacao"
+        component={TelaDesassociacao}
         options={{ title: 'Equipe' }}
       />
     </Drawer.Navigator>
