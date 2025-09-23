@@ -21,7 +21,6 @@ export default function TelaCadastroM() {
   const [status, setStatus] = useState('');
   const [anoFabricacao, setAnoFabricacao] = useState('');
 
-
   useEffect(() => {
     carregarDados();
   }, []);
@@ -61,8 +60,6 @@ export default function TelaCadastroM() {
     }
   };
 
-
-
   const handleCadastro = async () => {
     if (!placa || !modelo || !numeroChassi || !condicaoMecanica || !status || !anoFabricacao) {
       Alert.alert('Campos obrigatórios', 'Por favor preencha todos os campos antes de cadastrar.');
@@ -70,7 +67,6 @@ export default function TelaCadastroM() {
     }
 
     await salvarDados();
-
 
     setPlaca('');
     setModelo('');
@@ -92,13 +88,14 @@ export default function TelaCadastroM() {
     );
   };
 
-
   if (!fontsLoaded) return null;
 
   return (
     <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
       <View style={styles.card}>
-        <Text style={styles.titulo}>Cadastro de nova moto</Text>
+        <Text style={styles.titulo}>Cadastro de nova Moto</Text>
+
+        <View style={styles.separador} />
 
         <View style={styles.inputContainer}>
           <Text style={styles.label}>Placa</Text>
@@ -113,19 +110,13 @@ export default function TelaCadastroM() {
               onValueChange={(itemValue) => setModelo(itemValue)}
               style={styles.picker}
               dropdownIconColor='#fff'
-              >
-                <Picker.Item style={{fontSize: 12}}label='Selecione' value=''/>
-                <Picker.Item style={{fontSize: 12}} label='Sport 110i' value='Sport 110i'/>
-                <Picker.Item style={{fontSize: 12}} label='Mottu E' value='Mottu E'/>
-                <Picker.Item style={{fontSize: 12}} label='Mottu Pop 110i' value='Mottu Pop 110i'/>
+            >
+              <Picker.Item style={styles.pickerItem} label='Modelo' value=''/>
+              <Picker.Item style={styles.pickerItem} label='Sport 110i' value='Sport 110i'/>
+              <Picker.Item style={styles.pickerItem} label='Mottu E' value='Mottu E'/>
+              <Picker.Item style={styles.pickerItem} label='Mottu Pop 110i' value='Mottu Pop 110i'/>
             </Picker>  
-
           </View>
-        </View>
-
-        <View style={styles.inputContainer}>
-          <Text style={styles.label}>Ano de Fabricação</Text>
-          <TextInput style={styles.input} value={anoFabricacao} onChangeText={setAnoFabricacao} placeholder="Ano de Fabriecação da Moto" placeholderTextColor="#aaa" />
         </View>
 
         <View style={styles.inputContainer}>
@@ -134,9 +125,24 @@ export default function TelaCadastroM() {
         </View>
 
         <View style={styles.inputContainer}>
-          <Text style={styles.label}>Código Beacon</Text>
-          <TextInput style={styles.input} value={codigoBeacon} onChangeText={setCodigoBeacon} placeholder="Código Beacon da Moto" placeholderTextColor="#aaa" />
+          <Text style={styles.label}>Status da Moto</Text>
+          <View style={styles.pickerContainer}>
+            <Picker
+              selectedValue={status}
+              onValueChange={(itemValue) => setStatus(itemValue)}
+              style={styles.picker}
+              dropdownIconColor='#fff'
+            >
+              <Picker.Item style={styles.pickerItem} label='Selecione' value=''/>
+              <Picker.Item style={styles.pickerItem} label='Sem Placa' value='Moto sem placa'/>
+              <Picker.Item style={styles.pickerItem} label='Com Placa' value='Moto normal com placa'/>
+              <Picker.Item style={styles.pickerItem} label='Situação de Furto' value='Moto parada por situação de furto'/>
+              <Picker.Item style={styles.pickerItem} label='Situação de Acidente' value='Moto parada por situação de acidente'/>
+            </Picker>
+          </View>
         </View>
+
+        <View style={styles.separador} />
 
         <View style={styles.secaoContainer}>
           <Text style={styles.subtituloSecao}>Condições Físicas</Text>
@@ -150,36 +156,34 @@ export default function TelaCadastroM() {
               onValueChange={(itemValue) => setCondicaoMecanica(itemValue)}
               style={styles.picker}
               dropdownIconColor='#fff'
-              >
-                <Picker.Item style={{fontSize: 12}}label='Selecione' value=''/>
-                <Picker.Item style={{fontSize: 12}} label='Bom Estado Mecânico' value='Moto em bom estado mecânico'/>
-                <Picker.Item style={{fontSize: 12}} label='Gravemente Danificada' value='Moto com graves danificações'/>
-                <Picker.Item style={{fontSize: 12}} label='Inoperante' value='Moto sem utilidade'/>
-                <Picker.Item style={{fontSize: 12}} label='Necessita de Revisão' value='Moto precisa ser diagnosticada'/>
-                <Picker.Item style={{fontSize: 12}} label='Pequenos Reparos' value='Moto com pequenos reparos de funcionamento'/>
+            >
+              <Picker.Item style={styles.pickerItem} label='Selecione' value=''/>
+              <Picker.Item style={styles.pickerItem} label='Bom Estado Mecânico' value='Moto em bom estado mecânico'/>
+              <Picker.Item style={styles.pickerItem} label='Gravemente Danificada' value='Moto com graves danificações'/>
+              <Picker.Item style={styles.pickerItem} label='Inoperante' value='Moto sem utilidade'/>
+              <Picker.Item style={styles.pickerItem} label='Necessita de Revisão' value='Moto precisa ser diagnosticada'/>
+              <Picker.Item style={styles.pickerItem} label='Pequenos Reparos' value='Moto com pequenos reparos de funcionamento'/>
             </Picker>  
-
           </View>
         </View>
 
         <View style={styles.inputContainer}>
           <Text style={styles.labelPergunta}>Está com falta de algum aparato físico?</Text>
           <View style={styles.pickerContainer}>
-          <Picker
-              selectedValue={status}
-              onValueChange={(itemValue) => setStatus(itemValue)}
+            <Picker
+              selectedValue={condicaoMecanica}
+              onValueChange={(itemValue) => setCondicaoMecanica(itemValue)}
               style={styles.picker}
               dropdownIconColor='#fff'
-              >
-                <Picker.Item style={{fontSize: 12}}label='Selecione' value=''/>
-                <Picker.Item style={{fontSize: 12}} label='Sem Placa' value='Moto sem placa'/>
-                <Picker.Item style={{fontSize: 12}} label='Com Placa' value='Moto normal com placa'/>
-                <Picker.Item style={{fontSize: 12}} label='Situação de Furto' value='Moto parada por situação de furto'/>
-                <Picker.Item style={{fontSize: 12}} label='Situação de Acidente' value='Moto parada por situação de acidente'/>
+            >
+              <Picker.Item style={styles.pickerItem} label='Selecione' value=''/>
+              <Picker.Item style={styles.pickerItem} label='Completa' value='Completa'/>
+              <Picker.Item style={styles.pickerItem} label='Falta retrovisor' value='Falta retrovisor'/>
+              <Picker.Item style={styles.pickerItem} label='Falta banco' value='Falta banco'/>
+              <Picker.Item style={styles.pickerItem} label='Falta farol' value='Falta farol'/>
             </Picker>
-            </View>
+          </View>
         </View>
-
 
         <TouchableOpacity style={styles.botao} onPress={handleCadastro}>
           <Text style={styles.textoBotao}>CADASTRAR</Text>
@@ -189,94 +193,116 @@ export default function TelaCadastroM() {
   );
 }
 
-
 const styles = StyleSheet.create({
   scrollView: {
     flex: 1,
     backgroundColor: '#000',
-    marginBottom: 0
-
   },
   scrollContent: {
     padding: 20,
-    alignItems: 'center'
+    alignItems: 'center',
+    paddingVertical: 40,
   },
   card: {
-    backgroundColor: '#332f2f',
-    width: '85%',
+    backgroundColor: '#000',
+    width: '100%',
+    maxWidth: 400,
     padding: 25,
     borderRadius: 12,
-    shadowColor: '#11881D',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+    elevation: 8,
   },
   titulo: {
-    fontSize: 24,
+    fontSize: 28,
     fontFamily: 'DarkerGrotesque_700Bold',
     color: '#fff',
     textAlign: 'center',
-    marginBottom: 30,
+    marginBottom: 10,
+    letterSpacing: 0.5,
+  },
+  separador: {
+    height: 1,
+    backgroundColor: '#555',
+    marginVertical: 15,
+    width: '100%',
   },
   inputContainer: {
-    marginBottom: 18,
+    marginBottom: 20,
+    width: '100%',
   },
   label: {
-    fontSize: 14,
+    fontSize: 18,
     fontFamily: 'DarkerGrotesque_700Bold',
-    color: '#11881D',
-    marginBottom: 6,
+    color: '#01743A',
+    marginBottom: 8,
+    textAlign: 'left',
   },
   labelPergunta: {
-    fontSize: 12,
-    fontFamily: 'DarkerGrotesque_700Medium',
-    color: '#ffff',
-    marginBottom: 6,
-    textAlign: 'center'
+    fontSize: 16,
+    fontFamily: 'DarkerGrotesque_500Medium',
+    color: '#fff',
+    marginBottom: 10,
+    textAlign: 'center',
+    lineHeight: 20,
   },
   input: {
-    backgroundColor: '#433e3e',
+    backgroundColor: '#212121',
     borderRadius: 8,
-    padding: 12,
+    padding: 14,
     color: '#fff',
     fontSize: 16,
     fontFamily: 'DarkerGrotesque_500Medium',
+    borderWidth: 1,
+    borderColor: '#555',
   },
-  botao: {
-    backgroundColor: '#11881D',
+  pickerContainer: {
+    backgroundColor: '#212121',
     borderRadius: 8,
-    padding: 14,
-    alignItems: 'center',
-    marginTop: 10,
+    overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: '#555',
+    height: 50,
   },
-  textoBotao: {
+  picker: {
     color: '#fff',
+    fontFamily: 'DarkerGrotesque_500Medium',
     fontSize: 16,
-    fontFamily: 'DarkerGrotesque_700Bold',
+    height: 50,
+  },
+  pickerItem: {
+    fontSize: 14,
+    color: '#000',
+  },
+  secaoContainer: {
+    marginBottom: 25,
+    marginTop: 10,
+    alignItems: 'center',
   },
   subtituloSecao: {
     fontFamily: 'DarkerGrotesque_700Bold',
-    fontSize: 20,
-    color: '#11881D'
+    fontSize: 22,
+    color: '#fff',
+    textAlign: 'center',
   },
-  secaoContainer: {
-    marginBottom: 20,
-    marginTop: 10,
-    flex: 1,
-    alignItems: 'center'
+  botao: {
+    backgroundColor: '#01743A',
+    borderRadius: 8,
+    padding: 16,
+    alignItems: 'center',
+    marginTop: 20,
+    shadowColor: '#01743A',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 5,
   },
-  pickerContainer: {
-  backgroundColor: '#433e3e',
-  borderRadius: 8,
-  overflow: 'hidden',
-  height: 50,
-  fontSize:10
-},
-picker: {
-  color: '#fff',
-  fontFamily: 'DarkerGrotesque_500Medium',
-  fontSize: 14
-}
-
-})
+  textoBotao: {
+    color: '#fff',
+    fontSize: 18,
+    fontFamily: 'DarkerGrotesque_700Bold',
+    letterSpacing: 1,
+  },
+});

@@ -1,228 +1,112 @@
-import React from 'react';
-import { View, Text, StyleSheet, Dimensions, Image, ScrollView } from 'react-native';
-import { useFonts, DarkerGrotesque_700Bold, DarkerGrotesque_500Medium } from '@expo-google-fonts/darker-grotesque';
-import { Ionicons } from '@expo/vector-icons';
-
-const { width } = Dimensions.get('window');
+import { Ionicons } from "@expo/vector-icons";
+import { Image, ScrollView, StyleSheet, Text, View, ImageBackground } from "react-native";
 
 export default function TelaInicial() {
-  let [fontsLoaded] = useFonts({
-    DarkerGrotesque_700Bold,
-    DarkerGrotesque_500Medium
-  });
-
-  if (!fontsLoaded) {
-    return null;
-  }
-
   return (
     <ScrollView style={styles.container}>
-      <View style={styles.greenSection}>
-        <Text style={styles.tituloPrincipal}>
-          O <Text style={styles.textoBranco}>Gerenciador</Text> da Maior Frota de
-        </Text>
-
-        <Text style={styles.tituloDestaque}>
-          Motos da <Text style={styles.textoBranco}>América Latina</Text>
-        </Text>
-
-        <View style={styles.statsContainer}>
-          <View style={{ marginTop: 10, marginBottom: 20, alignItems: 'center' }}>
-            <Text style={styles.statNumber}>+100K</Text>
-            <Text style={styles.statText}>motos com alocação inteligente</Text>
+      {/* SEÇÃO VERDE - Apresentação */}
+      <ImageBackground 
+        source={require('../../assets/fundo.png')} 
+        style={styles.sectionGreen}
+        resizeMode="cover"
+      >
+        <View style={styles.sectionContent}>
+          <View style={styles.textBox}>
+            <Text style={styles.title}>
+              Gerenciador da Maior Frota de Motos da América Latina
+            </Text>
+            <Text style={styles.highlight}>+100K</Text>
+            <Text style={styles.subtitle}>
+              motos com alocação inteligente
+            </Text>
           </View>
+          <Image
+            source={require('../../assets/moto.png')}
+            style={styles.imageMoto}
+            resizeMode="contain"
+          />
+        </View>
+      </ImageBackground>
 
-          <View style={{ marginBottom: 3, alignItems: 'center', marginLeft: 'auto' }}>
-            <Text style={styles.statNumber}>+100K</Text>
-            <Text style={styles.statText}>motos com alocação inteligente</Text>
+      {/* SEÇÃO BRANCA - Gestão, Tecnologia, Comprometimento */}
+      <View style={styles.sectionWhite}>
+        <View style={styles.featuresRow}>
+          <View style={styles.featureItem}>
+            <Ionicons name="settings" size={40} color="#01743A" />
+            <Text style={styles.featureText}>Gestão</Text>
           </View>
-
-          <View style={{ marginBottom: 30, alignItems: 'center', marginRight: 'auto', marginTop: -40 }}>
-            <Text style={styles.statNumber}>+100K</Text>
-            <Text style={styles.statText}>motos com alocação inteligente</Text>
+          <View style={styles.featureItem}>
+            <Ionicons name="hardware-chip" size={40} color="#01743A" />
+            <Text style={styles.featureText}>Tecnologia</Text>
+          </View>
+          <View style={styles.featureItem}>
+            <Ionicons name="people" size={40} color="#01743A" />
+            <Text style={styles.featureText}>Comprometimento</Text>
           </View>
         </View>
       </View>
 
+      {/* SEÇÃO PRETA - Mapeamento */}
+      <View style={styles.sectionBlack}>
+        <View style={styles.sectionContentColumn}>
+          <Text style={styles.sectionTitle}>
+            Mapeamento e Gestão da Frota
+          </Text>
+          <Text style={styles.listItem}>✅ Localização em tempo real</Text>
+          <Text style={styles.listItem}>✅ Otimização de pátio</Text>
+          <Text style={styles.listItem}>✅ Redução de custos operacionais</Text>
+        </View>
+      </View>
 
-      <View style={styles.imageContainer}>
+      {/* SEÇÃO BRANCA - Tecnologia de Identificação */}
+      <View style={styles.sectionWhite}>
+        <View style={styles.sectionContent}>
+          <Image
+            source={require("../../assets/Bluetoo.png")}
+            style={styles.imageBeacon}
+            resizeMode="contain"
+          />
+          <View style={styles.textBoxRight}>
+            <Text style={styles.sectionTitleDark}>
+              Tecnologia de Identificação
+            </Text>
+            <Text style={styles.paragraph}>
+              Uso de beacons para identificar e associar motos em pátios,
+              trazendo mais segurança e eficiência no gerenciamento da frota.
+            </Text>
+          </View>
+        </View>
+      </View>
+
+      {/* SEÇÃO PRETA - Parceiros */}
+      <View style={styles.sectionBlack}>
+        <Text style={styles.sectionTitle}>Nossos Parceiros</Text>
+        <View style={styles.partnersRow}>
+          <Image
+            source={require("../../assets/mottu.png")}
+            style={styles.partnerLogo}
+            resizeMode="contain"
+          />
+          <Image
+            source={require("../../assets/fiap.png")}
+            style={styles.partnerLogo}
+            resizeMode="contain"
+          />
+        </View>
+      </View>
+
+      {/* RODAPÉ VERDE */}
+      <View style={styles.footer}>
         <Image
-          source={require('../../assets/moto.png')}
-          style={styles.image}
+          source={require("../../assets/Pulse.png")}
+          style={styles.footerLogo}
           resizeMode="contain"
         />
-      </View>
-
-
-      <Text style={styles.outText}>
-        Organização que <Text style={{ color: '#11881d' }}>acelera</Text> sua moto
-      </Text>
-
-      <View style={styles.image2}>
-        <View style={styles.rowImages}>
-          <View style={styles.imageTextWrapper}>
-            <Image
-              source={require('../../assets/tec.png')}
-              style={styles.smallImage}
-              resizeMode="contain"
-            />
-            <Text style={styles.imageCaption}>Tecnologia</Text>
-          </View>
-
-          <View style={styles.imageTextWrapper}>
-            <Image
-              source={require('../../assets/ges.png')}
-              style={styles.smallImage}
-              resizeMode="contain"
-            />
-            <Text style={styles.imageCaption}>Gestão Eficiente</Text>
-          </View>
-        </View>
-
-        <View style={styles.imageTextWrapper}>
-          <Image
-            source={require('../../assets/com.png')}
-            style={styles.smallImage2}
-            resizeMode="contain"
-          />
-          <Text style={styles.imageCaption}>Comunicação</Text>
-        </View>
-      </View>
-
-      <View style={styles.Patios}>
-        <Text style={{ color: '#fff', marginBottom: 20, fontFamily: 'DarkerGrotesque_700Bold', fontSize: 25, marginLeft: 10 }}>Mapeamento e Gestão dos Pátios</Text>
-        <Text style={{ color: '#fff', fontFamily: 'DarkerGrotesque_500Medium', fontSize: 19, marginLeft: 10 }}>Entenda como o Pulse garante um</Text>
-        <Text style={{ color: '#fff', fontFamily: 'DarkerGrotesque_500Medium', fontSize: 19, marginTop: 2, marginLeft: 10 }}>gerenciamento preciso</Text>
-      </View>
-      <View style={styles.listaContainer}>
-        <View style={styles.listaItem}>
-          <Image
-            source={require('../../assets/check.png')}
-            style={styles.checkIcon}
-          />
-          <Text style={styles.listaTexto}>
-            Identificação Inteligente das Motos com Uso de Tecnologias IoT
-          </Text>
-        </View>
-
-        <View style={styles.listaItem}>
-          <Image
-            source={require('../../assets/check.png')}
-            style={styles.checkIcon}
-          />
-          <Text style={styles.listaTexto}>
-            Alocação Automatizada das Motos com base em especificações
-          </Text>
-        </View>
-
-        <View style={styles.listaItem}>
-          <Image
-            source={require('../../assets/check.png')}
-            style={styles.checkIcon}
-          />
-          <Text style={styles.listaTexto}>
-            Visualização dinâmica em tempo real das divisões do pátio
-          </Text>
-        </View>
-
-        <View style={styles.listaItem}>
-          <Image
-            source={require('../../assets/check.png')}
-            style={styles.checkIcon}
-          />
-          <Text style={styles.listaTexto}>
-            Integração com Câmeras de Segurança
-          </Text>
-        </View>
-
-        <View style={styles.listaItem}>
-          <Image
-            source={require('../../assets/check.png')}
-            style={styles.checkIcon}
-          />
-          <Text style={styles.listaTexto}>
-            Análise de dados para melhoria contínua
-          </Text>
-        </View>
-      </View>
-
-      <View style={styles.identificacaoSection}>
-        <Text style={styles.identificacaoTitulo}>Tecnologia de identificação</Text>
-        <Text style={styles.identificacaoSubtitulo}>
-          Conheça a tecnologia usada que permite a{'\n'}identificação das motos
+        <Text style={styles.footerText}>
+          Pulse - Tecnologia para gestão inteligente de frotas
         </Text>
-
-        <View style={styles.identificacaoConteudo}>
-          <View style={styles.imageStack}>
-            <Image
-              source={require('../../assets/Bluetoo.png')}
-              style={styles.identificacaoImagem}
-              resizeMode="contain"
-            />
-            <Image
-              source={require('../../assets/NrF.png')}
-              style={styles.identificacaoImagem}
-              resizeMode="contain"
-            />
-          </View>
-
-          <Text style={styles.identificacaoTexto}>
-            O Bluetooth Low Energy (BLE), modelo Nrf52810, é uma tecnologia de
-            comunicação sem fio de baixo consumo. Com o uso do mesmo, o sistema
-            capacita as motos e facilita o processo de identificação de cada moto
-            pertencente ao pátio.
-          </Text>
-        </View>
+        <Text style={styles.footerTextSmall}>Contato: contato@pulse.com</Text>
       </View>
-
-      <View style={{ marginTop: 100, marginLeft: 50, marginBottom: 17 }}>
-        <Text style={{ fontFamily: 'DarkerGrotesque_700Bold', color: '#fff', fontSize: 22 }}>Parceiros que impulsionam{'\n'} a inovação</Text>
-      </View>
-      <View style={styles.rowImages2}>
-        <View style={styles.imageTextWrapper}>
-          <Image
-            source={require('../../assets/mottu.png')}
-            style={styles.partnershipImage}
-            resizeMode="contain"
-          />
-        </View>
-
-        <View style={{ height: 92, width: 120, alignItems: 'center', justifyContent: 'center' }}>
-          <Image
-            source={require('../../assets/fiap.png')}
-            style={styles.partnershipImage}
-            resizeMode="contain"
-          />
-        </View>
-      </View>
-
-      <View style={styles.greenSectionFooter}>
-        <View style={styles.footerContent}>
-          <View style={{marginBottom:20}}>
-            <Image
-              source={require('../../assets/Pulse.png')}
-              style={styles.footerLogoImage}
-              resizeMode="contain"
-            />
-
-            <Text style={styles.footerSlogan}>Onde a Eficiência Encontra a Velocidade</Text>
-          </View>
-
-          <Text style={styles.footerContactTitle}>Não hesite em nos contactar</Text>
-
-          <View style={styles.contactRow}>
-            <Ionicons name="mail-outline" size={16} color="#fff" style={styles.icon} />
-            <Text style={styles.contactText}>pulsehelp@hotmail.com</Text>
-          </View>
-
-          <View style={styles.contactRow}>
-            <Ionicons name="call-outline" size={16} color="#fff" style={styles.icon} />
-            <Text style={styles.contactText}>0800-448-222</Text>
-          </View>
-        </View>
-      </View>
-
-
     </ScrollView>
   );
 }
@@ -230,223 +114,141 @@ export default function TelaInicial() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#000',
+    backgroundColor: "#000",
   },
-  greenSection: {
-    backgroundColor: '#11881D',
-    width: '100%',
-    height: 350,
+
+  // -------- SEÇÃO VERDE --------
+  sectionGreen: {
+    paddingVertical: 40,
     paddingHorizontal: 20,
-    paddingTop: 10,
-    paddingBottom: 30,
+    height: 400,
+    alignItems: "center",
   },
-  tituloPrincipal: {
-    fontFamily: 'DarkerGrotesque_700Bold',
-    fontSize: 28,
-    color: '#000',
-    textAlign: 'center',
+  sectionContent: {
+    flex: 1,
+    justifyContent: "space-between",
+    alignItems: "center",
   },
-  tituloDestaque: {
-    fontFamily: 'DarkerGrotesque_700Bold',
-    fontSize: 28,
-    color: '#000',
-    textAlign: 'center',
+  textBox: {
+    flex: 1,
+  },
+  title: {
+    fontSize: 26,
+    fontWeight: "bold",
+    color: "#fff",
+    marginBottom: 15,
+  },
+  highlight: {
+    fontSize: 32,
+    fontWeight: "bold",
+    color: "#fff",
+    marginBottom: 6,
+  },
+  subtitle: {
+    fontSize: 16,
+    color: "#fff",
+    opacity: 0.9,
+  },
+  imageMoto: {
+    width: 220,
+    height: 220,
+    marginLeft: 10,
+  },
+
+  // -------- SEÇÃO BRANCA --------
+  sectionWhite: {
+    backgroundColor: "#fff",
+    paddingVertical: 30,
+    paddingHorizontal: 20,
+  },
+  featuresRow: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+  },
+  featureItem: {
+    alignItems: "center",
+    flex: 1,
+  },
+  featureText: {
+    marginTop: 10,
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#01743A",
+  },
+
+  // -------- SEÇÃO PRETA --------
+  sectionBlack: {
+    backgroundColor: "#000",
+    paddingVertical: 40,
+    paddingHorizontal: 20,
+  },
+  sectionContentColumn: {
+    flexDirection: "column",
+  },
+  sectionTitle: {
+    fontSize: 22,
+    fontWeight: "bold",
+    color: "#01743A",
     marginBottom: 20,
   },
-  textoBranco: {
-    color: '#fff',
-  },
-  statsContainer: {
-    marginTop: 20,
-  },
-  statNumber: {
-    fontFamily: 'DarkerGrotesque_700Bold',
-    fontSize: 26,
-    color: '#fff',
-    marginBottom: 5,
-  },
-  statText: {
-    fontFamily: 'DarkerGrotesque_700Bold',
-    fontSize: 14,
-    color: '#000',
-    textAlign: 'center',
-  },
-  imageContainer: {
-    width: '100%',
-    alignItems: 'center',
-    marginTop: -130, 
+  listItem: {
+    fontSize: 16,
+    color: "#fff",
     marginBottom: 10,
-    zIndex: 1, 
   },
-  image: {
-    width: 300, 
-    height: 300,
-  },
-  image2: {
-    alignItems: 'center'
-  },
-  rowImages: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    gap: 10,
-    marginVertical: 10,
-  },
-  rowImages2: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    gap: 30,
-    marginVertical: 10,
-    marginBottom: 40
 
+  // -------- SEÇÃO BRANCA COM BEACON --------
+  textBoxRight: {
+    flex: 1,
+    marginLeft: 20,
   },
-  smallImage: {
-    width: width * 0.4,
-    height: 100,
-  },
-  smallImage2: {
-    width: width * 0.4,
-    height: 100,
-    marginTop: 15,
-  },
-  imageTextWrapper: {
-    alignItems: 'center',
-  },
-  imageCaption: {
-    color: '#fff',
-    fontFamily: 'DarkerGrotesque_500Medium',
-    fontSize: 18,
-    marginTop: 4,
-    textAlign: 'center',
-  },
-  outText: {
-    fontFamily: 'DarkerGrotesque_500Medium',
-    fontSize: 20,
-    color: '#fff',
-    textAlign: 'center',
-    marginTop: 10,
-    paddingHorizontal: 20,
-    marginBottom: 32
-  },
-  Patios: {
-    marginTop: 94,
-    marginLeft: 13
-  },
-  listaContainer: {
-    marginTop: 20,
-    paddingHorizontal: 20,
-  },
-  listaItem: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
+  sectionTitleDark: {
+    fontSize: 22,
+    fontWeight: "bold",
+    color: "#01743A",
     marginBottom: 12,
   },
-  checkIcon: {
-    width: 22,
-    height: 22,
-    marginRight: 10,
-    marginTop: 2,
+  paragraph: {
+    fontSize: 16,
+    color: "#333",
+    lineHeight: 22,
   },
-  listaTexto: {
-    color: '#fff',
-    fontSize: 19,
-    fontFamily: 'DarkerGrotesque_500Medium',
-    flex: 1,
-  },
-  identificacaoSection: {
-    marginTop: 55,
-    paddingHorizontal: 20,
-  },
-  identificacaoTitulo: {
-    color: '#fff',
-    fontFamily: 'DarkerGrotesque_700Bold',
-    fontSize: 20,
-    marginBottom: 10,
-    textAlign: 'right'
-  },
-  identificacaoSubtitulo: {
-    color: '#fff',
-    fontFamily: 'DarkerGrotesque_500Medium',
-    fontSize: 18,
-    marginBottom: 20,
-    textAlign: 'right',
-  },
-  identificacaoConteudo: {
-    gap: 16,
-    marginLeft: 80
-  },
-  identificacaoImagem: {
-    width: 70,
-    height: 70,
-  },
-  identificacaoTexto: {
-    color: '#fff',
-    fontFamily: 'DarkerGrotesque_500Medium',
-    fontSize: 17,
-    flex: 1,
-    textAlign: 'right',
-  },
-  identificacaoConteudo: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    gap: 16,
+  imageBeacon: {
+    width: 120,
+    height: 120,
   },
 
-  imageStack: {
-    flexDirection: 'column',
-    gap: 10,
-    marginTop: -67,
+  // -------- PARCEIROS --------
+  partnersRow: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    marginTop: 20,
   },
-  partnershipImage: {
+  partnerLogo: {
     width: 120,
     height: 80,
-    resizeMode: 'contain',
   },
-  greenSectionFooter: {
-    backgroundColor: '#11881D',
-    width: '100%',
-    height: 190,
-    justifyContent: 'center',
+
+  // -------- RODAPÉ --------
+  footer: {
+    backgroundColor: "#01743A",
+    alignItems: "center",
+    paddingVertical: 30,
     paddingHorizontal: 20,
   },
-
-  footerContent: {
-    justifyContent: 'center',
-    marginBottom:20
-  },
-
-  footerLogoImage: {
+  footerLogo: {
     width: 80,
-    height: 30,
+    height: 80,
+    marginBottom: 10,
   },
-
-  footerSlogan: {
-    fontFamily: 'DarkerGrotesque_500Medium',
-    color: '#fff',
-    fontSize: 18,
-    marginBottom: 14,
+  footerText: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#fff",
+    marginBottom: 5,
   },
-
-  footerContactTitle: {
-    fontFamily: 'DarkerGrotesque_700Bold',
-    color: '#fff',
-    fontWeight: 'bold',
-    marginBottom: 6,
-    fontSize: 15
-  },
-
-  contactRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 6,
-  },
-
-  icon: {
-    marginRight: 8,
-  },
-
-  contactText: {
-    color: '#fff',
-    fontSize: 13,
-
+  footerTextSmall: {
+    fontSize: 14,
+    color: "#fff",
   },
 });

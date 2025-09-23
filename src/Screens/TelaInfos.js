@@ -4,7 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useEffect, useState } from 'react';
 import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View, ActivityIndicator, Dimensions } from 'react-native';
 
-const { width } = Dimensions.get('window');
+// ...imports permanecem iguais
 
 export default function TelaInfos({ navigation }) {
 
@@ -16,30 +16,20 @@ export default function TelaInfos({ navigation }) {
     const [usuario, setUsuario] = useState(null);
     const [carregando, setCarregando] = useState(true);
 
-    // Verificar login e carregar dados do usuário
     useEffect(() => {
         const carregarDados = async () => {
             try {
-                // Verificar se está logado
                 const usuarioLogado = await AsyncStorage.getItem('usuarioLogado');
                 if (!usuarioLogado) {
-                    navigation.reset({
-                        index: 0,
-                        routes: [{ name: 'TelaLogin' }],
-                    });
+                    navigation.reset({ index: 0, routes: [{ name: 'TelaLogin' }] });
                     return;
                 }
-
-                const dadosUsuario = JSON.parse(usuarioLogado);
-                setUsuario(dadosUsuario);
+                setUsuario(JSON.parse(usuarioLogado));
             } catch (error) {
                 console.error('Erro ao carregar dados:', error);
                 Alert.alert('Erro', 'Sessão expirada. Faça login novamente.', [{
                     text: 'OK',
-                    onPress: () => navigation.reset({
-                        index: 0,
-                        routes: [{ name: 'TelaLogin' }],
-                    })
+                    onPress: () => navigation.reset({ index: 0, routes: [{ name: 'TelaLogin' }] })
                 }]);
             } finally {
                 setCarregando(false);
@@ -47,28 +37,20 @@ export default function TelaInfos({ navigation }) {
         };
 
         const unsubscribe = navigation.addListener('focus', carregarDados);
-
         carregarDados();
-
         return unsubscribe;
     }, [navigation]);
 
     const handleLogout = async () => {
         try {
             Alert.alert('CONFIRMAR DESCONEXÃO', 'Deseja realmente encerrar a sessão?', [
-                {
-                    text: 'CANCELAR',
-                    style: 'cancel'
-                },
+                { text: 'CANCELAR', style: 'cancel' },
                 {
                     text: 'DESCONECTAR',
                     style: 'destructive',
                     onPress: async () => {
                         await AsyncStorage.removeItem('usuarioLogado');
-                        navigation.reset({
-                            index: 0,
-                            routes: [{ name: 'TelaInicial' }],
-                        });
+                        navigation.reset({ index: 0, routes: [{ name: 'TelaInicial' }] });
                     }
                 }
             ]);
@@ -103,18 +85,15 @@ export default function TelaInfos({ navigation }) {
     }
 
     return (
-        <ScrollView
-            style={styles.container}
-            contentContainerStyle={styles.scrollContent}
-            showsVerticalScrollIndicator={false}
-        >
+        <ScrollView style={styles.container} contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
+            
             <View style={styles.statusSystem}>
                 <View style={styles.statusBar}>
                     <View style={styles.statusIndicator}>
                         <View style={styles.statusDot} />
                         <Text style={styles.statusText}>SISTEMA OPERACIONAL</Text>
                     </View>
-                    <Text style={styles.userCode}>ID: {usuario.id || '###'}</Text>
+                    {/* userCode removido */}
                 </View>
                 
                 <View style={styles.welcomeMatrix}>
@@ -129,78 +108,47 @@ export default function TelaInfos({ navigation }) {
                     <View style={styles.interfaceLine} />
                 </View>
 
-                {/* Comandos Primários */}
                 <View style={styles.primaryCommands}>
-                    <TouchableOpacity
-                        style={styles.primaryCommand}
-                        onPress={() => navigation.navigate('TelaCadastroM')}
-                        activeOpacity={0.7}
-                    >
+                    <TouchableOpacity style={styles.primaryCommand} onPress={() => navigation.navigate('TelaCadastroM')} activeOpacity={0.7}>
                         <View style={styles.commandLeft}>
-                            <View style={styles.commandIcon}>
-                                <Ionicons name="bicycle" size={24} color="#11881D" />
-                            </View>
+                            <View style={styles.commandIcon}><Ionicons name="bicycle" size={24} color="#11881D" /></View>
                             <View style={styles.commandInfo}>
                                 <Text style={styles.commandTitle}>REGISTRO</Text>
                                 <Text style={styles.commandDesc}>Cadastrar Nova Moto</Text>
                             </View>
                         </View>
-                        <View style={styles.commandArrow}>
-                            <Ionicons name="chevron-forward" size={20} color="#11881D" />
-                        </View>
+                        <View style={styles.commandArrow}><Ionicons name="chevron-forward" size={20} color="#11881D" /></View>
                         <View style={styles.commandGlow} />
                     </TouchableOpacity>
 
-                    <TouchableOpacity
-                        style={styles.primaryCommand}
-                        onPress={() => navigation.navigate('TelaScanner')}
-                        activeOpacity={0.7}
-                    >
+                    <TouchableOpacity style={styles.primaryCommand} onPress={() => navigation.navigate('TelaScanner')} activeOpacity={0.7}>
                         <View style={styles.commandLeft}>
-                            <View style={styles.commandIcon}>
-                                <Ionicons name="search" size={24} color="#11881D" />
-                            </View>
+                            <View style={styles.commandIcon}><Ionicons name="search" size={24} color="#11881D" /></View>
                             <View style={styles.commandInfo}>
                                 <Text style={styles.commandTitle}>LOCALIZAR</Text>
                                 <Text style={styles.commandDesc}>Rastrear Veículos</Text>
                             </View>
                         </View>
-                        <View style={styles.commandArrow}>
-                            <Ionicons name="chevron-forward" size={20} color="#11881D" />
-                        </View>
+                        <View style={styles.commandArrow}><Ionicons name="chevron-forward" size={20} color="#11881D" /></View>
                         <View style={styles.commandGlow} />
                     </TouchableOpacity>
                 </View>
 
-                {/* Comandos Secundários */}
                 <View style={styles.secondaryCommands}>
-                    <TouchableOpacity
-                        style={styles.secondaryCommand}
-                        onPress={() => navigation.navigate('TelaAssociacao')}
-                        activeOpacity={0.7}
-                    >
-                        <View style={styles.secondaryIcon}>
-                            <Ionicons name="link" size={20} color="#11881D" />
-                        </View>
+                    <TouchableOpacity style={styles.secondaryCommand} onPress={() => navigation.navigate('TelaAssociacao')} activeOpacity={0.7}>
+                        <View style={styles.secondaryIcon}><Ionicons name="link" size={20} color="#11881D" /></View>
                         <Text style={styles.secondaryTitle}>VINCULAR BEACON</Text>
                         <View style={styles.secondaryGlow} />
                     </TouchableOpacity>
 
-                    <TouchableOpacity
-                        style={[styles.secondaryCommand, styles.dangerCommand]}
-                        onPress={() => navigation.navigate('TelaDesassociacao')}
-                        activeOpacity={0.7}
-                    >
-                        <View style={styles.secondaryIcon}>
-                            <Ionicons name="unlink" size={20} color="#ff4444" />
-                        </View>
+                    <TouchableOpacity style={[styles.secondaryCommand, styles.dangerCommand]} onPress={() => navigation.navigate('TelaDesassociacao')} activeOpacity={0.7}>
+                        <View style={styles.secondaryIcon}><Ionicons name="unlink" size={20} color="#ff4444" /></View>
                         <Text style={[styles.secondaryTitle, styles.dangerText]}>DESVINCULAR BEACON</Text>
                         <View style={styles.dangerGlow} />
                     </TouchableOpacity>
                 </View>
             </View>
 
-            {/* Banco de Dados Pessoais */}
             <View style={styles.database}>
                 <View style={styles.databaseHeader}>
                     <Ionicons name="server" size={24} color="#11881D" />
@@ -249,24 +197,13 @@ export default function TelaInfos({ navigation }) {
                                 <Text style={styles.dataValue}>{usuario.patio || '[NULL]'}</Text>
                             </View>
                         </View>
-
-                        <View style={styles.dataField}>
-                            <Text style={styles.dataKey}>ID_COLABORADOR</Text>
-                            <View style={styles.dataContainer}>
-                                <Text style={styles.dataValue}>{usuario.id || '[NULL]'}</Text>
-                            </View>
-                        </View>
+                        {/* campo ID_COLABORADOR removido */}
                     </View>
                 </View>
             </View>
 
-            {/* Sistema de Emergência */}
             <View style={styles.Logout}>
-                <TouchableOpacity
-                    style={styles.logoutButton}
-                    onPress={handleLogout}
-                    activeOpacity={0.8}
-                >
+                <TouchableOpacity style={styles.logoutButton} onPress={handleLogout} activeOpacity={0.8}>
                     <View style={styles.logoutContent}>
                         <Ionicons name="power" size={24} color="#ff4444" />
                         <Text style={styles.logoutText}>ENCERRAR SESSÃO</Text>
@@ -276,6 +213,9 @@ export default function TelaInfos({ navigation }) {
         </ScrollView>
     );
 }
+
+// estilos permanecem iguais
+
 
 const styles = StyleSheet.create({
     container: {
