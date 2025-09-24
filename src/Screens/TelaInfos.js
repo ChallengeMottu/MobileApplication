@@ -93,7 +93,6 @@ export default function TelaInfos({ navigation }) {
                         <View style={styles.statusDot} />
                         <Text style={styles.statusText}>SISTEMA OPERACIONAL</Text>
                     </View>
-                    {/* userCode removido */}
                 </View>
                 
                 <View style={styles.welcomeMatrix}>
@@ -197,7 +196,6 @@ export default function TelaInfos({ navigation }) {
                                 <Text style={styles.dataValue}>{usuario.patio || '[NULL]'}</Text>
                             </View>
                         </View>
-                        {/* campo ID_COLABORADOR removido */}
                     </View>
                 </View>
             </View>
@@ -213,8 +211,6 @@ export default function TelaInfos({ navigation }) {
         </ScrollView>
     );
 }
-
-// estilos permanecem iguais
 
 
 const styles = StyleSheet.create({

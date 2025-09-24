@@ -17,6 +17,7 @@ import TelaLogin from './src/Screens/TelaLogin';
 import TelaScanner from './src/Screens/TelaScanner';
 import TelaAssociacao from './src/Screens/TelaAssociacao';
 import TelaDesassociacao from './src/Screens/TelaDesassociacao';
+import TelaNovaSenha from './src/Screens/TelaNovaSenha';
 
 const Drawer = createDrawerNavigator();
 
@@ -253,6 +254,12 @@ function MainNavigator() {
       <Drawer.Screen
         name="TelaDesassociacao"
         component={TelaDesassociacao}
+        options={{ title: 'Equipe' }}
+      />
+
+      <Drawer.Screen
+        name="TelaNovaSenha"
+        component={TelaNovaSenha}
         options={{ title: 'Equipe' }}
       />
     </Drawer.Navigator>

@@ -4,6 +4,8 @@ import { useNavigation } from '@react-navigation/native';
 import { useEffect, useState } from 'react';
 import { Alert, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { Ionicons } from "@expo/vector-icons";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../configurations/firebaseConfig";
 
 export default function TelaCadastroF() {
   const navigation = useNavigation();
@@ -25,9 +27,9 @@ export default function TelaCadastroF() {
     carregarDados();
   }, []);
 
-  const salvarDados = async () => {
+  const salvarDados = async (userId) => {
     try {
-      const dados = { nome, dataNascimento, cpf, patio, email, senha };
+      const dados = { nome, dataNascimento, cpf, patio, email, uid: userId };
       await AsyncStorage.setItem('dadosFuncionario', JSON.stringify(dados));
     } catch (error) {
       console.log('Erro ao salvar dados:', error);
@@ -44,7 +46,6 @@ export default function TelaCadastroF() {
         setCpf(dados.cpf || '');
         setPatio(dados.patio || '');
         setEmail(dados.email || '');
-        setSenha(dados.senha || '');
       }
     } catch (error) {
       console.log('Erro ao carregar dados:', error);
@@ -89,12 +90,32 @@ export default function TelaCadastroF() {
       return;
     }
 
-    await salvarDados();
-    Alert.alert(
-      'Cadastro realizado',
-      'Funcionário cadastrado com sucesso!',
-      [{ text: 'Voltar para Login', onPress: () => navigation.navigate('TelaLogin') }]
-    );
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, email, senha);
+      const user = userCredential.user;
+
+      await salvarDados(user.uid);
+
+      Alert.alert(
+        'Cadastro realizado',
+        'Funcionário cadastrado com sucesso!',
+        [{ text: 'Voltar para Login', onPress: () => navigation.navigate('TelaLogin') }]
+      );
+    } catch (error) {
+      console.log("Erro no cadastro:", error.message);
+
+      let errorMessage = "Não foi possível criar a conta.";
+
+      if (error.code === 'auth/email-already-in-use') {
+        errorMessage = "Este e-mail já está em uso.";
+      } else if (error.code === 'auth/weak-password') {
+        errorMessage = "Senha muito fraca. Use pelo menos 6 caracteres.";
+      } else if (error.code === 'auth/invalid-email') {
+        errorMessage = "E-mail inválido.";
+      }
+
+      Alert.alert("Erro", errorMessage);
+    }
   };
 
   return (
