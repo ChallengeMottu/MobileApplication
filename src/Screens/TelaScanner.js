@@ -58,11 +58,11 @@ const styles = StyleSheet.create({
         height: 60,
     },
     card: {
-        backgroundColor: '#332f2f',
+        backgroundColor: '#212121',
         width: '85%',
         padding: 25,
         borderRadius: 12,
-        shadowColor: '#11881D',
+        shadowColor: '#01743A',
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.2,
         shadowRadius: 4,
@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
         height: '90%'
     },
     botao: {
-        backgroundColor: '#11881D',
+        backgroundColor: '#01743A',
         borderRadius: 8,
         padding: 10,
         marginTop: 10,

@@ -4,9 +4,13 @@ import { Picker } from '@react-native-picker/picker';
 import { useNavigation } from '@react-navigation/native';
 import { useEffect, useState } from "react";
 import { Alert, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 
 export default function TelaCadastroM() {
   const navigation = useNavigation();
+  
+
+
 
   let [fontsLoaded] = useFonts({
     DarkerGrotesque_500Medium,
@@ -92,6 +96,9 @@ export default function TelaCadastroM() {
 
   return (
     <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
+      <TouchableOpacity style={styles.goBack} onPress={() => navigation.navigate('TelaFuncionario')}>
+        <Ionicons name="arrow-back" size={20} color="#fff" />
+      </TouchableOpacity>
       <View style={styles.card}>
         <Text style={styles.titulo}>Cadastro de nova Moto</Text>
 
@@ -111,11 +118,11 @@ export default function TelaCadastroM() {
               style={styles.picker}
               dropdownIconColor='#fff'
             >
-              <Picker.Item style={styles.pickerItem} label='Modelo' value=''/>
-              <Picker.Item style={styles.pickerItem} label='Sport 110i' value='Sport 110i'/>
-              <Picker.Item style={styles.pickerItem} label='Mottu E' value='Mottu E'/>
-              <Picker.Item style={styles.pickerItem} label='Mottu Pop 110i' value='Mottu Pop 110i'/>
-            </Picker>  
+              <Picker.Item style={styles.pickerItem} label='Modelo' value='' />
+              <Picker.Item style={styles.pickerItem} label='Sport 110i' value='Sport 110i' />
+              <Picker.Item style={styles.pickerItem} label='Mottu E' value='Mottu E' />
+              <Picker.Item style={styles.pickerItem} label='Mottu Pop 110i' value='Mottu Pop 110i' />
+            </Picker>
           </View>
         </View>
 
@@ -133,11 +140,11 @@ export default function TelaCadastroM() {
               style={styles.picker}
               dropdownIconColor='#fff'
             >
-              <Picker.Item style={styles.pickerItem} label='Selecione' value=''/>
-              <Picker.Item style={styles.pickerItem} label='Sem Placa' value='Moto sem placa'/>
-              <Picker.Item style={styles.pickerItem} label='Com Placa' value='Moto normal com placa'/>
-              <Picker.Item style={styles.pickerItem} label='Situação de Furto' value='Moto parada por situação de furto'/>
-              <Picker.Item style={styles.pickerItem} label='Situação de Acidente' value='Moto parada por situação de acidente'/>
+              <Picker.Item style={styles.pickerItem} label='Selecione' value='' />
+              <Picker.Item style={styles.pickerItem} label='Sem Placa' value='Moto sem placa' />
+              <Picker.Item style={styles.pickerItem} label='Com Placa' value='Moto normal com placa' />
+              <Picker.Item style={styles.pickerItem} label='Situação de Furto' value='Moto parada por situação de furto' />
+              <Picker.Item style={styles.pickerItem} label='Situação de Acidente' value='Moto parada por situação de acidente' />
             </Picker>
           </View>
         </View>
@@ -157,13 +164,13 @@ export default function TelaCadastroM() {
               style={styles.picker}
               dropdownIconColor='#fff'
             >
-              <Picker.Item style={styles.pickerItem} label='Selecione' value=''/>
-              <Picker.Item style={styles.pickerItem} label='Bom Estado Mecânico' value='Moto em bom estado mecânico'/>
-              <Picker.Item style={styles.pickerItem} label='Gravemente Danificada' value='Moto com graves danificações'/>
-              <Picker.Item style={styles.pickerItem} label='Inoperante' value='Moto sem utilidade'/>
-              <Picker.Item style={styles.pickerItem} label='Necessita de Revisão' value='Moto precisa ser diagnosticada'/>
-              <Picker.Item style={styles.pickerItem} label='Pequenos Reparos' value='Moto com pequenos reparos de funcionamento'/>
-            </Picker>  
+              <Picker.Item style={styles.pickerItem} label='Selecione' value='' />
+              <Picker.Item style={styles.pickerItem} label='Bom Estado Mecânico' value='Moto em bom estado mecânico' />
+              <Picker.Item style={styles.pickerItem} label='Gravemente Danificada' value='Moto com graves danificações' />
+              <Picker.Item style={styles.pickerItem} label='Inoperante' value='Moto sem utilidade' />
+              <Picker.Item style={styles.pickerItem} label='Necessita de Revisão' value='Moto precisa ser diagnosticada' />
+              <Picker.Item style={styles.pickerItem} label='Pequenos Reparos' value='Moto com pequenos reparos de funcionamento' />
+            </Picker>
           </View>
         </View>
 
@@ -176,11 +183,11 @@ export default function TelaCadastroM() {
               style={styles.picker}
               dropdownIconColor='#fff'
             >
-              <Picker.Item style={styles.pickerItem} label='Selecione' value=''/>
-              <Picker.Item style={styles.pickerItem} label='Completa' value='Completa'/>
-              <Picker.Item style={styles.pickerItem} label='Falta retrovisor' value='Falta retrovisor'/>
-              <Picker.Item style={styles.pickerItem} label='Falta banco' value='Falta banco'/>
-              <Picker.Item style={styles.pickerItem} label='Falta farol' value='Falta farol'/>
+              <Picker.Item style={styles.pickerItem} label='Selecione' value='' />
+              <Picker.Item style={styles.pickerItem} label='Completa' value='Completa' />
+              <Picker.Item style={styles.pickerItem} label='Falta retrovisor' value='Falta retrovisor' />
+              <Picker.Item style={styles.pickerItem} label='Falta banco' value='Falta banco' />
+              <Picker.Item style={styles.pickerItem} label='Falta farol' value='Falta farol' />
             </Picker>
           </View>
         </View>
@@ -202,6 +209,12 @@ const styles = StyleSheet.create({
     padding: 20,
     alignItems: 'center',
     paddingVertical: 40,
+  },
+  goBack: {
+    position: "absolute",
+    top: 40,
+    left: 20,
+    zIndex: 10,
   },
   card: {
     backgroundColor: '#000',

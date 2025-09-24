@@ -19,6 +19,7 @@ export default function TelaCadastroF() {
   const [dataNascimento, setDataNascimento] = useState('');
   const [cpf, setCpf] = useState('');
   const [patio, setPatio] = useState('');
+  const [telefone, setTelefone] = useState('');
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -29,8 +30,21 @@ export default function TelaCadastroF() {
 
   const salvarDados = async (userId) => {
     try {
-      const dados = { nome, dataNascimento, cpf, patio, email, uid: userId };
+      const dados = { 
+        nome, 
+        dataNascimento, 
+        cpf, 
+        patio,
+        filial: patio,
+        telefone,
+        email, 
+        uid: userId,
+        cargo: 'Funcionário'
+      };
+      
       await AsyncStorage.setItem('dadosFuncionario', JSON.stringify(dados));
+      await AsyncStorage.setItem('usuarioLogado', JSON.stringify(dados));
+      
     } catch (error) {
       console.log('Erro ao salvar dados:', error);
     }
@@ -45,6 +59,7 @@ export default function TelaCadastroF() {
         setDataNascimento(dados.dataNascimento || '');
         setCpf(dados.cpf || '');
         setPatio(dados.patio || '');
+        setTelefone(dados.telefone || '');
         setEmail(dados.email || '');
       }
     } catch (error) {
@@ -84,8 +99,39 @@ export default function TelaCadastroF() {
     setCpf(formatted);
   };
 
+  const formatarTelefone = (text) => {
+    // Se o texto está vazio ou sendo apagado, permite a deleção
+    if (text.length < telefone.length) {
+      setTelefone(text);
+      return;
+    }
+
+    let cleaned = text.replace(/\D/g, '').slice(0, 11);
+    
+    // Permite apagar completamente
+    if (cleaned.length === 0) {
+      setTelefone('');
+      return;
+    }
+
+    let formatted = '';
+    
+    if (cleaned.length >= 1) formatted = '(';
+    if (cleaned.length >= 2) formatted += cleaned.slice(0, 2) + ') ';
+    else if (cleaned.length > 0) formatted += cleaned;
+    
+    if (cleaned.length >= 7) {
+      formatted += cleaned.slice(2, 7) + '-';
+      formatted += cleaned.slice(7, 11);
+    } else if (cleaned.length > 2) {
+      formatted += cleaned.slice(2);
+    }
+    
+    setTelefone(formatted);
+  };
+
   const handleCadastro = async () => {
-    if (!nome || !dataNascimento || !cpf || !patio || !email || !senha) {
+    if (!nome || !dataNascimento || !cpf || !patio || !telefone || !email || !senha) {
       Alert.alert('Campos obrigatórios', 'Por favor, preencha todos os campos antes de cadastrar.');
       return;
     }
@@ -121,7 +167,6 @@ export default function TelaCadastroF() {
   return (
     <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
       
-      {/* Botão Go Back */}
       <TouchableOpacity style={styles.goBack} onPress={() => navigation.navigate('TelaLogin')}>
         <Ionicons name="arrow-back" size={20} color="#fff" />
       </TouchableOpacity>
@@ -130,7 +175,6 @@ export default function TelaCadastroF() {
         Ainda sem cadastro de funcionário?{"\n"}Preencha seus dados e acesse o sistema
       </Text>
 
-      {/* Nome */}
       <View style={styles.inputContainer}>
         <TextInput
           style={styles.input}
@@ -141,7 +185,6 @@ export default function TelaCadastroF() {
         />
       </View>
 
-      {/* Data */}
       <View style={styles.inputContainer}>
         <TextInput
           style={styles.input}
@@ -154,7 +197,6 @@ export default function TelaCadastroF() {
         />
       </View>
 
-      {/* CPF */}
       <View style={styles.inputContainer}>
         <TextInput
           style={styles.input}
@@ -167,7 +209,18 @@ export default function TelaCadastroF() {
         />
       </View>
 
-      {/* Patio */}
+      <View style={styles.inputContainer}>
+        <TextInput
+          style={styles.input}
+          value={telefone}
+          onChangeText={formatarTelefone}
+          placeholder="Telefone (XX) XXXXX-XXXX"
+          placeholderTextColor="#999"
+          keyboardType="phone-pad"
+          maxLength={15}
+        />
+      </View>
+
       <View style={styles.inputContainer}>
         <TextInput
           style={styles.input}
@@ -178,7 +231,6 @@ export default function TelaCadastroF() {
         />
       </View>
 
-      {/* Email */}
       <View style={styles.inputContainer}>
         <TextInput
           style={styles.input}
@@ -190,7 +242,6 @@ export default function TelaCadastroF() {
         />
       </View>
 
-      {/* Senha */}
       <View style={styles.inputContainer}>
         <TextInput
           style={styles.input}
@@ -205,7 +256,6 @@ export default function TelaCadastroF() {
         </TouchableOpacity>
       </View>
 
-      {/* Botão */}
       <TouchableOpacity style={styles.botao} onPress={handleCadastro}>
         <Text style={styles.textoBotao}>CADASTRAR</Text>
       </TouchableOpacity>

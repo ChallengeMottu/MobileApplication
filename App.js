@@ -11,13 +11,15 @@ import TelaCadastroF from './src/Screens/TelaCadastroF';
 import TelaCadastroM from './src/Screens/TelaCadastroM';
 import TelaDadosM from './src/Screens/TelaDadosM';
 import TelaEquipe from './src/Screens/TelaEquipe';
-import TelaInfos from './src/Screens/TelaInfos';
+import TelaFuncionario from './src/Screens/TelaFuncionario';
 import TelaInicial from './src/Screens/TelaInicial';
 import TelaLogin from './src/Screens/TelaLogin';
 import TelaScanner from './src/Screens/TelaScanner';
 import TelaAssociacao from './src/Screens/TelaAssociacao';
 import TelaDesassociacao from './src/Screens/TelaDesassociacao';
 import TelaNovaSenha from './src/Screens/TelaNovaSenha';
+import TelaInfos from './src/Screens/TelaInfos';
+
 
 const Drawer = createDrawerNavigator();
 
@@ -35,7 +37,7 @@ function CustomDrawerContent(props) {
   }, [navigation, props.state]);
 
   const handleNavigation = (routeName) => {
-    if (routeName === 'TelaInfos' && !isLoggedIn) {
+    if (routeName === 'TelaFuncionarios' && !isLoggedIn) {
       Alert.alert('Acesso negado', 'Você precisa fazer login primeiro');
       return;
     }
@@ -83,7 +85,7 @@ function CustomDrawerContent(props) {
             icon={() => (
               <Ionicons name="information-circle" size={24} color="#11881D" style={{ marginRight: 10 }} />
             )}
-            onPress={() => handleNavigation('TelaInfos')}
+            onPress={() => handleNavigation('TelaFuncionario')}
             labelStyle={styles.drawerLabel}
             style={styles.drawerItem}
           />
@@ -134,6 +136,16 @@ function CustomDrawerContent(props) {
               <Ionicons name="information-circle-outline" size={24} color="#11881D" style={{ marginRight: 10 }} />
             )}
             onPress={() => navigation.navigate('TelaDesassociacao')}
+            labelStyle={styles.drawerLabel}
+            style={styles.drawerItem}
+          />
+
+          <DrawerItem
+            label="Minhas Informações"
+            icon={() => (
+              <Ionicons name="information-circle-outline" size={24} color="#11881D" style={{ marginRight: 10 }} />
+            )}
+            onPress={() => navigation.navigate('TelaInfos')}
             labelStyle={styles.drawerLabel}
             style={styles.drawerItem}
           />
@@ -226,8 +238,8 @@ function MainNavigator() {
         options={{ title: 'Cadastro' }}
       />
       <Drawer.Screen
-        name="TelaInfos"
-        component={TelaInfos}
+        name="TelaFuncionario"
+        component={TelaFuncionario}
         options={{ title: 'Informações' }}
       />
       <Drawer.Screen
@@ -262,6 +274,13 @@ function MainNavigator() {
         component={TelaNovaSenha}
         options={{ title: 'Equipe' }}
       />
+
+      <Drawer.Screen
+        name="TelaInfos"
+        component={TelaInfos}
+        options={{ title: 'Minhas Informações' }}
+      />
+
     </Drawer.Navigator>
   );
 }

@@ -30,7 +30,6 @@ export default function CabecalhoHeader({ navigation }) {
   };
 
   const handleLogoPress = () => {
-    // Animação de pressionar
     Animated.sequence([
       Animated.timing(scaleAnim, {
         toValue: 0.95,
@@ -83,7 +82,7 @@ export default function CabecalhoHeader({ navigation }) {
       <Pressable 
         onPress={handleLogoPress}
         style={({ pressed }) => ({
-          opacity: pressed ? 0.6 : 1, // Efeito de opacidade ao pressionar
+          opacity: pressed ? 0.6 : 1, 
         })}
       >
         <Animated.View style={[styles.logoContainer, { transform: [{ scale: scaleAnim }] }]}>
@@ -127,11 +126,11 @@ export default function CabecalhoHeader({ navigation }) {
                     style={styles.dropdownItem}
                     onPress={() => {
                       toggleDropdown();
-                      navigation.navigate('TelaInfos');
+                      navigation.navigate('TelaFuncionario');
                     }}
                   >
                     <Ionicons name="information-circle-outline" size={20} color="#fff" />
-                    <Text style={styles.dropdownText}>Informações da Conta</Text>
+                    <Text style={styles.dropdownText}>Operações</Text>
                   </TouchableOpacity>
                   
                   <View style={styles.divider} />

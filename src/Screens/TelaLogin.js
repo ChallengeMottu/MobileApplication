@@ -32,16 +32,29 @@ export default function TelaLogin({ navigation }) {
       const userCredential = await signInWithEmailAndPassword(auth, usuario, senha);
       const user = userCredential.user;
 
+      // Buscar dados completos do AsyncStorage
       const dadosSalvos = await AsyncStorage.getItem('dadosFuncionario');
-      let usuarioCompleto = { email: user.email, uid: user.uid };
+      let usuarioCompleto = { 
+        email: user.email, 
+        uid: user.uid,
+        nome: '',
+        telefone: '',
+        cpf: '',
+        filial: '',
+        cargo: '',
+        dataNascimento: '',
+        patio: ''
+      };
 
       if (dadosSalvos) {
         const dadosParse = JSON.parse(dadosSalvos);
+        // Verifica se é o mesmo usuário pelo email
         if (dadosParse.email === user.email) {
-          usuarioCompleto = dadosParse;
+          usuarioCompleto = { ...usuarioCompleto, ...dadosParse };
         }
       }
 
+      // Salvar dados completos no AsyncStorage
       await AsyncStorage.setItem('usuarioLogado', JSON.stringify(usuarioCompleto));
 
       Alert.alert('Login realizado', 'Você entrou no sistema com sucesso!', [
@@ -182,12 +195,10 @@ export default function TelaLogin({ navigation }) {
           </Text>
         </TouchableOpacity>
 
-        
-
         {/* Link para cadastro */}
         <TouchableOpacity
           style={styles.linkContainer}
-          onPress={() => navigation.navigate('TelaCadastroF')}
+          onPress={() => navigation.navigate('TelaInicial')}
           disabled={carregando}
         >
           <Text style={styles.linkTexto}>Ainda não tem conta? Cadastre-se</Text>
@@ -208,8 +219,6 @@ export default function TelaLogin({ navigation }) {
             Para redefinir sua senha, digite seu e-mail acima e clique em "Esqueceu a senha?"
           </Text>
         </View>
-
-        
       </View>
     </View>
   );
