@@ -198,7 +198,7 @@ export default function TelaLogin({ navigation }) {
         {/* Link para cadastro */}
         <TouchableOpacity
           style={styles.linkContainer}
-          onPress={() => navigation.navigate('TelaInicial')}
+          onPress={() => navigation.navigate('TelaCadastroF')}
           disabled={carregando}
         >
           <Text style={styles.linkTexto}>Ainda não tem conta? Cadastre-se</Text>

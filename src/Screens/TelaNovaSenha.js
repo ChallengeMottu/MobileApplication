@@ -1,8 +1,11 @@
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import { useState } from 'react';
 import { useFonts, DarkerGrotesque_500Medium, DarkerGrotesque_700Bold } from '@expo-google-fonts/darker-grotesque';
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from '@react-navigation/native';
+import { EmailAuthProvider, reauthenticateWithCredential, updatePassword } from 'firebase/auth';
+import { auth } from '../configurations/firebaseConfig';
+
 
 export default function TelaNovaSenha() {
     let [fontsLoaded] = useFonts({
@@ -14,10 +17,49 @@ export default function TelaNovaSenha() {
 
     const [novaSenha, setNovaSenha] = useState('');
     const [confirmarSenha, setConfirmarSenha] = useState('');
+    const [senhaAtual, setSenhaAtual] = useState('');
     const [mostrarSenha1, setMostrarSenha1] = useState(false);
     const [mostrarSenha2, setMostrarSenha2] = useState(false);
+    const [mostrarSenhaAtual, setMostrarSenhaAtual] = useState(false);
 
     if (!fontsLoaded) return null;
+
+    const handleAlterarSenha = async () => {
+        if (!senhaAtual || !novaSenha || !confirmarSenha) {
+            Alert.alert('Atenção', 'Preencha todos os campos!');
+            return;
+        }
+
+        if (novaSenha !== confirmarSenha) {
+            Alert.alert("Erro", "As senhas não coincidem!");
+            return;
+        }
+
+        if (novaSenha.length < 6) {
+            Alert.alert("Erro", "A nova senha deve ter pelo menos 6 caracteres.");
+            return;
+        }
+
+        try {
+            const user = auth.currentUser;
+            if (!user || !user.email) {
+                Alert.alert("Erro", "Nenhum usuário logado.");
+                return;
+            }
+
+            // Reautenticar com senha atual
+            const credencial = EmailAuthProvider.credential(user.email, senhaAtual);
+            await reauthenticateWithCredential(user, credencial);
+
+            // Atualizar senha
+            await updatePassword(user, novaSenha);
+            Alert.alert("Sucesso", "Senha alterada com sucesso!");
+            navigation.navigate('TelaLogin');
+        } catch (error) {
+            console.log(error);
+            Alert.alert("Erro", "Não foi possível alterar a senha.");
+        }
+    };
 
     return (
         <View style={styles.container}>
@@ -25,7 +67,31 @@ export default function TelaNovaSenha() {
                 <Ionicons name="arrow-back" size={20} color="#fff" />
             </TouchableOpacity>
             <View style={styles.card}>
-                <Text style={styles.titulo}>Escolha a sua nova e senha e confirme</Text>
+                <Text style={styles.titulo}>Alterar senha</Text>
+
+                {/* Senha atual */}
+                <View style={styles.inputContainer}>
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Senha atual"
+                        placeholderTextColor="#888"
+                        secureTextEntry={!mostrarSenhaAtual}
+                        value={senhaAtual}
+                        onChangeText={setSenhaAtual}
+                    />
+                    <TouchableOpacity
+                        style={styles.iconRight}
+                        onPress={() => setMostrarSenhaAtual(!mostrarSenhaAtual)}
+                    >
+                        <Ionicons
+                            name={mostrarSenhaAtual ? "eye-off-outline" : "eye-outline"}
+                            size={22}
+                            color="#888"
+                        />
+                    </TouchableOpacity>
+                </View>
+
+                {/* Nova senha */}
                 <View style={styles.inputContainer}>
                     <TextInput
                         style={styles.input}
@@ -47,10 +113,11 @@ export default function TelaNovaSenha() {
                     </TouchableOpacity>
                 </View>
 
+                {/* Confirmar senha */}
                 <View style={styles.inputContainer}>
                     <TextInput
                         style={styles.input}
-                        placeholder="Confirmar"
+                        placeholder="Confirmar nova senha"
                         placeholderTextColor="#888"
                         secureTextEntry={!mostrarSenha2}
                         value={confirmarSenha}
@@ -68,7 +135,7 @@ export default function TelaNovaSenha() {
                     </TouchableOpacity>
                 </View>
 
-                <TouchableOpacity style={styles.botao}>
+                <TouchableOpacity style={styles.botao} onPress={handleAlterarSenha}>
                     <Text style={styles.textoBotao}>Salvar senha</Text>
                 </TouchableOpacity>
             </View>

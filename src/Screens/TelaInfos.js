@@ -47,6 +47,10 @@ export default function TelaPerfil({ navigation }) {
         ]);
     };
 
+    const handleNovaSenha = () => {
+        navigation.navigate('TelaNovaSenha');
+    };
+
     if (!fontsLoaded || carregando) {
         return (
             <View style={styles.loadingContainer}>
@@ -65,7 +69,7 @@ export default function TelaPerfil({ navigation }) {
 
     return (
         <ScrollView style={styles.container} contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
-            <TouchableOpacity style={styles.goBack} onPress={() => navigation.navigate('TelaInicial')}>
+            <TouchableOpacity style={styles.goBack} onPress={() => navigation.navigate('TelaFuncionario')}>
                 <Ionicons name="arrow-back" size={20} color="#fff" />
             </TouchableOpacity>
             {/* Título */}
@@ -98,6 +102,12 @@ export default function TelaPerfil({ navigation }) {
                 <Text style={styles.label}>Cargo</Text>
                 <TextInput style={styles.input} value={usuario.cargo || ''} editable={false} />
             </View>
+
+            {/* Botão Alterar Senha */}
+            <TouchableOpacity style={styles.changePasswordButton} onPress={handleNovaSenha} activeOpacity={0.8}>
+                <Text style={styles.changePasswordText}>Alterar Senha</Text>
+                <Ionicons name="key-outline" size={20} color="#fff" style={{ marginLeft: 8 }} />
+            </TouchableOpacity>
 
             {/* Botão sair */}
             <TouchableOpacity style={styles.logoutButton} onPress={handleLogout} activeOpacity={0.8}>
@@ -161,7 +171,7 @@ const styles = StyleSheet.create({
         marginBottom: 15,
         fontFamily: 'DarkerGrotesque_500Medium',
     },
-    logoutButton: {
+    changePasswordButton: {
         flexDirection: 'row',
         alignItems: 'center',
         backgroundColor: '#01743A',
@@ -170,11 +180,24 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         marginTop: 20,
     },
+    changePasswordText: {
+        color: '#fff',
+        fontSize: 16,
+        fontFamily: 'DarkerGrotesque_700Bold',
+    },
+    logoutButton: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: '#01743A',
+        paddingVertical: 12,
+        paddingHorizontal: 25,
+        borderRadius: 8,
+        marginTop: 15,
+    },
     logoutText: {
         color: '#fff',
         fontSize: 16,
         fontFamily: 'DarkerGrotesque_700Bold',
-        marginBottom: 7,
     },
     loadingContainer: {
         flex: 1,

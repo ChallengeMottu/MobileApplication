@@ -8,18 +8,16 @@ import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 
 import CabecalhoHeader from './src/Components/CabecalhoHeader';
 import TelaCadastroF from './src/Screens/TelaCadastroF';
-import TelaCadastroM from './src/Screens/TelaCadastroM';
-import TelaDadosM from './src/Screens/TelaDadosM';
+import TelaEntradaMotoPatio from './src/Screens/TelaEntradaMotoPatio';
 import TelaEquipe from './src/Screens/TelaEquipe';
 import TelaFuncionario from './src/Screens/TelaFuncionario';
 import TelaInicial from './src/Screens/TelaInicial';
 import TelaLogin from './src/Screens/TelaLogin';
 import TelaScanner from './src/Screens/TelaScanner';
-import TelaAssociacao from './src/Screens/TelaAssociacao';
-import TelaDesassociacao from './src/Screens/TelaDesassociacao';
 import TelaNovaSenha from './src/Screens/TelaNovaSenha';
 import TelaInfos from './src/Screens/TelaInfos';
-
+import Tela from './src/Screens/Tela';
+import TelaCadastroM from './src/Screens/TelaCadastroM';
 
 const Drawer = createDrawerNavigator();
 
@@ -81,9 +79,9 @@ function CustomDrawerContent(props) {
       {isLoggedIn ? (
         <>
           <DrawerItem
-            label="Minhas Informações"
+            label="Funcionalidades"
             icon={() => (
-              <Ionicons name="information-circle" size={24} color="#11881D" style={{ marginRight: 10 }} />
+              <Ionicons name="globe-outline" size={24} color="#11881D" style={{ marginRight: 10 }} />
             )}
             onPress={() => handleNavigation('TelaFuncionario')}
             labelStyle={styles.drawerLabel}
@@ -105,37 +103,7 @@ function CustomDrawerContent(props) {
             icon={() => (
               <Ionicons name="bluetooth" size={24} color="#11881D" style={{ marginRight: 10 }} />
             )}
-            onPress={() => navigation.navigate('TelaScanner')}
-            labelStyle={styles.drawerLabel}
-            style={styles.drawerItem}
-          />
-
-          <DrawerItem
-            label="Dados da Moto"
-            icon={() => (
-              <Ionicons name="information-circle-outline" size={24} color="#11881D" style={{ marginRight: 10 }} />
-            )}
-            onPress={() => navigation.navigate('TelaDadosM')}
-            labelStyle={styles.drawerLabel}
-            style={styles.drawerItem}
-          />
-
-          <DrawerItem
-            label="Associar Beacon"
-            icon={() => (
-              <Ionicons name="information-circle-outline" size={24} color="#11881D" style={{ marginRight: 10 }} />
-            )}
-            onPress={() => navigation.navigate('TelaAssociacao')}
-            labelStyle={styles.drawerLabel}
-            style={styles.drawerItem}
-          />
-
-          <DrawerItem
-            label="Desassociar Beacon"
-            icon={() => (
-              <Ionicons name="information-circle-outline" size={24} color="#11881D" style={{ marginRight: 10 }} />
-            )}
-            onPress={() => navigation.navigate('TelaDesassociacao')}
+            onPress={() => navigation.navigate('Tela')}
             labelStyle={styles.drawerLabel}
             style={styles.drawerItem}
           />
@@ -150,7 +118,25 @@ function CustomDrawerContent(props) {
             style={styles.drawerItem}
           />
 
+          <DrawerItem
+            label="Entrada Moto Pátio"
+            icon={() => (
+              <Ionicons name="link" size={24} color="#11881D" style={{ marginRight: 10 }} />
+            )}
+            onPress={() => navigation.navigate('TelaEntradaMotoPatio')}
+            labelStyle={styles.drawerLabel}
+            style={styles.drawerItem}
+          />
 
+          <DrawerItem
+            label="Saida da Moto"
+            icon={() => (
+              <Ionicons name="unlink" size={24} color="#11881D" style={{ marginRight: 10 }} />
+            )}
+            onPress={() => handleNavigation('TelaCadastroM')}
+            labelStyle={styles.drawerLabel}
+            style={styles.drawerItem}
+          />
 
 
           <DrawerItem
@@ -248,25 +234,9 @@ function MainNavigator() {
         options={{ title: 'Informações' }}
       />
       <Drawer.Screen
-        name="TelaCadastroM"
-        component={TelaCadastroM}
-        options={{ title: 'CadastroMoto' }}
-      />
-      <Drawer.Screen
-        name="TelaDadosM"
-        component={TelaDadosM}
-        options={{ title: 'Equipe' }}
-      />
-      <Drawer.Screen
-        name="TelaAssociacao"
-        component={TelaAssociacao}
-        options={{ title: 'Equipe' }}
-      />
-
-      <Drawer.Screen
-        name="TelaDesassociacao"
-        component={TelaDesassociacao}
-        options={{ title: 'Equipe' }}
+        name="TelaEntradaMotoPatio"
+        component={TelaEntradaMotoPatio}
+        options={{ title: 'Entrada da Moto' }}
       />
 
       <Drawer.Screen
@@ -279,6 +249,18 @@ function MainNavigator() {
         name="TelaInfos"
         component={TelaInfos}
         options={{ title: 'Minhas Informações' }}
+      />
+
+      <Drawer.Screen
+        name="Tela"
+        component={Tela}
+        options={{ title: 'Tela' }}
+      />
+
+      <Drawer.Screen
+        name="TelaCadastroM"
+        component={TelaCadastroM}
+        options={{ title: 'Tela' }}
       />
 
     </Drawer.Navigator>

@@ -82,19 +82,19 @@ export default function TelaFuncionario({ navigation }) {
                         <Text style={styles.buttonText}>Cadastrar moto</Text>
                     </TouchableOpacity>
 
-                    <TouchableOpacity style={styles.button} onPress={() => handleNavigate('TelaScanner')}>
+                    <TouchableOpacity style={styles.button} onPress={() => handleNavigate('Tela')}>
                         <Ionicons name="location" size={32} color="#fff" />
                         <Text style={styles.buttonText}>Identificar{"\n"}localização</Text>
                     </TouchableOpacity>
                 </View>
 
                 <View style={styles.row}>
-                    <TouchableOpacity style={styles.button} onPress={() => handleNavigate('TelaEntrada')}>
+                    <TouchableOpacity style={styles.button} onPress={() => handleNavigate('TelaEntradaMotoPatio')}>
                         <Ionicons name="enter" size={32} color="#fff" />
                         <Text style={styles.buttonText}>Entrada e{"\n"}alocação da moto</Text>
                     </TouchableOpacity>
 
-                    <TouchableOpacity style={styles.button} onPress={() => handleNavigate('TelaSaida')}>
+                    <TouchableOpacity style={styles.button} onPress={() => handleNavigate('TelaScanner')}>
                         <Ionicons name="exit" size={32} color="#fff" />
                         <Text style={styles.buttonText}>Saída da moto</Text>
                     </TouchableOpacity>
