@@ -6,8 +6,11 @@ import { Ionicons } from "@expo/vector-icons";
 import { signInWithEmailAndPassword, sendPasswordResetEmail } from "firebase/auth";
 import { auth } from "../configurations/firebaseConfig";
 import { CommonActions } from '@react-navigation/native';
+import { useTheme } from '../context/ContextTheme';
 
 export default function TelaLogin({ navigation }) {
+  const { colors, theme } = useTheme();
+  
   let [fontsLoaded] = useFonts({
     DarkerGrotesque_500Medium,
     DarkerGrotesque_700Bold
@@ -134,13 +137,13 @@ export default function TelaLogin({ navigation }) {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.card}>
-        <Text style={styles.titulo}>Bem-vindo de volta!</Text>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
+      <View style={[styles.card, { backgroundColor: colors.cardBackground }]}>
+        <Text style={[styles.titulo, { color: colors.text }]}>Bem-vindo de volta!</Text>
 
         {/* Texto informativo acima dos inputs */}
         <View style={styles.textoInfoContainer}>
-          <Text style={styles.textoInfo}>
+          <Text style={[styles.textoInfo, { color: colors.textSecondary }]}>
             Digite seu e-mail e senha para acessar o sistema
           </Text>
         </View>
@@ -148,24 +151,33 @@ export default function TelaLogin({ navigation }) {
         {/* Campo de E-mail */}
         <View style={styles.inputContainer}>
           <TextInput
-            style={styles.input}
+            style={[styles.input, { 
+              backgroundColor: colors.inputBackground,
+              color: colors.text 
+            }]}
             placeholder="E-mail"
-            placeholderTextColor="#888"
+            placeholderTextColor={colors.textSecondary}
             value={usuario}
             onChangeText={setUsuario}
             autoCapitalize="none"
             keyboardType="email-address"
             editable={!carregando}
           />
-          <Ionicons name="mail-outline" style={styles.iconRight} />
+          <Ionicons 
+            name="mail-outline" 
+            style={[styles.iconRight, { color: colors.textSecondary }]} 
+          />
         </View>
 
         {/* Campo de Senha */}
         <View style={styles.inputContainer}>
           <TextInput
-            style={styles.input}
+            style={[styles.input, { 
+              backgroundColor: colors.inputBackground,
+              color: colors.text 
+            }]}
             placeholder="Senha"
-            placeholderTextColor="#888"
+            placeholderTextColor={colors.textSecondary}
             secureTextEntry={!mostrarSenha}
             value={senha}
             onChangeText={setSenha}
@@ -179,18 +191,22 @@ export default function TelaLogin({ navigation }) {
             <Ionicons 
               name={mostrarSenha ? "eye-off-outline" : "eye-outline"} 
               size={22} 
-              color="#888" 
+              color={colors.textSecondary}
             />
           </TouchableOpacity>
         </View>
 
         {/* Botão de Login */}
         <TouchableOpacity 
-          style={[styles.botao, carregando && styles.botaoDesabilitado]} 
+          style={[
+            styles.botao, 
+            { backgroundColor: carregando ? colors.inputBackground : colors.primary },
+            carregando && styles.botaoDesabilitado
+          ]} 
           onPress={handleLogin}
           disabled={carregando}
         >
-          <Text style={styles.textoBotao}>
+          <Text style={[styles.textoBotao, { color: colors.primaryText }]}>
             {carregando ? 'ENTRANDO...' : 'ENTRAR'}
           </Text>
         </TouchableOpacity>
@@ -201,7 +217,9 @@ export default function TelaLogin({ navigation }) {
           onPress={() => navigation.navigate('TelaCadastroF')}
           disabled={carregando}
         >
-          <Text style={styles.linkTexto}>Ainda não tem conta? Cadastre-se</Text>
+          <Text style={[styles.linkTexto, { color: colors.text }]}>
+            Ainda não tem conta? Cadastre-se
+          </Text>
         </TouchableOpacity>
 
         {/* Link para recuperação de senha */}
@@ -210,12 +228,14 @@ export default function TelaLogin({ navigation }) {
           onPress={handleEsqueciSenha}
           disabled={carregando}
         >
-          <Text style={styles.linkTexto}>Esqueceu a senha?</Text>
+          <Text style={[styles.linkTexto, { color: colors.text }]}>
+            Esqueceu a senha?
+          </Text>
         </TouchableOpacity>
 
         {/* Texto informativo para recuperação */}
         <View style={styles.textoRecuperacaoContainer}>
-          <Text style={styles.textoRecuperacao}>
+          <Text style={[styles.textoRecuperacao, { color: colors.textSecondary }]}>
             Para redefinir sua senha, digite seu e-mail acima e clique em "Esqueceu a senha?"
           </Text>
         </View>
@@ -227,13 +247,11 @@ export default function TelaLogin({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#000',
     justifyContent: 'center',
     alignItems: 'center',
     padding: 10,
   },
   card: {
-    backgroundColor: '#000',
     width: '90%',
     maxWidth: 350,
     padding: 30,
@@ -243,7 +261,6 @@ const styles = StyleSheet.create({
   titulo: {
     fontSize: 27,
     fontFamily: 'DarkerGrotesque_700Bold',
-    color: '#fff',
     textAlign: 'center',
     marginBottom: 20,
   },
@@ -252,7 +269,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   textoInfo: {
-    color: '#ccc',
     fontSize: 16,
     fontFamily: 'DarkerGrotesque_500Medium',
     textAlign: 'center',
@@ -263,7 +279,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   textoRecuperacao: {
-    color: '#888',
     fontSize: 14,
     fontFamily: 'DarkerGrotesque_500Medium',
     textAlign: 'center',
@@ -282,21 +297,17 @@ const styles = StyleSheet.create({
     top: 15,
     zIndex: 1,
     fontSize: 20,
-    color: '#888',
   },
   input: {
-    backgroundColor: '#212121',
     borderRadius: 12,
     paddingVertical: 15,
     paddingLeft: 15,
     paddingRight: 45,
-    color: '#fff',
     fontSize: 18,
     fontFamily: 'DarkerGrotesque_500Medium',
     width: '100%',
   },
   botao: {
-    backgroundColor: '#01743A',
     borderRadius: 12,
     paddingVertical: 15,
     paddingHorizontal: 40,
@@ -306,11 +317,9 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   botaoDesabilitado: {
-    backgroundColor: '#555',
     opacity: 0.7,
   },
   textoBotao: {
-    color: '#fff',
     fontSize: 16,
     fontFamily: 'DarkerGrotesque_700Bold',
     letterSpacing: 1,
@@ -321,7 +330,6 @@ const styles = StyleSheet.create({
     padding: 5,
   },
   linkTexto: {
-    color: '#fff',
     fontSize: 16,
     fontFamily: 'DarkerGrotesque_500Medium',
     textAlign: 'center',

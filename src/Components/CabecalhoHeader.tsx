@@ -3,14 +3,16 @@ import React, { useState, useRef, useEffect } from 'react';
 import { StyleSheet, TouchableOpacity, View, Image, Text, Animated, Modal, Pressable } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useTheme } from '../context/ContextTheme';
 
 export default function CabecalhoHeader({ navigation }) {
   const [showDropdown, setShowDropdown] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [animation] = useState(new Animated.Value(0));
   const scaleAnim = useRef(new Animated.Value(1)).current;
-
   
+  // Hook do tema
+  const { theme, toggleTheme, colors } = useTheme();
 
   const toggleDropdown = () => {
     if (showDropdown) {
@@ -63,20 +65,36 @@ export default function CabecalhoHeader({ navigation }) {
     };
     
     checkLoginStatus();
-    
-    
     const unsubscribe = navigation.addListener('focus', checkLoginStatus);
-    
     return unsubscribe;
   }, [navigation]);
 
+  // Estilos dinâmicos baseados no tema
+  const dynamicStyles = {
+    header: {
+      backgroundColor: colors.background,
+    },
+    menuIcon: {
+      color: colors.text,
+    },
+    dropdownMenu: {
+      backgroundColor: theme === 'dark' ? '#332f2f' : '#f0f0f0',
+    },
+    dropdownText: {
+      color: colors.text,
+    },
+    divider: {
+      backgroundColor: theme === 'dark' ? '#433e3e' : '#ddd',
+    }
+  };
+
   return (
-    <SafeAreaView style={styles.header}>
+    <SafeAreaView style={[styles.header, dynamicStyles.header]}>
       <TouchableOpacity 
         style={styles.menuButton}
         onPress={() => navigation.openDrawer()}
       >
-        <Ionicons name="menu-outline" style={styles.menuIcon} size={27} />
+        <Ionicons name="menu-outline" style={[styles.menuIcon, dynamicStyles.menuIcon]} size={27} />
       </TouchableOpacity>
 
       <Pressable 
@@ -95,8 +113,20 @@ export default function CabecalhoHeader({ navigation }) {
       </Pressable>
 
       <View style={styles.rightIcons}>
+        {/* Botão de troca de tema */}
+        <TouchableOpacity 
+          style={styles.themeButton}
+          onPress={toggleTheme}
+        >
+          <Ionicons 
+            name={theme === 'dark' ? 'sunny-outline' : 'moon-outline'} 
+            style={[styles.menuIcon, dynamicStyles.menuIcon]} 
+            size={24} 
+          />
+        </TouchableOpacity>
+        
         <TouchableOpacity onPress={toggleDropdown}>
-          <Ionicons name="person-outline" style={styles.menuIcon} size={27} />
+          <Ionicons name="person-outline" style={[styles.menuIcon, dynamicStyles.menuIcon]} size={27} />
         </TouchableOpacity>
       </View>
 
@@ -114,6 +144,7 @@ export default function CabecalhoHeader({ navigation }) {
             <Animated.View 
               style={[
                 styles.dropdownMenu,
+                dynamicStyles.dropdownMenu,
                 { 
                   opacity,
                   transform: [{ translateY }] 
@@ -129,11 +160,11 @@ export default function CabecalhoHeader({ navigation }) {
                       navigation.navigate('TelaFuncionario');
                     }}
                   >
-                    <Ionicons name="information-circle-outline" size={20} color="#fff" />
-                    <Text style={styles.dropdownText}>Operações</Text>
+                    <Ionicons name="information-circle-outline" size={20} color={colors.text} />
+                    <Text style={[styles.dropdownText, dynamicStyles.dropdownText]}>Operações</Text>
                   </TouchableOpacity>
                   
-                  <View style={styles.divider} />
+                  <View style={[styles.divider, dynamicStyles.divider]} />
                   
                   <TouchableOpacity 
                     style={styles.dropdownItem}
@@ -144,8 +175,8 @@ export default function CabecalhoHeader({ navigation }) {
                       navigation.navigate('TelaInicial');
                     }}
                   >
-                    <Ionicons name="log-out-outline" size={20} color="#fff" />
-                    <Text style={styles.dropdownText}>Logout</Text>
+                    <Ionicons name="log-out-outline" size={20} color={colors.text} />
+                    <Text style={[styles.dropdownText, dynamicStyles.dropdownText]}>Logout</Text>
                   </TouchableOpacity>
                 </>
               ) : (
@@ -156,8 +187,8 @@ export default function CabecalhoHeader({ navigation }) {
                     navigation.navigate('TelaLogin');
                   }}
                 >
-                  <Ionicons name="log-in-outline" size={20} color="#fff" />
-                  <Text style={styles.dropdownText}>Login</Text>
+                  <Ionicons name="log-in-outline" size={20} color={colors.text} />
+                  <Text style={[styles.dropdownText, dynamicStyles.dropdownText]}>Login</Text>
                 </TouchableOpacity>
               )}
             </Animated.View>
@@ -168,10 +199,8 @@ export default function CabecalhoHeader({ navigation }) {
   );
 }
 
-
 const styles = StyleSheet.create({
   header: {
-    backgroundColor: '#000000',
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -183,7 +212,7 @@ const styles = StyleSheet.create({
     width: 27,
   },
   menuIcon: {
-    color: 'white',
+    // cor será definida dinamicamente
   },
   logoContainer: {
     flex: 1,
@@ -195,8 +224,13 @@ const styles = StyleSheet.create({
     width: 120,
   },
   rightIcons: {
-    width: 27,
-    alignItems: 'flex-end',
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: 'auto',
+  },
+  themeButton: {
+    marginRight: 13,
+    padding: 2,
   },
   dropdownOverlay: {
     flex: 1,
@@ -207,7 +241,6 @@ const styles = StyleSheet.create({
     paddingRight: 16,
   },
   dropdownMenu: {
-    backgroundColor: '#332f2f',
     borderRadius: 8,
     paddingVertical: 8,
     width: 200,
@@ -224,13 +257,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   dropdownText: {
-    color: '#fff',
     marginLeft: 12,
     fontSize: 16,
   },
   divider: {
     height: 1,
-    backgroundColor: '#433e3e',
     marginHorizontal: 8,
   },
 });

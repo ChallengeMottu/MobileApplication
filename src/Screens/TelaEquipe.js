@@ -1,5 +1,7 @@
 import { View, Text, Image, Linking, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { useFonts, DarkerGrotesque_500Medium, DarkerGrotesque_700Bold } from '@expo-google-fonts/darker-grotesque';
+import { Ionicons } from '@expo/vector-icons';
+import { useTheme } from '../context/ContextTheme';
 
 const equipe = [
   {
@@ -26,110 +28,194 @@ const equipe = [
 ];
 
 export default function TelaEquipe() {
+  const { colors } = useTheme();
+  
   let [fontsLoaded] = useFonts({
     DarkerGrotesque_500Medium,
     DarkerGrotesque_700Bold
   });
 
   if (!fontsLoaded) {
-    return null; // Ou um loading indicator
+    return null;
   }
 
   return (
-    <ScrollView style={styles.container}>
-      <Text style={styles.titulo}>Nossa Equipe</Text>
+    <ScrollView style={[styles.container, { backgroundColor: colors.background }]}>
+      {/* Header Section */}
+      <View style={styles.header}>
+        <Text style={[styles.titulo, { color: colors.text }]}>Nossa Equipe</Text>
+        <Text style={[styles.subtitulo, { color: colors.textSecondary }]}>
+          Conheça os desenvolvedores por trás do Pulse
+        </Text>
+      </View>
 
-      {equipe.map((pessoa, index) => (
-        <View key={index} style={styles.card}>
-          <Image
-            source={pessoa.imagem}
-            style={[styles.imagem, { marginRight: 15 }]}
-          />
+      {/* Team Cards */}
+      <View style={styles.cardsContainer}>
+        {equipe.map((pessoa, index) => (
+          <View 
+            key={index} 
+            style={[
+              styles.card, 
+              { 
+                backgroundColor: colors.cardBackground,
+                shadowColor: colors.primary
+              }
+            ]}
+          >
+            <Image
+              source={pessoa.imagem}
+              style={styles.imagem}
+            />
 
-          <View style={styles.info}>
-            <Text style={styles.nome}>{pessoa.nome}</Text>
-            <Text style={styles.rm}>{pessoa.rm}</Text>
+            <View style={styles.cardInfo}>
+              <View style={styles.textContainer}>
+                <Text style={[styles.nome, { color: colors.text }]}>
+                  {pessoa.nome}
+                </Text>
+                
+                <View style={styles.rmContainer}>
+                  <Ionicons name="school-outline" size={14} color={colors.primary} />
+                  <Text style={[styles.rm, { color: colors.textSecondary }]}>
+                    {pessoa.rm}
+                  </Text>
+                </View>
+              </View>
 
-            <View style={styles.icones}>
-              <TouchableOpacity onPress={() => Linking.openURL(pessoa.github)}>
-                <Image
-                  source={require('../../assets/githubb.png')}
-                  style={styles.icone}
-                />
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => Linking.openURL(pessoa.linkedin)}>
-                <Image
-                  source={require('../../assets/linkedinn.png')}
-                  style={styles.icone}
-                />
-              </TouchableOpacity>
+              <View style={styles.socialContainer}>
+                <TouchableOpacity 
+                  style={[styles.socialButton, { backgroundColor: colors.primary }]}
+                  onPress={() => Linking.openURL(pessoa.github)}
+                  activeOpacity={0.8}
+                >
+                  <Image
+                    source={require('../../assets/githubb.png')}
+                    style={styles.socialIcon}
+                  />
+                </TouchableOpacity>
+
+                <TouchableOpacity 
+                  style={[styles.socialButton, { backgroundColor: colors.primary }]}
+                  onPress={() => Linking.openURL(pessoa.linkedin)}
+                  activeOpacity={0.8}
+                >
+                  <Image
+                    source={require('../../assets/linkedinn.png')}
+                    style={styles.socialIcon}
+                  />
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
-        </View>
-      ))}
+        ))}
+      </View>
+
+      {/* Footer Info */}
+      <View style={[styles.footer, { backgroundColor: colors.inputBackground }]}>
+        <Ionicons name="people-outline" size={24} color={colors.primary} />
+        <Text style={[styles.footerText, { color: colors.text }]}>
+          Equipe FIAP - Challenge Sprint 3
+        </Text>
+      </View>
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#000',
-    padding: 20,
+    flex: 1,
+  },
+  header: {
+    paddingTop: 40,
+    paddingHorizontal: 20,
+    paddingBottom: 30,
+    alignItems: 'center',
   },
   titulo: {
-    fontSize: 24,
+    fontSize: 32,
     fontFamily: 'DarkerGrotesque_700Bold',
-    color: '#fff',
     textAlign: 'center',
-    marginBottom: 30,
+    marginBottom: 10,
     letterSpacing: 0.5,
+  },
+  subtitulo: {
+    fontSize: 16,
+    fontFamily: 'DarkerGrotesque_500Medium',
+    textAlign: 'center',
+    opacity: 0.8,
+  },
+  cardsContainer: {
+    paddingHorizontal: 20,
+    gap: 20,
+    marginBottom: 30,
   },
   card: {
     flexDirection: 'row',
-    marginBottom: 25,
-    alignItems: 'center',
-    backgroundColor: '#4C4646',
+    borderRadius: 16,
     padding: 15,
-    borderRadius: 12,
-    shadowColor: '#11881D',
-    shadowOffset: { width: 0, height: 2 },
+    alignItems: 'center',
+    shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.2,
-    shadowRadius: 4,
+    shadowRadius: 6,
     elevation: 5,
   },
   imagem: {
     width: 100,
     height: 160,
-    borderRadius: 10,
-    borderWidth: 2,
-    borderColor: '#11881D',
+    borderRadius: 12,
+    borderWidth: 3,
+    borderColor: '#01743A',
   },
-  info: {
+  cardInfo: {
     flex: 1,
-    alignItems: 'flex-start',
-    paddingLeft: 10,
+    marginLeft: 15,
+    justifyContent: 'space-between',
+  },
+  textContainer: {
+    marginBottom: 15,
   },
   nome: {
-    fontSize: 18,
+    fontSize: 20,
     fontFamily: 'DarkerGrotesque_700Bold',
-    color: '#fff',
-    marginBottom: 5,
+    marginBottom: 6,
+    lineHeight: 24,
+  },
+  rmContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
   },
   rm: {
-    fontSize: 16,
+    fontSize: 15,
     fontFamily: 'DarkerGrotesque_500Medium',
-    color: '#fff',
-    marginBottom: 15,
-    opacity: 0.9,
   },
-  icones: {
+  socialContainer: {
     flexDirection: 'row',
-    gap: 15,
-    marginTop: 5,
+    gap: 12,
   },
-  icone: {
-    width: 28,
-    height: 28,
-    tintColor: '#11881D',
+  socialButton: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  socialIcon: {
+    width: 24,
+    height: 24,
+    tintColor: '#fff',
+  },
+  footer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 10,
+    padding: 20,
+    marginHorizontal: 20,
+    marginBottom: 30,
+    borderRadius: 12,
+  },
+  footerText: {
+    fontSize: 16,
+    fontFamily: 'DarkerGrotesque_700Bold',
   },
 });

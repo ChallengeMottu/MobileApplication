@@ -2,8 +2,10 @@ import React, { useState, useCallback } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Alert, Modal, Image, ActivityIndicator } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Picker } from '@react-native-picker/picker';
+import { useTheme } from '../context/ContextTheme';
 
 const EntradaMotoPatio = ({ navigation }) => {
+  const { colors, theme } = useTheme();
   const [etapaAtual, setEtapaAtual] = useState(1);
   const [placa, setPlaca] = useState('');
   const [formData, setFormData] = useState({
@@ -103,7 +105,6 @@ const EntradaMotoPatio = ({ navigation }) => {
             });
             setBeaconDetectado(null);
             setCodigoBeacon('');
-            navigation.navigate('TelaFuncionario');
           }
         }
       ]
@@ -111,67 +112,77 @@ const EntradaMotoPatio = ({ navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
       {etapaAtual === 1 && (
-        <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
+        <ScrollView style={[styles.scrollView, { backgroundColor: colors.background }]} contentContainerStyle={styles.scrollContent}>
           <TouchableOpacity 
             style={styles.goBack} 
             onPress={() => navigation?.goBack()}
           >
-            <Ionicons name="arrow-back" size={20} color="#fff" />
+            <Ionicons name="arrow-back" size={20} color={colors.text} />
           </TouchableOpacity>
 
-          <View style={styles.card}>
-            <Text style={styles.titulo}>Entrada de moto e Alocação</Text>
-            <Text style={styles.subtitulo}>Processo de entrada de moto informada no pátio</Text>
+          <View style={[styles.card, { backgroundColor: colors.cardBackground }]}>
+            <Text style={[styles.titulo, { color: colors.text }]}>Entrada de moto e Alocação</Text>
+            <Text style={[styles.subtitulo, { color: colors.textSecondary }]}>Processo de entrada de moto informada no pátio</Text>
 
-            <View style={styles.separador} />
+            <View style={[styles.separador, { backgroundColor: colors.border }]} />
 
             <View style={styles.inputContainer}>
-              <Text style={styles.label}>Escolha entre</Text>
+              <Text style={[styles.label, { color: colors.textSecondary }]}>Escolha entre</Text>
               <TextInput
-                style={styles.input}
+                style={[styles.input, { 
+                  backgroundColor: colors.inputBackground, 
+                  color: colors.text,
+                  borderColor: colors.border 
+                }]}
                 value={placa}
                 onChangeText={handlePlacaChange}
                 placeholder="Digite a placa da moto"
-                placeholderTextColor="#aaa"
+                placeholderTextColor={colors.placeholderTextColor}
               />
             </View>
 
             <View style={styles.inputContainer}>
-              <Text style={styles.label}>Digitalizar a placa</Text>
-              <TouchableOpacity style={styles.cameraButton} onPress={handleDigitalizarPlaca}>
-                <Ionicons name="camera" size={24} color="#aaa" />
+              <Text style={[styles.label, { color: colors.textSecondary }]}>Digitalizar a placa</Text>
+              <TouchableOpacity style={[styles.cameraButton, { 
+                backgroundColor: colors.inputBackground, 
+                borderColor: colors.border 
+              }]} onPress={handleDigitalizarPlaca}>
+                <Ionicons name="camera" size={24} color={colors.textSecondary} />
               </TouchableOpacity>
             </View>
 
-            <TouchableOpacity style={styles.botao} onPress={handleBuscarMoto}>
-              <Text style={styles.textoBotao}>Buscar</Text>
+            <TouchableOpacity style={[styles.botao, { backgroundColor: colors.primary }]} onPress={handleBuscarMoto}>
+              <Text style={[styles.textoBotao, { color: colors.primaryText }]}>Buscar</Text>
             </TouchableOpacity>
           </View>
         </ScrollView>
       )}
 
       {etapaAtual === 2 && (
-        <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
+        <ScrollView style={[styles.scrollView, { backgroundColor: colors.background }]} contentContainerStyle={styles.scrollContent}>
           <TouchableOpacity 
             style={styles.goBack} 
             onPress={() => setEtapaAtual(1)}
           >
-            <Ionicons name="arrow-back" size={20} color="#fff" />
+            <Ionicons name="arrow-back" size={20} color={colors.text} />
           </TouchableOpacity>
 
-          <View style={styles.card}>
-            <Text style={styles.titulo}>Ficha da Moto</Text>
+          <View style={[styles.card, { backgroundColor: colors.cardBackground }]}>
+            <Text style={[styles.titulo, { color: colors.text }]}>Ficha da Moto</Text>
 
             <View style={styles.inputContainer}>
-              <Text style={styles.inputLabel}>Modelo</Text>
-              <View style={styles.pickerContainer}>
+              <Text style={[styles.inputLabel, { color: colors.text }]}>Modelo</Text>
+              <View style={[styles.pickerContainer, { 
+                backgroundColor: colors.inputBackground, 
+                borderColor: colors.border 
+              }]}>
                 <Picker
                   selectedValue={formData.modelo}
                   onValueChange={(value) => handleInputChange('modelo', value)}
-                  style={styles.picker}
-                  dropdownIconColor="#fff"
+                  style={[styles.picker, { color: colors.text }]}
+                  dropdownIconColor={colors.text}
                 >
                   <Picker.Item style={styles.pickerItem} label="Modelo" value="" />
                   <Picker.Item style={styles.pickerItem} label="Sport 110i" value="Sport 110i" />
@@ -182,35 +193,46 @@ const EntradaMotoPatio = ({ navigation }) => {
             </View>
 
             <View style={styles.inputContainer}>
-              <Text style={styles.inputLabel}>Ano Fabricação</Text>
+              <Text style={[styles.inputLabel, { color: colors.text }]}>Ano Fabricação</Text>
               <TextInput
-                style={styles.input}
+                style={[styles.input, { 
+                  backgroundColor: colors.inputBackground, 
+                  color: colors.text,
+                  borderColor: colors.border 
+                }]}
                 value={formData.anoFabricacao}
                 onChangeText={(value) => handleInputChange('anoFabricacao', value)}
                 placeholder="Ano Fabricação"
-                placeholderTextColor="#aaa"
+                placeholderTextColor={colors.placeholderTextColor}
               />
             </View>
 
             <View style={styles.inputContainer}>
-              <Text style={styles.inputLabel}>Número de Chassi</Text>
+              <Text style={[styles.inputLabel, { color: colors.text }]}>Número de Chassi</Text>
               <TextInput
-                style={styles.input}
+                style={[styles.input, { 
+                  backgroundColor: colors.inputBackground, 
+                  color: colors.text,
+                  borderColor: colors.border 
+                }]}
                 value={formData.numeroChassi}
                 onChangeText={(value) => handleInputChange('numeroChassi', value)}
                 placeholder="Número de Chassi"
-                placeholderTextColor="#aaa"
+                placeholderTextColor={colors.placeholderTextColor}
               />
             </View>
 
             <View style={styles.inputContainer}>
-              <Text style={styles.inputLabel}>Status</Text>
-              <View style={styles.pickerContainer}>
+              <Text style={[styles.inputLabel, { color: colors.text }]}>Status</Text>
+              <View style={[styles.pickerContainer, { 
+                backgroundColor: colors.inputBackground, 
+                borderColor: colors.border 
+              }]}>
                 <Picker
                   selectedValue={formData.status}
                   onValueChange={(value) => handleInputChange('status', value)}
-                  style={styles.picker}
-                  dropdownIconColor="#fff"
+                  style={[styles.picker, { color: colors.text }]}
+                  dropdownIconColor={colors.text}
                 >
                   <Picker.Item style={styles.pickerItem} label="Status" value="" />
                   <Picker.Item style={styles.pickerItem} label="Sem Placa" value="Sem Placa" />
@@ -222,13 +244,16 @@ const EntradaMotoPatio = ({ navigation }) => {
             </View>
 
             <View style={styles.inputContainer}>
-              <Text style={styles.inputLabel}>Condição Mecânica</Text>
-              <View style={styles.pickerContainer}>
+              <Text style={[styles.inputLabel, { color: colors.text }]}>Condição Mecânica</Text>
+              <View style={[styles.pickerContainer, { 
+                backgroundColor: colors.inputBackground, 
+                borderColor: colors.border 
+              }]}>
                 <Picker
                   selectedValue={formData.condicaoMecanica}
                   onValueChange={(value) => handleInputChange('condicaoMecanica', value)}
-                  style={styles.picker}
-                  dropdownIconColor="#fff"
+                  style={[styles.picker, { color: colors.text }]}
+                  dropdownIconColor={colors.text}
                 >
                   <Picker.Item style={styles.pickerItem} label="Condição Mecânica" value="" />
                   <Picker.Item style={styles.pickerItem} label="Bom Estado Mecânico" value="Bom Estado Mecânico" />
@@ -248,39 +273,59 @@ const EntradaMotoPatio = ({ navigation }) => {
               />
             </View>
 
-            <TouchableOpacity style={styles.botao} onPress={handleControlarMoto}>
-              <Text style={styles.textoBotao}>Controlar moto</Text>
+            <TouchableOpacity style={[styles.botao, { backgroundColor: colors.primary }]} onPress={handleControlarMoto}>
+              <Text style={[styles.textoBotao, { color: colors.primaryText }]}>Controlar moto</Text>
             </TouchableOpacity>
           </View>
         </ScrollView>
       )}
 
       {etapaAtual === 3 && (
-        <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
+        <ScrollView style={[styles.scrollView, { backgroundColor: colors.background }]} contentContainerStyle={styles.scrollContent}>
           <TouchableOpacity 
             style={styles.goBack} 
             onPress={() => setEtapaAtual(2)}
           >
-            <Ionicons name="arrow-back" size={20} color="#fff" />
+            <Ionicons name="arrow-back" size={20} color={colors.text} />
           </TouchableOpacity>
 
-          <View style={styles.card}>
-            <Text style={styles.titulo}>Ficha da Moto</Text>
+          <View style={[styles.card, { backgroundColor: colors.cardBackground }]}>
+            <Text style={[styles.titulo, { color: colors.text }]}>Ficha da Moto</Text>
 
             <View style={styles.inputContainer}>
-              <TextInput style={[styles.input, styles.inputReadonly]} value={formData.modelo} editable={false} />
+              <TextInput style={[styles.input, styles.inputReadonly, { 
+                backgroundColor: colors.inputBackground, 
+                color: colors.textSecondary,
+                borderColor: colors.border 
+              }]} value={formData.modelo} editable={false} />
             </View>
             <View style={styles.inputContainer}>
-              <TextInput style={[styles.input, styles.inputReadonly]} value={formData.anoFabricacao} editable={false} />
+              <TextInput style={[styles.input, styles.inputReadonly, { 
+                backgroundColor: colors.inputBackground, 
+                color: colors.textSecondary,
+                borderColor: colors.border 
+              }]} value={formData.anoFabricacao} editable={false} />
             </View>
             <View style={styles.inputContainer}>
-              <TextInput style={[styles.input, styles.inputReadonly]} value={formData.numeroChassi} editable={false} />
+              <TextInput style={[styles.input, styles.inputReadonly, { 
+                backgroundColor: colors.inputBackground, 
+                color: colors.textSecondary,
+                borderColor: colors.border 
+              }]} value={formData.numeroChassi} editable={false} />
             </View>
             <View style={styles.inputContainer}>
-              <TextInput style={[styles.input, styles.inputReadonly]} value={formData.status} editable={false} />
+              <TextInput style={[styles.input, styles.inputReadonly, { 
+                backgroundColor: colors.inputBackground, 
+                color: colors.textSecondary,
+                borderColor: colors.border 
+              }]} value={formData.status} editable={false} />
             </View>
             <View style={styles.inputContainer}>
-              <TextInput style={[styles.input, styles.inputReadonly]} value={formData.condicaoMecanica} editable={false} />
+              <TextInput style={[styles.input, styles.inputReadonly, { 
+                backgroundColor: colors.inputBackground, 
+                color: colors.textSecondary,
+                borderColor: colors.border 
+              }]} value={formData.condicaoMecanica} editable={false} />
             </View>
 
             <View style={styles.imagemMotoContainer}>
@@ -291,28 +336,31 @@ const EntradaMotoPatio = ({ navigation }) => {
               />
             </View>
 
-            <View style={styles.cardProcedimento}>
-              <Text style={styles.tituloProcedimento}>Procedimento de controle</Text>
-              <Text style={styles.textoProcedimento}>1. Ligue o beacon</Text>
-              <Text style={styles.textoProcedimento}>2. Clique no botão rastrear para encontrar automaticamente ou dispositivo</Text>
+            <View style={[styles.cardProcedimento, { backgroundColor: colors.cardBackground }]}>
+              <Text style={[styles.tituloProcedimento, { color: colors.text }]}>Procedimento de controle</Text>
+              <Text style={[styles.textoProcedimento, { color: colors.textSecondary }]}>1. Ligue o beacon</Text>
+              <Text style={[styles.textoProcedimento, { color: colors.textSecondary }]}>2. Clique no botão rastrear para encontrar automaticamente ou dispositivo</Text>
 
               <TouchableOpacity 
-                style={[styles.botaoRastrear, rastreandoBeacon && styles.botaoRastreando]} 
+                style={[styles.botaoRastrear, 
+                  { backgroundColor: rastreandoBeacon ? colors.inputBackground : colors.primary },
+                  rastreandoBeacon && styles.botaoRastreando
+                ]} 
                 onPress={handleRastrear}
                 disabled={rastreandoBeacon}
               >
                 {rastreandoBeacon ? (
-                  <ActivityIndicator color="#fff" size="small" />
+                  <ActivityIndicator color={colors.primaryText} size="small" />
                 ) : (
-                  <Ionicons name="bluetooth" size={20} color="#fff" />
+                  <Ionicons name="bluetooth" size={20} color={colors.primaryText} />
                 )}
-                <Text style={styles.textoBotaoRastrear}>
+                <Text style={[styles.textoBotaoRastrear, { color: colors.primaryText }]}>
                   {rastreandoBeacon ? 'Rastreando...' : 'Rastrear'}
                 </Text>
               </TouchableOpacity>
 
               <TouchableOpacity onPress={handleCodigoManual}>
-                <Text style={styles.linkCodigo}>Se preferir, informe diretamente o código do Beacon</Text>
+                <Text style={[styles.linkCodigo, { color: colors.primary }]}>Se preferir, informe diretamente o código do Beacon</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -320,52 +368,52 @@ const EntradaMotoPatio = ({ navigation }) => {
       )}
 
       {etapaAtual === 4 && (
-        <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContentCenter}>
+        <ScrollView style={[styles.scrollView, { backgroundColor: colors.background }]} contentContainerStyle={styles.scrollContentCenter}>
           <View style={styles.containerEtapa4}>
-            <View style={styles.cardSucesso}>
-              <Ionicons name="checkmark-circle" size={48} color="#4ade80" />
-              <Text style={styles.tituloSucesso}>Beacon Associado</Text>
-              <Text style={styles.textoSucesso}>O beacon foi associado à moto com sucesso!</Text>
+            <View style={[styles.cardSucesso, { backgroundColor: colors.primary }]}>
+              <Ionicons name="checkmark-circle" size={48} color={colors.primaryText} />
+              <Text style={[styles.tituloSucesso, { color: colors.primaryText }]}>Beacon Associado</Text>
+              <Text style={[styles.textoSucesso, { color: colors.primaryText }]}>O beacon foi associado à moto com sucesso!</Text>
             </View>
 
-            <View style={styles.cardInfo}>
-              <Text style={styles.tituloInfo}>Beacon Detectado</Text>
+            <View style={[styles.cardInfo, { backgroundColor: colors.cardBackground }]}>
+              <Text style={[styles.tituloInfo, { color: colors.text }]}>Beacon Detectado</Text>
               <View style={styles.infoRow}>
-                <Text style={styles.infoLabel}>Código:</Text>
-                <Text style={styles.infoValue}>{beaconDetectado?.codigo}</Text>
+                <Text style={[styles.infoLabel, { color: colors.textSecondary }]}>Código:</Text>
+                <Text style={[styles.infoValue, { color: colors.text }]}>{beaconDetectado?.codigo}</Text>
               </View>
               <View style={styles.infoRow}>
-                <Text style={styles.infoLabel}>Sinal:</Text>
-                <Text style={styles.infoValue}>{beaconDetectado?.sinal}</Text>
+                <Text style={[styles.infoLabel, { color: colors.textSecondary }]}>Sinal:</Text>
+                <Text style={[styles.infoValue, { color: colors.text }]}>{beaconDetectado?.sinal}</Text>
               </View>
               <View style={styles.infoRow}>
-                <Text style={styles.infoLabel}>Bateria:</Text>
-                <Text style={styles.infoValue}>{beaconDetectado?.bateria}</Text>
+                <Text style={[styles.infoLabel, { color: colors.textSecondary }]}>Bateria:</Text>
+                <Text style={[styles.infoValue, { color: colors.text }]}>{beaconDetectado?.bateria}</Text>
               </View>
               <View style={styles.infoRow}>
-                <Text style={styles.infoLabel}>Status:</Text>
-                <Text style={[styles.infoValue, {color: '#4ade80'}]}>Conectado</Text>
-              </View>
-            </View>
-
-            <View style={styles.cardInfo}>
-              <Text style={styles.tituloInfo}>Moto Registrada</Text>
-              <View style={styles.infoRow}>
-                <Text style={styles.infoLabel}>Placa:</Text>
-                <Text style={styles.infoValue}>{placa}</Text>
-              </View>
-              <View style={styles.infoRow}>
-                <Text style={styles.infoLabel}>Modelo:</Text>
-                <Text style={styles.infoValue}>{formData.modelo}</Text>
-              </View>
-              <View style={styles.infoRow}>
-                <Text style={styles.infoLabel}>Status:</Text>
-                <Text style={styles.infoValue}>{formData.status}</Text>
+                <Text style={[styles.infoLabel, { color: colors.textSecondary }]}>Status:</Text>
+                <Text style={[styles.infoValue, { color: colors.primary }]}>Conectado</Text>
               </View>
             </View>
 
-            <TouchableOpacity style={styles.botao} onPress={handleFinalizarEntrada}>
-              <Text style={styles.textoBotao}>Finalizar Entrada</Text>
+            <View style={[styles.cardInfo, { backgroundColor: colors.cardBackground }]}>
+              <Text style={[styles.tituloInfo, { color: colors.text }]}>Moto Registrada</Text>
+              <View style={styles.infoRow}>
+                <Text style={[styles.infoLabel, { color: colors.textSecondary }]}>Placa:</Text>
+                <Text style={[styles.infoValue, { color: colors.text }]}>{placa}</Text>
+              </View>
+              <View style={styles.infoRow}>
+                <Text style={[styles.infoLabel, { color: colors.textSecondary }]}>Modelo:</Text>
+                <Text style={[styles.infoValue, { color: colors.text }]}>{formData.modelo}</Text>
+              </View>
+              <View style={styles.infoRow}>
+                <Text style={[styles.infoLabel, { color: colors.textSecondary }]}>Status:</Text>
+                <Text style={[styles.infoValue, { color: colors.text }]}>{formData.status}</Text>
+              </View>
+            </View>
+
+            <TouchableOpacity style={[styles.botao, { backgroundColor: colors.primary }]} onPress={handleFinalizarEntrada}>
+              <Text style={[styles.textoBotao, { color: colors.primaryText }]}>Finalizar Entrada</Text>
             </TouchableOpacity>
           </View>
         </ScrollView>
@@ -378,31 +426,35 @@ const EntradaMotoPatio = ({ navigation }) => {
         onRequestClose={() => setModalCodigoVisible(false)}
       >
         <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitulo}>Procedimento de controle</Text>
-            <Text style={styles.modalSubtitulo}>Digite o código UUID do Beacon</Text>
+          <View style={[styles.modalContent, { backgroundColor: colors.cardBackground }]}>
+            <Text style={[styles.modalTitulo, { color: colors.text }]}>Procedimento de controle</Text>
+            <Text style={[styles.modalSubtitulo, { color: colors.textSecondary }]}>Digite o código UUID do Beacon</Text>
             
             <TextInput
-              style={styles.modalInput}
+              style={[styles.modalInput, { 
+                backgroundColor: colors.inputBackground, 
+                color: colors.text,
+                borderColor: colors.border 
+              }]}
               value={codigoBeacon}
               onChangeText={handleCodigoBeaconChange}
               placeholder="Código do beacon"
-              placeholderTextColor="#aaa"
+              placeholderTextColor={colors.placeholderTextColor}
             />
             
             <View style={styles.modalButtons}>
               <TouchableOpacity 
-                style={styles.modalButtonCancel}
+                style={[styles.modalButtonCancel, { backgroundColor: colors.inputBackground }]}
                 onPress={() => setModalCodigoVisible(false)}
               >
-                <Text style={styles.modalButtonText}>Cancelar</Text>
+                <Text style={[styles.modalButtonText, { color: colors.text }]}>Cancelar</Text>
               </TouchableOpacity>
               
               <TouchableOpacity 
-                style={styles.modalButtonConfirm}
+                style={[styles.modalButtonConfirm, { backgroundColor: colors.primary }]}
                 onPress={confirmarCodigoManual}
               >
-                <Text style={styles.modalButtonText}>Confirmar</Text>
+                <Text style={[styles.modalButtonText, { color: colors.primaryText }]}>Confirmar</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -415,11 +467,9 @@ const EntradaMotoPatio = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#000',
   },
   scrollView: {
     flex: 1,
-    backgroundColor: '#000',
   },
   scrollContent: {
     padding: 20,
@@ -439,7 +489,6 @@ const styles = StyleSheet.create({
     zIndex: 10,
   },
   card: {
-    backgroundColor: '#000',
     width: '100%',
     maxWidth: 400,
     padding: 25,
@@ -447,19 +496,16 @@ const styles = StyleSheet.create({
   titulo: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#fff',
     textAlign: 'center',
     marginBottom: 10,
   },
   subtitulo: {
     fontSize: 14,
-    color: '#aaa',
     textAlign: 'center',
     marginBottom: 20,
   },
   separador: {
     height: 1,
-    backgroundColor: '#555',
     marginVertical: 15,
     width: '100%',
   },
@@ -469,36 +515,28 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 14,
-    color: '#aaa',
     marginBottom: 8,
   },
   inputLabel: {
     fontSize: 14,
-    color: '#fff',
     marginBottom: 8,
   },
   input: {
-    backgroundColor: '#212121',
     borderRadius: 8,
     padding: 14,
-    color: '#fff',
     fontSize: 16,
     borderWidth: 1,
-    borderColor: '#555',
   },
   inputReadonly: {
-    color: '#aaa',
+    opacity: 0.7,
   },
   pickerContainer: {
-    backgroundColor: '#212121',
     borderRadius: 8,
     overflow: 'hidden',
     borderWidth: 1,
-    borderColor: '#555',
     height: 50,
   },
   picker: {
-    color: '#fff',
     fontSize: 16,
     height: 50,
   },
@@ -507,13 +545,11 @@ const styles = StyleSheet.create({
     color: '#000',
   },
   cameraButton: {
-    backgroundColor: '#212121',
     borderRadius: 8,
     padding: 14,
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1,
-    borderColor: '#555',
     height: 60,
   },
   imagemMotoContainer: {
@@ -525,38 +561,32 @@ const styles = StyleSheet.create({
     height: 220,
   },
   botao: {
-    backgroundColor: '#01743A',
     borderRadius: 8,
     padding: 16,
     alignItems: 'center',
     marginTop: 20,
   },
   textoBotao: {
-    color: '#fff',
     fontSize: 18,
     fontWeight: 'bold',
   },
   cardProcedimento: {
-    backgroundColor: '#212121',
     borderRadius: 8,
     padding: 20,
     marginTop: 20,
   },
   tituloProcedimento: {
-    color: '#fff',
     fontSize: 18,
     fontWeight: 'bold',
     textAlign: 'center',
     marginBottom: 15,
   },
   textoProcedimento: {
-    color: '#aaa',
     fontSize: 14,
     textAlign: 'center',
     marginBottom: 5,
   },
   botaoRastrear: {
-    backgroundColor: '#01743A',
     borderRadius: 8,
     padding: 16,
     alignItems: 'center',
@@ -565,16 +595,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   botaoRastreando: {
-    backgroundColor: '#555',
+    opacity: 0.7,
   },
   textoBotaoRastrear: {
-    color: '#fff',
     fontSize: 16,
     fontWeight: 'bold',
     marginLeft: 8,
   },
   linkCodigo: {
-    color: '#01743A',
     fontSize: 14,
     textAlign: 'center',
     marginTop: 10,
@@ -585,32 +613,27 @@ const styles = StyleSheet.create({
     maxWidth: 400,
   },
   cardSucesso: {
-    backgroundColor: '#014d26',
     borderRadius: 8,
     padding: 20,
     alignItems: 'center',
     marginBottom: 20,
   },
   tituloSucesso: {
-    color: '#fff',
     fontSize: 18,
     fontWeight: 'bold',
     marginTop: 10,
     marginBottom: 5,
   },
   textoSucesso: {
-    color: '#4ade80',
     fontSize: 14,
     textAlign: 'center',
   },
   cardInfo: {
-    backgroundColor: '#212121',
     borderRadius: 8,
     padding: 20,
     marginBottom: 20,
   },
   tituloInfo: {
-    color: '#fff',
     fontSize: 18,
     fontWeight: 'bold',
     textAlign: 'center',
@@ -623,11 +646,9 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   infoLabel: {
-    color: '#aaa',
     fontSize: 14,
   },
   infoValue: {
-    color: '#fff',
     fontSize: 14,
     fontWeight: '500',
   },
@@ -638,39 +659,34 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.5)',
   },
   modalContent: {
-    backgroundColor: '#212121',
     borderRadius: 8,
     padding: 20,
     width: '90%',
     maxWidth: 300,
   },
   modalTitulo: {
-    color: '#fff',
     fontSize: 18,
     fontWeight: 'bold',
     textAlign: 'center',
     marginBottom: 10,
   },
   modalSubtitulo: {
-    color: '#aaa',
     fontSize: 14,
     textAlign: 'center',
     marginBottom: 20,
   },
   modalInput: {
-    backgroundColor: '#333',
     borderRadius: 8,
     padding: 14,
-    color: '#fff',
     fontSize: 16,
     marginBottom: 20,
+    borderWidth: 1,
   },
   modalButtons: {
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
   modalButtonCancel: {
-    backgroundColor: '#555',
     borderRadius: 8,
     padding: 12,
     flex: 1,
@@ -678,14 +694,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   modalButtonConfirm: {
-    backgroundColor: '#01743A',
     borderRadius: 8,
     padding: 12,
     flex: 1,
     alignItems: 'center',
   },
   modalButtonText: {
-    color: '#fff',
     fontSize: 16,
     fontWeight: 'bold',
   },

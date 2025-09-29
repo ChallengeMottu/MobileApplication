@@ -6,8 +6,10 @@ import { Alert, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View 
 import { Ionicons } from "@expo/vector-icons";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../configurations/firebaseConfig";
+import { useTheme } from '../context/ContextTheme';
 
 export default function TelaCadastroF() {
+  const { colors, theme } = useTheme();
   const navigation = useNavigation();
 
   let [fontsLoaded] = useFonts({
@@ -165,99 +167,112 @@ export default function TelaCadastroF() {
   };
 
   return (
-    <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
+    <ScrollView 
+      style={[styles.scrollView, { backgroundColor: colors.background }]} 
+      contentContainerStyle={styles.scrollContent}
+    >
       
-      <TouchableOpacity style={styles.goBack} onPress={() => navigation.navigate('TelaLogin')}>
-        <Ionicons name="arrow-back" size={20} color="#fff" />
+      <TouchableOpacity 
+        style={styles.goBack} 
+        onPress={() => navigation.navigate('TelaLogin')}
+      >
+        <Ionicons name="arrow-back" size={20} color={colors.text} />
       </TouchableOpacity>
 
-      <Text style={styles.subtitulo}>
+      <Text style={[styles.subtitulo, { color: colors.text }]}>
         Ainda sem cadastro de funcionário?{"\n"}Preencha seus dados e acesse o sistema
       </Text>
 
-      <View style={styles.inputContainer}>
+      <View style={[styles.inputContainer, { backgroundColor: colors.inputBackground }]}>
         <TextInput
-          style={styles.input}
+          style={[styles.input, { color: colors.text }]}
           value={nome}
           onChangeText={setNome}
           placeholder="Nome Completo"
-          placeholderTextColor="#999"
+          placeholderTextColor={colors.textSecondary}
         />
       </View>
 
-      <View style={styles.inputContainer}>
+      <View style={[styles.inputContainer, { backgroundColor: colors.inputBackground }]}>
         <TextInput
-          style={styles.input}
+          style={[styles.input, { color: colors.text }]}
           value={dataNascimento}
           onChangeText={formatarData}
           placeholder="Data de Nascimento"
-          placeholderTextColor="#999"
+          placeholderTextColor={colors.textSecondary}
           keyboardType="numeric"
           maxLength={10}
         />
       </View>
 
-      <View style={styles.inputContainer}>
+      <View style={[styles.inputContainer, { backgroundColor: colors.inputBackground }]}>
         <TextInput
-          style={styles.input}
+          style={[styles.input, { color: colors.text }]}
           value={cpf}
           onChangeText={formatarCPF}
           placeholder="CPF"
-          placeholderTextColor="#999"
+          placeholderTextColor={colors.textSecondary}
           keyboardType="numeric"
           maxLength={14}
         />
       </View>
 
-      <View style={styles.inputContainer}>
+      <View style={[styles.inputContainer, { backgroundColor: colors.inputBackground }]}>
         <TextInput
-          style={styles.input}
+          style={[styles.input, { color: colors.text }]}
           value={telefone}
           onChangeText={formatarTelefone}
           placeholder="Telefone (XX) XXXXX-XXXX"
-          placeholderTextColor="#999"
+          placeholderTextColor={colors.textSecondary}
           keyboardType="phone-pad"
           maxLength={15}
         />
       </View>
 
-      <View style={styles.inputContainer}>
+      <View style={[styles.inputContainer, { backgroundColor: colors.inputBackground }]}>
         <TextInput
-          style={styles.input}
+          style={[styles.input, { color: colors.text }]}
           value={patio}
           onChangeText={setPatio}
           placeholder="Filial Mottu"
-          placeholderTextColor="#999"
+          placeholderTextColor={colors.textSecondary}
         />
       </View>
 
-      <View style={styles.inputContainer}>
+      <View style={[styles.inputContainer, { backgroundColor: colors.inputBackground }]}>
         <TextInput
-          style={styles.input}
+          style={[styles.input, { color: colors.text }]}
           value={email}
           onChangeText={setEmail}
           placeholder="Email"
-          placeholderTextColor="#999"
+          placeholderTextColor={colors.textSecondary}
           keyboardType="email-address"
         />
       </View>
 
-      <View style={styles.inputContainer}>
+      <View style={[styles.inputContainer, { backgroundColor: colors.inputBackground }]}>
         <TextInput
-          style={styles.input}
+          style={[styles.input, { color: colors.text }]}
           value={senha}
           onChangeText={setSenha}
           placeholder="Crie sua senha"
-          placeholderTextColor="#999"
+          placeholderTextColor={colors.textSecondary}
           secureTextEntry={!showPassword}
         />
         <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.icon}>
-          <Ionicons name={showPassword ? "eye-off" : "eye"} size={20} color="#fff" />
+          <Ionicons 
+            name={showPassword ? "eye-off" : "eye"} 
+            size={20} 
+            color={colors.text} 
+          />
         </TouchableOpacity>
       </View>
 
-      <TouchableOpacity style={styles.botao} onPress={handleCadastro}>
-        <Text style={styles.textoBotao}>CADASTRAR</Text>
+      <TouchableOpacity 
+        style={[styles.botao, { backgroundColor: colors.primary }]} 
+        onPress={handleCadastro}
+      >
+        <Text style={[styles.textoBotao, { color: colors.primaryText }]}>CADASTRAR</Text>
       </TouchableOpacity>
     </ScrollView>
   );
@@ -266,7 +281,6 @@ export default function TelaCadastroF() {
 const styles = StyleSheet.create({
   scrollView: {
     flex: 1,
-    backgroundColor: '#000',
   },
   scrollContent: {
     flexGrow: 1,
@@ -283,14 +297,12 @@ const styles = StyleSheet.create({
   subtitulo: {
     fontSize: 21,
     fontFamily: 'DarkerGrotesque_500Medium',
-    color: '#fff',
     textAlign: 'center',
     marginBottom: 30,
   },
   inputContainer: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#212121",
     borderRadius: 10,
     paddingHorizontal: 12,
     marginTop: 18,
@@ -298,7 +310,6 @@ const styles = StyleSheet.create({
   },
   input: {
     flex: 1,
-    color: "#fff",
     fontSize: 18,
     fontFamily: "DarkerGrotesque_500Medium",
     paddingVertical: 13,
@@ -307,7 +318,6 @@ const styles = StyleSheet.create({
     marginLeft: 8,
   },
   botao: {
-    backgroundColor: '#01743A',
     borderRadius: 10,
     padding: 14,
     alignItems: 'center',
@@ -315,7 +325,6 @@ const styles = StyleSheet.create({
     width: "70%", 
   },
   textoBotao: {
-    color: '#fff',
     fontSize: 16,
     fontFamily: 'DarkerGrotesque_700Bold',
   },

@@ -1,50 +1,67 @@
 import { useState } from 'react';
 import { ActivityIndicator, Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { ScrollView } from "react-native-gesture-handler";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
+import { useTheme } from '../context/ContextTheme'; // importa o contexto do tema
 
 export default function TelaScanner() {
     const navigation = useNavigation();
     const [rastreandoStatus, setRastreandoStatus] = useState(false);
+    const { colors } = useTheme(); // pega as cores do tema
 
     const toggleRastreando = () => {
         setRastreandoStatus(prevStatus => !prevStatus);
     }
 
     return (
-        <View style={styles.container}>
+        <View style={[styles.container, { backgroundColor: colors.background }]}>
             {/* Botão GoBack */}
             <TouchableOpacity
                 style={styles.goBack}
                 onPress={() => navigation.navigate('TelaFuncionario')}   
             >
-                <Ionicons name="arrow-back" size={20} color="#fff" />
+                <Ionicons name="arrow-back" size={20} color={colors.text} />
             </TouchableOpacity>
 
             {/* Conteúdo principal */}
-            <View style={styles.card}>
+            <View style={[styles.card, { backgroundColor: colors.cardBackground }]}>
                 <View style={styles.containerImagem}>
                     <Image style={styles.iconeMoto} source={require('../../assets/motoIcon.png')} />
                 </View>
 
-                <Text style={styles.titulo}>Entrada de Motos no Pátio</Text>
-                <Text style={styles.subtitulo}>Identifique o código de uso da moto mais próxima ao dispositivo</Text>
+                <Text style={[styles.titulo, { color: colors.text }]}>
+                    Entrada de Motos no Pátio
+                </Text>
+                <Text style={[styles.subtitulo, { color: colors.textSecondary }]}>
+                    Identifique o código de uso da moto mais próxima ao dispositivo
+                </Text>
 
                 {!rastreandoStatus ? (
-                    <TouchableOpacity onPress={toggleRastreando} style={styles.botao}>
-                        <Text style={styles.textoBotao}>RASTREAR</Text>
+                    <TouchableOpacity 
+                        onPress={toggleRastreando} 
+                        style={[styles.botao, { backgroundColor: colors.primary }]}
+                    >
+                        <Text style={[styles.textoBotao, { color: colors.primaryText }]}>
+                            RASTREAR
+                        </Text>
                     </TouchableOpacity>
                 ) : (
-                    <TouchableOpacity onPress={toggleRastreando} style={styles.botao}>
-                        <Text style={styles.textoBotao}>PARAR RASTREAMENTO</Text>
+                    <TouchableOpacity 
+                        onPress={toggleRastreando} 
+                        style={[styles.botao, { backgroundColor: colors.primary }]}
+                    >
+                        <Text style={[styles.textoBotao, { color: colors.primaryText }]}>
+                            PARAR RASTREAMENTO
+                        </Text>
                     </TouchableOpacity>
                 )}
 
                 {rastreandoStatus && (
-                    <View style={styles.rastreandoContainer}>
-                        <Text style={{ color: '#ffff', textAlign: 'center' }}>Rastreando Motos...</Text>
-                        <ActivityIndicator size="large" color="#fff" style={styles.spinner} />
+                    <View style={[styles.rastreandoContainer, { backgroundColor: colors.cardSecondary }]}>
+                        <Text style={{ color: colors.text, textAlign: 'center' }}>
+                            Rastreando Motos...
+                        </Text>
+                        <ActivityIndicator size="large" color={colors.text} style={styles.spinner} />
                     </View>
                 )}
             </View>
@@ -55,7 +72,6 @@ export default function TelaScanner() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#000',
         justifyContent: 'center',
         alignItems: 'center',
     },
@@ -74,7 +90,6 @@ const styles = StyleSheet.create({
         height: 60,
     },
     card: {
-        backgroundColor: '#212121',
         width: '85%',
         padding: 25,
         borderRadius: 12,
@@ -86,14 +101,12 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     botao: {
-        backgroundColor: '#01743A',
         borderRadius: 8,
         padding: 10,
         marginTop: 10,
         width: '100%',
     },
     textoBotao: {
-        color: '#fff',
         fontSize: 16,
         fontFamily: 'DarkerGrotesque_700Bold',
         textAlign: 'center',
@@ -102,21 +115,18 @@ const styles = StyleSheet.create({
     titulo: {
         fontSize: 24,
         fontFamily: 'DarkerGrotesque_700Bold',
-        color: '#fff',
         textAlign: 'center',
         marginBottom: 20,
     },
     subtitulo: {
-        fontFamily: 'DarkerGrotesque_700Medium',
+        fontFamily: 'DarkerGrotesque_500Medium',
         fontSize: 14,
-        color: '#fff',
         textAlign: 'center',
         marginBottom: 20
     },
     rastreandoContainer: {
         marginTop: 20,
         padding: 10,
-        backgroundColor: '#2d2d2d',
         borderRadius: 8,
         alignItems: 'center',
         width: '100%',

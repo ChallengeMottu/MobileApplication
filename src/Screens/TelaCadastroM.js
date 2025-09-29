@@ -5,12 +5,11 @@ import { useNavigation } from '@react-navigation/native';
 import { useEffect, useState } from "react";
 import { Alert, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { useTheme } from "../context/ContextTheme";
 
 export default function TelaCadastroM() {
   const navigation = useNavigation();
-  
-
-
+  const { colors } = useTheme();
 
   let [fontsLoaded] = useFonts({
     DarkerGrotesque_500Medium,
@@ -95,105 +94,118 @@ export default function TelaCadastroM() {
   if (!fontsLoaded) return null;
 
   return (
-    <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
+    <ScrollView style={[styles.scrollView, { backgroundColor: colors.background }]} contentContainerStyle={styles.scrollContent}>
       <TouchableOpacity style={styles.goBack} onPress={() => navigation.navigate('TelaFuncionario')}>
-        <Ionicons name="arrow-back" size={20} color="#fff" />
+        <Ionicons name="arrow-back" size={20} color={colors.text} />
       </TouchableOpacity>
-      <View style={styles.card}>
-        <Text style={styles.titulo}>Cadastro de nova Moto</Text>
 
-        <View style={styles.separador} />
+      <View style={[styles.card, { backgroundColor: colors.cardBackground }]}>
+        <Text style={[styles.titulo, { color: colors.text }]}>Cadastro de nova Moto</Text>
+
+        <View style={[styles.separador, { backgroundColor: colors.border }]} />
 
         <View style={styles.inputContainer}>
-          <Text style={styles.label}>Placa</Text>
-          <TextInput style={styles.input} value={placa} onChangeText={setPlaca} placeholder="Placa da Moto" placeholderTextColor="#aaa" />
+          <Text style={[styles.label, { color: colors.primary }]}>Placa</Text>
+          <TextInput
+            style={[styles.input, { backgroundColor: colors.inputBackground, color: colors.text, borderColor: colors.border }]}
+            value={placa}
+            onChangeText={setPlaca}
+            placeholder="Placa da Moto"
+            placeholderTextColor={colors.textSecondary}
+          />
         </View>
 
         <View style={styles.inputContainer}>
-          <Text style={styles.label}>Modelo</Text>
-          <View style={styles.pickerContainer}>
+          <Text style={[styles.label, { color: colors.primary }]}>Modelo</Text>
+          <View style={[styles.pickerContainer, { backgroundColor: colors.inputBackground, borderColor: colors.border }]}>
             <Picker
               selectedValue={modelo}
               onValueChange={(itemValue) => setModelo(itemValue)}
-              style={styles.picker}
-              dropdownIconColor='#fff'
+              style={[styles.picker, { color: colors.text }]}
+              dropdownIconColor={colors.text}
             >
-              <Picker.Item style={styles.pickerItem} label='Modelo' value='' />
-              <Picker.Item style={styles.pickerItem} label='Sport 110i' value='Sport 110i' />
-              <Picker.Item style={styles.pickerItem} label='Mottu E' value='Mottu E' />
-              <Picker.Item style={styles.pickerItem} label='Mottu Pop 110i' value='Mottu Pop 110i' />
+              <Picker.Item label='Modelo' value='' />
+              <Picker.Item label='Sport 110i' value='Sport 110i' />
+              <Picker.Item label='Mottu E' value='Mottu E' />
+              <Picker.Item label='Mottu Pop 110i' value='Mottu Pop 110i' />
             </Picker>
           </View>
         </View>
 
         <View style={styles.inputContainer}>
-          <Text style={styles.label}>Número de Chassi</Text>
-          <TextInput style={styles.input} value={numeroChassi} onChangeText={setNumeroChassi} placeholder="Número de Chassi da Moto" placeholderTextColor="#aaa" />
+          <Text style={[styles.label, { color: colors.primary }]}>Número de Chassi</Text>
+          <TextInput
+            style={[styles.input, { backgroundColor: colors.inputBackground, color: colors.text, borderColor: colors.border }]}
+            value={numeroChassi}
+            onChangeText={setNumeroChassi}
+            placeholder="Número de Chassi da Moto"
+            placeholderTextColor={colors.textSecondary}
+          />
         </View>
 
         <View style={styles.inputContainer}>
-          <Text style={styles.label}>Status da Moto</Text>
-          <View style={styles.pickerContainer}>
+          <Text style={[styles.label, { color: colors.primary }]}>Status da Moto</Text>
+          <View style={[styles.pickerContainer, { backgroundColor: colors.inputBackground, borderColor: colors.border }]}>
             <Picker
               selectedValue={status}
               onValueChange={(itemValue) => setStatus(itemValue)}
-              style={styles.picker}
-              dropdownIconColor='#fff'
+              style={[styles.picker, { color: colors.text }]}
+              dropdownIconColor={colors.text}
             >
-              <Picker.Item style={styles.pickerItem} label='Selecione' value='' />
-              <Picker.Item style={styles.pickerItem} label='Sem Placa' value='Moto sem placa' />
-              <Picker.Item style={styles.pickerItem} label='Com Placa' value='Moto normal com placa' />
-              <Picker.Item style={styles.pickerItem} label='Situação de Furto' value='Moto parada por situação de furto' />
-              <Picker.Item style={styles.pickerItem} label='Situação de Acidente' value='Moto parada por situação de acidente' />
+              <Picker.Item label='Selecione' value='' />
+              <Picker.Item label='Sem Placa' value='Moto sem placa' />
+              <Picker.Item label='Com Placa' value='Moto normal com placa' />
+              <Picker.Item label='Situação de Furto' value='Moto parada por situação de furto' />
+              <Picker.Item label='Situação de Acidente' value='Moto parada por situação de acidente' />
             </Picker>
           </View>
         </View>
 
-        <View style={styles.separador} />
+        <View style={[styles.separador, { backgroundColor: colors.border }]} />
 
         <View style={styles.secaoContainer}>
-          <Text style={styles.subtituloSecao}>Condições Físicas</Text>
+          <Text style={[styles.subtituloSecao, { color: colors.text }]}>Condições Físicas</Text>
         </View>
 
         <View style={styles.inputContainer}>
-          <Text style={styles.labelPergunta}>Qual é a condição mecânica atual da moto?</Text>
-          <View style={styles.pickerContainer}>
+          <Text style={[styles.labelPergunta, { color: colors.textSecondary }]}>Qual é a condição mecânica atual da moto?</Text>
+          <View style={[styles.pickerContainer, { backgroundColor: colors.inputBackground, borderColor: colors.border }]}>
             <Picker
               selectedValue={condicaoMecanica}
               onValueChange={(itemValue) => setCondicaoMecanica(itemValue)}
-              style={styles.picker}
-              dropdownIconColor='#fff'
+              style={[styles.picker, { color: colors.text }]}
+              dropdownIconColor={colors.text}
             >
-              <Picker.Item style={styles.pickerItem} label='Selecione' value='' />
-              <Picker.Item style={styles.pickerItem} label='Bom Estado Mecânico' value='Moto em bom estado mecânico' />
-              <Picker.Item style={styles.pickerItem} label='Gravemente Danificada' value='Moto com graves danificações' />
-              <Picker.Item style={styles.pickerItem} label='Inoperante' value='Moto sem utilidade' />
-              <Picker.Item style={styles.pickerItem} label='Necessita de Revisão' value='Moto precisa ser diagnosticada' />
-              <Picker.Item style={styles.pickerItem} label='Pequenos Reparos' value='Moto com pequenos reparos de funcionamento' />
+              <Picker.Item label='Selecione' value='' />
+              <Picker.Item label='Bom Estado Mecânico' value='Moto em bom estado mecânico' />
+              <Picker.Item label='Gravemente Danificada' value='Moto com graves danificações' />
+              <Picker.Item label='Inoperante' value='Moto sem utilidade' />
+              <Picker.Item label='Necessita de Revisão' value='Moto precisa ser diagnosticada' />
+              <Picker.Item label='Pequenos Reparos' value='Moto com pequenos reparos de funcionamento' />
             </Picker>
           </View>
         </View>
 
         <View style={styles.inputContainer}>
-          <Text style={styles.labelPergunta}>Está com falta de algum aparato físico?</Text>
-          <View style={styles.pickerContainer}>
+          <Text style={[styles.labelPergunta, { color: colors.textSecondary }]}>Está com falta de algum aparato físico?</Text>
+          <View style={[styles.pickerContainer, { backgroundColor: colors.inputBackground, borderColor: colors.border }]}>
             <Picker
               selectedValue={condicaoMecanica}
               onValueChange={(itemValue) => setCondicaoMecanica(itemValue)}
-              style={styles.picker}
-              dropdownIconColor='#fff'
+              style={[styles.picker, { color: colors.text }]}
+              dropdownIconColor={colors.text}
             >
-              <Picker.Item style={styles.pickerItem} label='Selecione' value='' />
-              <Picker.Item style={styles.pickerItem} label='Completa' value='Completa' />
-              <Picker.Item style={styles.pickerItem} label='Falta retrovisor' value='Falta retrovisor' />
-              <Picker.Item style={styles.pickerItem} label='Falta banco' value='Falta banco' />
-              <Picker.Item style={styles.pickerItem} label='Falta farol' value='Falta farol' />
+              <Picker.Item label='Selecione' value='' />
+              <Picker.Item label='Completa' value='Completa' />
+              <Picker.Item label='Falta retrovisor' value='Falta retrovisor' />
+              <Picker.Item label='Falta banco' value='Falta banco' />
+              <Picker.Item label='Falta farol' value='Falta farol' />
             </Picker>
           </View>
         </View>
 
-        <TouchableOpacity style={styles.botao} onPress={handleCadastro}>
-          <Text style={styles.textoBotao}>CADASTRAR</Text>
+        <TouchableOpacity style={[styles.botao, { backgroundColor: colors.primary }]} onPress={handleCadastro}>
+          <Text style={[styles.textoBotao, { color: colors.primaryText }]}>CADASTRAR</Text>
         </TouchableOpacity>
       </View>
     </ScrollView>
@@ -203,7 +215,6 @@ export default function TelaCadastroM() {
 const styles = StyleSheet.create({
   scrollView: {
     flex: 1,
-    backgroundColor: '#000',
   },
   scrollContent: {
     padding: 20,
@@ -217,7 +228,6 @@ const styles = StyleSheet.create({
     zIndex: 10,
   },
   card: {
-    backgroundColor: '#000',
     width: '100%',
     maxWidth: 400,
     padding: 25,
@@ -231,14 +241,12 @@ const styles = StyleSheet.create({
   titulo: {
     fontSize: 28,
     fontFamily: 'DarkerGrotesque_700Bold',
-    color: '#fff',
     textAlign: 'center',
     marginBottom: 10,
     letterSpacing: 0.5,
   },
   separador: {
     height: 1,
-    backgroundColor: '#555',
     marginVertical: 15,
     width: '100%',
   },
@@ -249,45 +257,33 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 18,
     fontFamily: 'DarkerGrotesque_700Bold',
-    color: '#01743A',
     marginBottom: 8,
     textAlign: 'left',
   },
   labelPergunta: {
     fontSize: 16,
     fontFamily: 'DarkerGrotesque_500Medium',
-    color: '#fff',
     marginBottom: 10,
     textAlign: 'center',
     lineHeight: 20,
   },
   input: {
-    backgroundColor: '#212121',
     borderRadius: 8,
     padding: 14,
-    color: '#fff',
     fontSize: 16,
     fontFamily: 'DarkerGrotesque_500Medium',
     borderWidth: 1,
-    borderColor: '#555',
   },
   pickerContainer: {
-    backgroundColor: '#212121',
     borderRadius: 8,
     overflow: 'hidden',
     borderWidth: 1,
-    borderColor: '#555',
     height: 50,
   },
   picker: {
-    color: '#fff',
     fontFamily: 'DarkerGrotesque_500Medium',
     fontSize: 16,
     height: 50,
-  },
-  pickerItem: {
-    fontSize: 14,
-    color: '#000',
   },
   secaoContainer: {
     marginBottom: 25,
@@ -297,23 +293,19 @@ const styles = StyleSheet.create({
   subtituloSecao: {
     fontFamily: 'DarkerGrotesque_700Bold',
     fontSize: 22,
-    color: '#fff',
     textAlign: 'center',
   },
   botao: {
-    backgroundColor: '#01743A',
     borderRadius: 8,
     padding: 16,
     alignItems: 'center',
     marginTop: 20,
-    shadowColor: '#01743A',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
     shadowRadius: 4,
     elevation: 5,
   },
   textoBotao: {
-    color: '#fff',
     fontSize: 18,
     fontFamily: 'DarkerGrotesque_700Bold',
     letterSpacing: 1,

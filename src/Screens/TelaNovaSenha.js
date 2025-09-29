@@ -5,9 +5,11 @@ import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from '@react-navigation/native';
 import { EmailAuthProvider, reauthenticateWithCredential, updatePassword } from 'firebase/auth';
 import { auth } from '../configurations/firebaseConfig';
-
+import { useTheme } from '../context/ContextTheme';
 
 export default function TelaNovaSenha() {
+    const { colors, theme } = useTheme();
+    
     let [fontsLoaded] = useFonts({
         DarkerGrotesque_500Medium,
         DarkerGrotesque_700Bold
@@ -62,19 +64,23 @@ export default function TelaNovaSenha() {
     };
 
     return (
-        <View style={styles.container}>
-            <TouchableOpacity style={styles.goBack} onPress={() => navigation.navigate('TelaLogin')}>
-                <Ionicons name="arrow-back" size={20} color="#fff" />
+        <View style={[styles.container, { backgroundColor: colors.background }]}>
+            <TouchableOpacity style={styles.goBack} onPress={() => navigation.navigate('TelaFuncionario')}>
+                <Ionicons name="arrow-back" size={20} color={colors.text} />
             </TouchableOpacity>
-            <View style={styles.card}>
-                <Text style={styles.titulo}>Alterar senha</Text>
+            
+            <View style={[styles.card, { backgroundColor: colors.cardBackground }]}>
+                <Text style={[styles.titulo, { color: colors.text }]}>Alterar senha</Text>
 
                 {/* Senha atual */}
                 <View style={styles.inputContainer}>
                     <TextInput
-                        style={styles.input}
+                        style={[styles.input, { 
+                            backgroundColor: colors.inputBackground,
+                            color: colors.text 
+                        }]}
                         placeholder="Senha atual"
-                        placeholderTextColor="#888"
+                        placeholderTextColor={colors.textSecondary}
                         secureTextEntry={!mostrarSenhaAtual}
                         value={senhaAtual}
                         onChangeText={setSenhaAtual}
@@ -86,7 +92,7 @@ export default function TelaNovaSenha() {
                         <Ionicons
                             name={mostrarSenhaAtual ? "eye-off-outline" : "eye-outline"}
                             size={22}
-                            color="#888"
+                            color={colors.textSecondary}
                         />
                     </TouchableOpacity>
                 </View>
@@ -94,9 +100,12 @@ export default function TelaNovaSenha() {
                 {/* Nova senha */}
                 <View style={styles.inputContainer}>
                     <TextInput
-                        style={styles.input}
+                        style={[styles.input, { 
+                            backgroundColor: colors.inputBackground,
+                            color: colors.text 
+                        }]}
                         placeholder="Nova senha"
-                        placeholderTextColor="#888"
+                        placeholderTextColor={colors.textSecondary}
                         secureTextEntry={!mostrarSenha1}
                         value={novaSenha}
                         onChangeText={setNovaSenha}
@@ -108,7 +117,7 @@ export default function TelaNovaSenha() {
                         <Ionicons
                             name={mostrarSenha1 ? "eye-off-outline" : "eye-outline"}
                             size={22}
-                            color="#888"
+                            color={colors.textSecondary}
                         />
                     </TouchableOpacity>
                 </View>
@@ -116,9 +125,12 @@ export default function TelaNovaSenha() {
                 {/* Confirmar senha */}
                 <View style={styles.inputContainer}>
                     <TextInput
-                        style={styles.input}
+                        style={[styles.input, { 
+                            backgroundColor: colors.inputBackground,
+                            color: colors.text 
+                        }]}
                         placeholder="Confirmar nova senha"
-                        placeholderTextColor="#888"
+                        placeholderTextColor={colors.textSecondary}
                         secureTextEntry={!mostrarSenha2}
                         value={confirmarSenha}
                         onChangeText={setConfirmarSenha}
@@ -130,13 +142,16 @@ export default function TelaNovaSenha() {
                         <Ionicons
                             name={mostrarSenha2 ? "eye-off-outline" : "eye-outline"}
                             size={22}
-                            color="#888"
+                            color={colors.textSecondary}
                         />
                     </TouchableOpacity>
                 </View>
 
-                <TouchableOpacity style={styles.botao} onPress={handleAlterarSenha}>
-                    <Text style={styles.textoBotao}>Salvar senha</Text>
+                <TouchableOpacity 
+                    style={[styles.botao, { backgroundColor: colors.primary }]} 
+                    onPress={handleAlterarSenha}
+                >
+                    <Text style={[styles.textoBotao, { color: colors.primaryText }]}>Salvar senha</Text>
                 </TouchableOpacity>
             </View>
         </View>
@@ -146,13 +161,11 @@ export default function TelaNovaSenha() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#000',
         justifyContent: 'center',
         alignItems: 'center',
         padding: 10,
     },
     card: {
-        backgroundColor: '#000',
         width: '90%',
         maxWidth: 350,
         padding: 30,
@@ -177,28 +190,23 @@ const styles = StyleSheet.create({
         top: 15,
         zIndex: 1,
         fontSize: 20,
-        color: '#888',
     },
     titulo: {
         fontSize: 27,
         fontFamily: 'DarkerGrotesque_700Bold',
-        color: '#fff',
         textAlign: 'center',
         marginBottom: 40,
     },
     input: {
-        backgroundColor: '#212121',
         borderRadius: 12,
         paddingVertical: 15,
         paddingLeft: 15,
         paddingRight: 45,
-        color: '#fff',
         fontSize: 18,
         fontFamily: 'DarkerGrotesque_500Medium',
         width: '100%',
     },
     botao: {
-        backgroundColor: '#01743A',
         borderRadius: 12,
         paddingVertical: 15,
         paddingHorizontal: 40,
@@ -207,7 +215,6 @@ const styles = StyleSheet.create({
         width: '100%',
     },
     textoBotao: {
-        color: '#fff',
         fontSize: 16,
         fontFamily: 'DarkerGrotesque_700Bold',
         letterSpacing: 1,

@@ -4,7 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { DrawerContentScrollView, DrawerItem, createDrawerNavigator } from '@react-navigation/drawer';
 import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, StyleSheet, Text, View, Alert } from 'react-native';
 
 import CabecalhoHeader from './src/Components/CabecalhoHeader';
 import TelaCadastroF from './src/Screens/TelaCadastroF';
@@ -18,12 +18,14 @@ import TelaNovaSenha from './src/Screens/TelaNovaSenha';
 import TelaInfos from './src/Screens/TelaInfos';
 import Tela from './src/Screens/Tela';
 import TelaCadastroM from './src/Screens/TelaCadastroM';
+import { ThemeProvider, useTheme } from './src/context/ContextTheme';
 
 const Drawer = createDrawerNavigator();
 
 function CustomDrawerContent(props) {
   const navigation = useNavigation();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const { colors, theme } = useTheme();
 
   useEffect(() => {
     const checkLoginStatus = async () => {
@@ -42,14 +44,37 @@ function CustomDrawerContent(props) {
     navigation.navigate(routeName);
   };
 
+  // Estilos dinâmicos baseados no tema
+  const dynamicStyles = StyleSheet.create({
+    drawerContainer: {
+      backgroundColor: colors.background,
+    },
+    drawerHeader: {
+      ...styles.drawerHeader,
+      borderBottomColor: colors.primary,
+    },
+    userIconContainer: {
+      ...styles.userIconContainer,
+      backgroundColor: colors.primary,
+      borderColor: colors.primary,
+    },
+    drawerTitle: {
+      ...styles.drawerTitle,
+      color: colors.text,
+    },
+    drawerLabel: {
+      ...styles.drawerLabel,
+      color: colors.text,
+    },
+  });
 
   return (
-    <DrawerContentScrollView {...props} style={styles.drawerContainer}>
-      <View style={styles.drawerHeader}>
-        <View style={styles.userIconContainer}>
+    <DrawerContentScrollView {...props} style={dynamicStyles.drawerContainer}>
+      <View style={dynamicStyles.drawerHeader}>
+        <View style={dynamicStyles.userIconContainer}>
           <Ionicons name="person" size={48} color="white" />
         </View>
-        <Text style={styles.drawerTitle}>
+        <Text style={dynamicStyles.drawerTitle}>
           {isLoggedIn ? 'Funcionário' : 'Visitante'}
         </Text>
       </View>
@@ -57,87 +82,84 @@ function CustomDrawerContent(props) {
       <DrawerItem
         label="Início"
         icon={() => (
-          <Ionicons name="home" size={24} color="#11881D" style={{ marginRight: 10 }} />
+          <Ionicons name="home" size={24} color={colors.primary} style={{ marginRight: 10 }} />
         )}
         onPress={() => navigation.navigate('TelaInicial')}
-        labelStyle={styles.drawerLabel}
+        labelStyle={dynamicStyles.drawerLabel}
         style={styles.drawerItem}
       />
 
       <DrawerItem
         label="Nossa Equipe"
         icon={() => (
-          <Ionicons name="people" size={24} color="#11881D" style={{ marginRight: 10 }} />
+          <Ionicons name="people" size={24} color={colors.primary} style={{ marginRight: 10 }} />
         )}
         onPress={() => navigation.navigate('TelaEquipe')}
-        labelStyle={styles.drawerLabel}
+        labelStyle={dynamicStyles.drawerLabel}
         style={styles.drawerItem}
       />
-
-
 
       {isLoggedIn ? (
         <>
           <DrawerItem
             label="Funcionalidades"
             icon={() => (
-              <Ionicons name="globe-outline" size={24} color="#11881D" style={{ marginRight: 10 }} />
+              <Ionicons name="apps" size={24} color={colors.primary} style={{ marginRight: 10 }} />
             )}
             onPress={() => handleNavigation('TelaFuncionario')}
-            labelStyle={styles.drawerLabel}
+            labelStyle={dynamicStyles.drawerLabel}
             style={styles.drawerItem}
           />
 
           <DrawerItem
             label="Cadastro Moto"
             icon={() => (
-              <Ionicons name="bicycle" size={24} color="#11881D" style={{ marginRight: 10 }} />
+              <Ionicons name="add-circle" size={24} color={colors.primary} style={{ marginRight: 10 }} />
             )}
             onPress={() => navigation.navigate('TelaCadastroM')}
-            labelStyle={styles.drawerLabel}
+            labelStyle={dynamicStyles.drawerLabel}
             style={styles.drawerItem}
           />
 
           <DrawerItem
             label="Rastrear Moto"
             icon={() => (
-              <Ionicons name="bluetooth" size={24} color="#11881D" style={{ marginRight: 10 }} />
+              <Ionicons name="locate" size={24} color={colors.primary} style={{ marginRight: 10 }} />
             )}
             onPress={() => navigation.navigate('Tela')}
-            labelStyle={styles.drawerLabel}
+            labelStyle={dynamicStyles.drawerLabel}
             style={styles.drawerItem}
           />
 
           <DrawerItem
             label="Minhas Informações"
             icon={() => (
-              <Ionicons name="information-circle-outline" size={24} color="#11881D" style={{ marginRight: 10 }} />
+              <Ionicons name="person-circle" size={24} color={colors.primary} style={{ marginRight: 10 }} />
             )}
             onPress={() => navigation.navigate('TelaInfos')}
-            labelStyle={styles.drawerLabel}
+            labelStyle={dynamicStyles.drawerLabel}
             style={styles.drawerItem}
           />
 
           <DrawerItem
             label="Entrada Moto Pátio"
             icon={() => (
-              <Ionicons name="link" size={24} color="#11881D" style={{ marginRight: 10 }} />
+              <Ionicons name="enter" size={24} color={colors.primary} style={{ marginRight: 10 }} />
             )}
             onPress={() => navigation.navigate('TelaEntradaMotoPatio')}
-            labelStyle={styles.drawerLabel}
+            labelStyle={dynamicStyles.drawerLabel}
             style={styles.drawerItem}
           />
 
           <DrawerItem
-            label="Saida da Moto"
+            label="Saída da Moto"
             icon={() => (
-              <Ionicons name="unlink" size={24} color="#11881D" style={{ marginRight: 10 }} />
+              <Ionicons name="exit" size={24} color={colors.primary} style={{ marginRight: 10 }} />
             )}
             onPress={() => handleNavigation('TelaCadastroM')}
-            labelStyle={styles.drawerLabel}
+            labelStyle={dynamicStyles.drawerLabel}
             style={styles.drawerItem}
           />
-
 
           <DrawerItem
             label="Sair"
@@ -148,7 +170,7 @@ function CustomDrawerContent(props) {
               await AsyncStorage.removeItem('usuarioLogado');
               navigation.navigate('TelaInicial');
             }}
-            labelStyle={[styles.drawerLabel, { color: '#ff4444' }]}
+            labelStyle={[dynamicStyles.drawerLabel, { color: '#ff4444' }]}
             style={styles.drawerItem}
           />
         </>
@@ -156,10 +178,10 @@ function CustomDrawerContent(props) {
         <DrawerItem
           label="Login"
           icon={() => (
-            <Ionicons name="log-in" size={24} color="#11881D" style={{ marginRight: 10 }} />
+            <Ionicons name="log-in" size={24} color={colors.primary} style={{ marginRight: 10 }} />
           )}
           onPress={() => navigation.navigate('TelaLogin')}
-          labelStyle={styles.drawerLabel}
+          labelStyle={dynamicStyles.drawerLabel}
           style={styles.drawerItem}
         />
       )}
@@ -170,6 +192,7 @@ function CustomDrawerContent(props) {
 function MainNavigator() {
   const navigation = useNavigation();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const { colors } = useTheme();
 
   useEffect(() => {
     const checkLoginStatus = async () => {
@@ -188,11 +211,11 @@ function MainNavigator() {
     <Drawer.Navigator
       drawerContent={(props) => <CustomDrawerContent {...props} />}
       screenOptions={{
-        drawerActiveBackgroundColor: '#333',
+        drawerActiveBackgroundColor: colors.primary,
         drawerActiveTintColor: 'white',
-        drawerInactiveTintColor: '#ccc',
+        drawerInactiveTintColor: colors.text,
         drawerStyle: {
-          backgroundColor: '#000',
+          backgroundColor: colors.background,
           width: 280,
         },
         header: (props) => <CabecalhoHeader {...props} />,
@@ -238,45 +261,42 @@ function MainNavigator() {
         component={TelaEntradaMotoPatio}
         options={{ title: 'Entrada da Moto' }}
       />
-
       <Drawer.Screen
         name="TelaNovaSenha"
         component={TelaNovaSenha}
-        options={{ title: 'Equipe' }}
+        options={{ title: 'Nova Senha' }}
       />
-
       <Drawer.Screen
         name="TelaInfos"
         component={TelaInfos}
         options={{ title: 'Minhas Informações' }}
       />
-
       <Drawer.Screen
         name="Tela"
         component={Tela}
         options={{ title: 'Tela' }}
       />
-
       <Drawer.Screen
         name="TelaCadastroM"
         component={TelaCadastroM}
-        options={{ title: 'Tela' }}
+        options={{ title: 'Cadastro Moto' }}
       />
-
     </Drawer.Navigator>
   );
 }
 
-export default function App() {
+function AppContent() {
   let [fontsLoaded] = useFonts({
     DarkerGrotesque_800ExtraBold,
     DarkerGrotesque_500Medium
   });
 
+  const { colors } = useTheme();
+
   if (!fontsLoaded) {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'black' }}>
-        <ActivityIndicator size="large" color="#11881D" />
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: colors.background }}>
+        <ActivityIndicator size="large" color={colors.primary} />
       </View>
     );
   }
@@ -288,38 +308,38 @@ export default function App() {
   );
 }
 
+export default function App() {
+  return (
+    <ThemeProvider>
+      <AppContent />
+    </ThemeProvider>
+  );
+}
+
 const styles = StyleSheet.create({
-  drawerContainer: {
-    backgroundColor: '#000',
-  },
   drawerHeader: {
     padding: 20,
     alignItems: 'center',
     borderBottomWidth: 1,
-    borderBottomColor: '#11881D',
   },
   userIconContainer: {
-    backgroundColor: '#11881D',
     width: 80,
     height: 80,
     borderRadius: 40,
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 2,
-    borderColor: '#11881D',
     marginBottom: 10,
   },
   drawerTitle: {
     fontSize: 22,
     fontFamily: 'DarkerGrotesque_800ExtraBold',
-    color: 'white',
     marginTop: 10,
     letterSpacing: 0.5,
   },
   drawerLabel: {
     fontSize: 19,
     fontFamily: 'DarkerGrotesque_500Medium',
-    color: 'white',
     marginLeft: -16,
     letterSpacing: 0.3,
   },
