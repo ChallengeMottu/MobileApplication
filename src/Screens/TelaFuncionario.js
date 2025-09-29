@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ImageBackground, Dimensions, Alert } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ImageBackground, Dimensions, Alert, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useEffect, useState } from 'react';
@@ -16,14 +16,10 @@ export default function TelaFuncionario({ navigation }) {
         const carregarDados = async () => {
             try {
                 const usuarioLogado = await AsyncStorage.getItem('usuarioLogado');
-                console.log('Dados do AsyncStorage:', usuarioLogado); // DEBUG
                 
                 if (usuarioLogado) {
                     const dadosUsuario = JSON.parse(usuarioLogado);
-                    console.log('Dados parseados:', dadosUsuario); // DEBUG
                     setUsuario(dadosUsuario);
-                } else {
-                    console.log('Nenhum usuário encontrado no AsyncStorage');
                 }
             } catch (error) {
                 console.error('Erro ao carregar dados:', error);
@@ -40,11 +36,9 @@ export default function TelaFuncionario({ navigation }) {
         navigation.navigate(tela);
     };
 
-    // Função para extrair o nome do usuário de forma segura
     const getNomeUsuario = () => {
         if (!usuario) return 'Usuário';
         
-        // Tenta diferentes possibilidades de onde o nome pode estar armazenado
         if (usuario.nome) return usuario.nome.split(' ')[0];
         if (usuario.displayName) return usuario.displayName.split(' ')[0];
         if (usuario.email) return usuario.email.split('@')[0];
@@ -60,70 +54,104 @@ export default function TelaFuncionario({ navigation }) {
         );
     }
 
+    const menuItems = [
+        {
+            title: 'Cadastrar Moto',
+            icon: 'bicycle',
+            screen: 'TelaCadastroM',
+            description: 'Registre uma nova motocicleta'
+        },
+        {
+            title: 'Identificar Localização',
+            icon: 'location',
+            screen: 'Tela',
+            description: 'Localize motos no pátio'
+        },
+        {
+            title: 'Entrada e Alocação',
+            icon: 'enter',
+            screen: 'TelaEntradaMotoPatio',
+            description: 'Registre entrada da moto'
+        },
+        {
+            title: 'Saída da Moto',
+            icon: 'exit',
+            screen: 'TelaScanner',
+            description: 'Registre saída do pátio'
+        },
+        {
+            title: 'Minhas Informações',
+            icon: 'information-circle',
+            screen: 'TelaInfos',
+            description: 'Veja seus dados cadastrais'
+        }
+    ];
+
     return (
-        <View style={[styles.container, { backgroundColor: colors.background }]}>
-            {/* Fundo verde no topo */}
+        <ScrollView 
+            style={[styles.container, { backgroundColor: colors.background }]}
+            showsVerticalScrollIndicator={false}
+        >
+            {/* Header com fundo verde */}
             <ImageBackground 
                 source={require('../../assets/fundo.png')} 
                 style={styles.topSection} 
                 resizeMode="cover"
             >
                 <View style={styles.headerContent}>
-                    <Text style={styles.nomeUsuario}>
-                        Olá, {getNomeUsuario()}!
-                    </Text>
+                    <View style={styles.welcomeContainer}>
+                        <Ionicons name="person-circle-outline" size={50} color="#fff" />
+                        <Text style={styles.nomeUsuario}>
+                            Olá, {getNomeUsuario()}!
+                        </Text>
+                    </View>
                     <Text style={styles.questionText}>O que deseja realizar hoje?</Text>
                 </View>
             </ImageBackground>
 
-            {/* Caixa central */}
-            <View style={[styles.centralBox, { 
-                backgroundColor: theme === 'dark' ? '#1a1a1a' : '#bfbfbf' 
-            }]}>
-                <View style={styles.row}>
-                    <TouchableOpacity 
-                        style={[styles.button, { backgroundColor: colors.primary }]} 
-                        onPress={() => handleNavigate('TelaCadastroM')}
-                    >
-                        <Ionicons name="bicycle" size={32} color={colors.primaryText} />
-                        <Text style={[styles.buttonText, { color: colors.primaryText }]}>Cadastrar moto</Text>
-                    </TouchableOpacity>
+            {/* Grid de opções */}
+            <View style={styles.content}>
+                <View style={styles.gridContainer}>
+                    {menuItems.map((item, index) => (
+                        <TouchableOpacity 
+                            key={index}
+                            style={[styles.menuCard, { 
+                                backgroundColor: colors.cardBackground,
+                                shadowColor: colors.primary
+                            }]} 
+                            onPress={() => handleNavigate(item.screen)}
+                            activeOpacity={0.8}
+                        >
+                            <View style={[styles.iconContainer, { backgroundColor: colors.primary }]}>
+                                <Ionicons name={item.icon} size={32} color="#fff" />
+                            </View>
+                            
+                            <Text style={[styles.menuTitle, { color: colors.text }]}>
+                                {item.title}
+                            </Text>
+                            
+                            <Text style={[styles.menuDescription, { color: colors.textSecondary }]}>
+                                {item.description}
+                            </Text>
 
-                    <TouchableOpacity 
-                        style={[styles.button, { backgroundColor: colors.primary }]} 
-                        onPress={() => handleNavigate('Tela')}
-                    >
-                        <Ionicons name="location" size={32} color={colors.primaryText} />
-                        <Text style={[styles.buttonText, { color: colors.primaryText }]}>Identificar{"\n"}localização</Text>
-                    </TouchableOpacity>
-                </View>
-
-                <View style={styles.row}>
-                    <TouchableOpacity 
-                        style={[styles.button, { backgroundColor: colors.primary }]} 
-                        onPress={() => handleNavigate('TelaEntradaMotoPatio')}
-                    >
-                        <Ionicons name="enter" size={32} color={colors.primaryText} />
-                        <Text style={[styles.buttonText, { color: colors.primaryText }]}>Entrada e{"\n"}alocação da moto</Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity 
-                        style={[styles.button, { backgroundColor: colors.primary }]} 
-                        onPress={() => handleNavigate('TelaScanner')}
-                    >
-                        <Ionicons name="exit" size={32} color={colors.primaryText} />
-                        <Text style={[styles.buttonText, { color: colors.primaryText }]}>Saída da moto</Text>
-                    </TouchableOpacity>
+                            <View style={styles.arrowContainer}>
+                                <Ionicons 
+                                    name="chevron-forward" 
+                                    size={20} 
+                                    color={colors.primary} 
+                                />
+                            </View>
+                        </TouchableOpacity>
+                    ))}
                 </View>
             </View>
-        </View>
+        </ScrollView>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        alignItems: 'center',
     },
     loadingContainer: {
         flex: 1,
@@ -132,65 +160,90 @@ const styles = StyleSheet.create({
     },
     loadingText: {
         fontSize: 18,
+        fontWeight: '600',
     },
     topSection: {
         width: '100%',
-        height: 250,
-        justifyContent: 'flex-end',
+        height: 240,
+        justifyContent: 'center',
         alignItems: 'center',
+        paddingTop: 40,
     },
     headerContent: {
         alignItems: 'center',
-        marginBottom: 100,
+        paddingHorizontal: 20,
+    },
+    welcomeContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 12,
+        marginBottom: 15,
     },
     nomeUsuario: {
         color: '#fff',
-        fontSize: 24,
+        fontSize: 26,
         fontWeight: 'bold',
-        textAlign: 'center',
         letterSpacing: 0.5,
-        marginBottom: 10,
         textShadowColor: 'rgba(0, 0, 0, 0.8)',
         textShadowOffset: { width: 1, height: 1 },
         textShadowRadius: 3,
     },
     questionText: {
         color: '#fff',
-        fontSize: 20,
-        fontWeight: 'bold',
+        fontSize: 18,
+        fontWeight: '600',
         textAlign: 'center',
-        letterSpacing: 0.5,
+        letterSpacing: 0.3,
         textShadowColor: 'rgba(0, 0, 0, 0.8)',
         textShadowOffset: { width: 1, height: 1 },
         textShadowRadius: 3,
     },
-    centralBox: {
-        width: width * 0.85,
-        height: 500,
+    content: {
+        flex: 1,
+        paddingHorizontal: 20,
+        marginTop: -30,
+        paddingBottom: 30,
+    },
+    gridContainer: {
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        justifyContent: 'space-between',
+        gap: 15,
+    },
+    menuCard: {
+        width: (width - 55) / 2,
         borderRadius: 16,
         padding: 20,
-        marginTop: -50,
-        elevation: 8,
-    },
-    row: {
-        flexDirection: 'row',
+        alignItems: 'center',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.15,
+        shadowRadius: 8,
+        elevation: 5,
+        minHeight: 180,
         justifyContent: 'space-between',
-        marginBottom: 20,
     },
-    button: {
-        width: '48%',
-        aspectRatio: 1,
-        borderRadius: 12,
+    iconContainer: {
+        width: 64,
+        height: 64,
+        borderRadius: 32,
         justifyContent: 'center',
         alignItems: 'center',
-        padding: 15,
-        elevation: 5,
+        marginBottom: 12,
     },
-    buttonText: {
-        fontSize: 14, 
-        fontWeight: '600',
+    menuTitle: {
+        fontSize: 16,
+        fontWeight: 'bold',
         textAlign: 'center',
-        marginTop: 10,
+        marginBottom: 6,
+        lineHeight: 20,
+    },
+    menuDescription: {
+        fontSize: 12,
+        textAlign: 'center',
         lineHeight: 16,
+        marginBottom: 8,
+    },
+    arrowContainer: {
+        marginTop: 4,
     },
 });
