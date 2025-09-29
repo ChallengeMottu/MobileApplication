@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View, TextInput, ActivityIndicator } from 'react-native';
 import { useTheme } from '../context/ContextTheme';
 
-export default function TelaPerfil({ navigation }) {
+export default function TelaInfos({ navigation }) {
     const { colors, theme } = useTheme();
     
     const [fontsLoaded] = useFonts({
