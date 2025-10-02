@@ -2,10 +2,11 @@ import { DarkerGrotesque_500Medium, DarkerGrotesque_700Bold, useFonts } from '@e
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Picker } from '@react-native-picker/picker';
 import { useNavigation } from '@react-navigation/native';
-import { useEffect, useState } from "react";
-import { Alert, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
-import { useTheme } from "../context/ContextTheme";
+import { useEffect, useState } from 'react';
+import { Alert, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import { useTheme } from '../context/ContextTheme';
+import axios from 'axios';
 
 export default function TelaCadastroM() {
   const navigation = useNavigation();
@@ -13,7 +14,7 @@ export default function TelaCadastroM() {
 
   let [fontsLoaded] = useFonts({
     DarkerGrotesque_500Medium,
-    DarkerGrotesque_700Bold
+    DarkerGrotesque_700Bold,
   });
 
   const [placa, setPlaca] = useState('');
@@ -21,14 +22,10 @@ export default function TelaCadastroM() {
   const [numeroChassi, setNumeroChassi] = useState('');
   const [codigoBeacon, setCodigoBeacon] = useState('');
   const [condicaoMecanica, setCondicaoMecanica] = useState('');
-  const [aparatoFisico, setAparatoFisico] = useState(''); // Novo estado adicionado
   const [status, setStatus] = useState('');
   const [anoFabricacao, setAnoFabricacao] = useState('');
 
-  useEffect(() => {
-    carregarDados();
-  }, []);
-
+  // Função para salvar dados no AsyncStorage
   const salvarDados = async () => {
     try {
       const dados = {
@@ -37,7 +34,6 @@ export default function TelaCadastroM() {
         numeroChassi,
         codigoBeacon,
         condicaoMecanica,
-        aparatoFisico, // Adicionado
         status,
         anoFabricacao,
       };
@@ -47,6 +43,7 @@ export default function TelaCadastroM() {
     }
   };
 
+  // Função para carregar dados do AsyncStorage
   const carregarDados = async () => {
     try {
       const dadosSalvos = await AsyncStorage.getItem('dadosMoto');
@@ -57,7 +54,6 @@ export default function TelaCadastroM() {
         setNumeroChassi(dados.numeroChassi || '');
         setCodigoBeacon(dados.codigoBeacon || '');
         setCondicaoMecanica(dados.condicaoMecanica || '');
-        setAparatoFisico(dados.aparatoFisico || ''); // Adicionado
         setStatus(dados.status || '');
         setAnoFabricacao(dados.anoFabricacao || '');
       }
@@ -66,33 +62,44 @@ export default function TelaCadastroM() {
     }
   };
 
+  // Hook de efeito para carregar dados ao iniciar
+  useEffect(() => {
+    carregarDados();
+  }, []);
+
+  // Função para fazer o cadastro na API
   const handleCadastro = async () => {
-    if (!placa || !modelo || !numeroChassi || !condicaoMecanica || !aparatoFisico || !status || !anoFabricacao) {
+    if (!placa || !modelo || !numeroChassi || !condicaoMecanica || !status || !anoFabricacao) {
       Alert.alert('Campos obrigatórios', 'Por favor preencha todos os campos antes de cadastrar.');
       return;
     }
 
-    await salvarDados();
+    try {
+      const moto = {
+        placa,
+        modelo,
+        numeroChassi,
+        condicaoMecanica,
+        status,
+        anoFabricacao,
+        // Adicione outros campos se necessário
+      };
 
-    setPlaca('');
-    setModelo('');
-    setNumeroChassi('');
-    setCodigoBeacon('');
-    setCondicaoMecanica('');
-    setAparatoFisico(''); // Adicionado
-    setStatus('');
-    setAnoFabricacao('');
-
-    Alert.alert(
-      'Cadastro realizado',
-      'Moto cadastrada com sucesso!',
-      [
-        {
-          text: 'OK!',
-          onPress: () => navigation.navigate('TelaDadosM'),
-        },
-      ]
-    );
+      const response = await axios.post('{api_java}', moto); 
+      if (response.status === 201) {
+        Alert.alert('Cadastro realizado', 'Moto cadastrada com sucesso!');
+        setPlaca('');
+        setModelo('');
+        setNumeroChassi('');
+        setCodigoBeacon('');
+        setCondicaoMecanica('');
+        setStatus('');
+        setAnoFabricacao('');
+      }
+    } catch (error) {
+      console.log('Erro ao cadastrar moto:', error);
+      Alert.alert('Erro', 'Não foi possível cadastrar a moto. Tente novamente.');
+    }
   };
 
   if (!fontsLoaded) return null;
@@ -128,10 +135,10 @@ export default function TelaCadastroM() {
               style={[styles.picker, { color: colors.text }]}
               dropdownIconColor={colors.text}
             >
-              <Picker.Item label='Modelo' value='' />
-              <Picker.Item label='Sport 110i' value='Sport 110i' />
-              <Picker.Item label='Mottu E' value='Mottu E' />
-              <Picker.Item label='Mottu Pop 110i' value='Mottu Pop 110i' />
+              <Picker.Item label="Modelo" value="" />
+              <Picker.Item label="Sport 110i" value="Sport 110i" />
+              <Picker.Item label="Mottu E" value="Mottu E" />
+              <Picker.Item label="Mottu Pop 110i" value="Mottu Pop 110i" />
             </Picker>
           </View>
         </View>
@@ -148,18 +155,6 @@ export default function TelaCadastroM() {
         </View>
 
         <View style={styles.inputContainer}>
-          <Text style={[styles.label, { color: colors.primary }]}>Ano de Fabricação</Text>
-          <TextInput
-            style={[styles.input, { backgroundColor: colors.inputBackground, color: colors.text, borderColor: colors.border }]}
-            value={anoFabricacao}
-            onChangeText={setAnoFabricacao}
-            placeholder="Ano de Fabricação"
-            placeholderTextColor={colors.textSecondary}
-            keyboardType="numeric"
-          />
-        </View>
-
-        <View style={styles.inputContainer}>
           <Text style={[styles.label, { color: colors.primary }]}>Status da Moto</Text>
           <View style={[styles.pickerContainer, { backgroundColor: colors.inputBackground, borderColor: colors.border }]}>
             <Picker
@@ -168,11 +163,11 @@ export default function TelaCadastroM() {
               style={[styles.picker, { color: colors.text }]}
               dropdownIconColor={colors.text}
             >
-              <Picker.Item label='Selecione' value='' />
-              <Picker.Item label='Sem Placa' value='Moto sem placa' />
-              <Picker.Item label='Com Placa' value='Moto normal com placa' />
-              <Picker.Item label='Situação de Furto' value='Moto parada por situação de furto' />
-              <Picker.Item label='Situação de Acidente' value='Moto parada por situação de acidente' />
+              <Picker.Item label="Selecione" value="" />
+              <Picker.Item label="Sem Placa" value="Moto sem placa" />
+              <Picker.Item label="Com Placa" value="Moto normal com placa" />
+              <Picker.Item label="Situação de Furto" value="Moto parada por situação de furto" />
+              <Picker.Item label="Situação de Acidente" value="Moto parada por situação de acidente" />
             </Picker>
           </View>
         </View>
@@ -192,12 +187,12 @@ export default function TelaCadastroM() {
               style={[styles.picker, { color: colors.text }]}
               dropdownIconColor={colors.text}
             >
-              <Picker.Item label='Selecione' value='' />
-              <Picker.Item label='Bom Estado Mecânico' value='Moto em bom estado mecânico' />
-              <Picker.Item label='Gravemente Danificada' value='Moto com graves danificações' />
-              <Picker.Item label='Inoperante' value='Moto sem utilidade' />
-              <Picker.Item label='Necessita de Revisão' value='Moto precisa ser diagnosticada' />
-              <Picker.Item label='Pequenos Reparos' value='Moto com pequenos reparos de funcionamento' />
+              <Picker.Item label="Selecione" value="" />
+              <Picker.Item label="Bom Estado Mecânico" value="Moto em bom estado mecânico" />
+              <Picker.Item label="Gravemente Danificada" value="Moto com graves danificações" />
+              <Picker.Item label="Inoperante" value="Moto sem utilidade" />
+              <Picker.Item label="Necessita de Revisão" value="Moto precisa ser diagnosticada" />
+              <Picker.Item label="Pequenos Reparos" value="Moto com pequenos reparos de funcionamento" />
             </Picker>
           </View>
         </View>
@@ -206,16 +201,16 @@ export default function TelaCadastroM() {
           <Text style={[styles.labelPergunta, { color: colors.textSecondary }]}>Está com falta de algum aparato físico?</Text>
           <View style={[styles.pickerContainer, { backgroundColor: colors.inputBackground, borderColor: colors.border }]}>
             <Picker
-              selectedValue={aparatoFisico}
-              onValueChange={(itemValue) => setAparatoFisico(itemValue)}
+              selectedValue={condicaoMecanica}
+              onValueChange={(itemValue) => setCondicaoMecanica(itemValue)}
               style={[styles.picker, { color: colors.text }]}
               dropdownIconColor={colors.text}
             >
-              <Picker.Item label='Selecione' value='' />
-              <Picker.Item label='Completa' value='Completa' />
-              <Picker.Item label='Falta retrovisor' value='Falta retrovisor' />
-              <Picker.Item label='Falta banco' value='Falta banco' />
-              <Picker.Item label='Falta farol' value='Falta farol' />
+              <Picker.Item label="Selecione" value="" />
+              <Picker.Item label="Completa" value="Completa" />
+              <Picker.Item label="Falta retrovisor" value="Falta retrovisor" />
+              <Picker.Item label="Falta banco" value="Falta banco" />
+              <Picker.Item label="Falta farol" value="Falta farol" />
             </Picker>
           </View>
         </View>
@@ -238,7 +233,7 @@ const styles = StyleSheet.create({
     paddingVertical: 40,
   },
   goBack: {
-    position: "absolute",
+    position: 'absolute',
     top: 40,
     left: 20,
     zIndex: 10,
