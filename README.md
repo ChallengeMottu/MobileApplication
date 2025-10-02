@@ -31,9 +31,32 @@ Para esse objetivo, o desenvolvimento da nossa interface Front end é de grande 
 ## 🎯 Funcionalidades principais
 
 ✔️ Autenticação segura de usuários com Firebase
+
 ✔️ Cadastro e gerenciamento de motos integrado ao backend em Java
+
 ✔️ Interface intuitiva para uso pelos colaboradores da Mottu
 
+---
+
+
+### 📂 Estrutura de Pastas
+
+```bash
+MobileApplication/
+│── .expo/                  # Configurações do Expo
+│── assets/                 # Imagens, ícones e outros recursos estáticos
+│── node_modules/           # Dependências do projeto
+│── src/                    # Código-fonte principal da aplicação
+│
+│── .gitignore              # Arquivos e pastas ignorados pelo Git
+│── App.js                  # Componente principal da aplicação
+│── app.json                # Configurações do Expo
+│── index.js                # Arquivo de entrada do app
+│── package.json            # Dependências e scripts do projeto
+│── package-lock.json       # Controle de versões das dependências
+│── README.md               # Documentação do projeto
+│── tsconfig.json           # Configurações TypeScript (se aplicável)
+```
 
 ## 📱 Executar o projeto
 
