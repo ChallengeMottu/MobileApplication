@@ -23,8 +23,17 @@ Para esse objetivo, o desenvolvimento da nossa interface Front end é de grande 
 - Estilização com StyleSheet
 - React Picker
 - IonIcons
-- AsyncStorage
-- React Navigaton
+- React Navigation
+- Firebase Authentication (cadastro, login e atualização de senha)
+- Axios (consumo da API Java para cadastro e gerenciamento de motos)  
+- API Java para cadastro e gerenciamento de motos → [https://github.com/ChallengeMottu/JavaSystem.git]
+
+## 🎯 Funcionalidades principais
+
+✔️ Autenticação segura de usuários com Firebase
+✔️ Cadastro e gerenciamento de motos integrado ao backend em Java
+✔️ Interface intuitiva para uso pelos colaboradores da Mottu
+
 
 ## 📱 Executar o projeto
 
