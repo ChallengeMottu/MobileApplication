@@ -19,6 +19,7 @@ import TelaInfos from './src/Screens/TelaInfos';
 import Tela from './src/Screens/Tela';
 import TelaCadastroM from './src/Screens/TelaCadastroM';
 import { ThemeProvider, useTheme } from './src/context/ContextTheme';
+import TelaDadosM from './src/Screens/TelaDadosM';
 
 const Drawer = createDrawerNavigator();
 
@@ -162,6 +163,16 @@ function CustomDrawerContent(props) {
           />
 
           <DrawerItem
+            label="Dados da Moto"
+            icon={() => (
+              <Ionicons name="exit" size={24} color={colors.primary} style={{ marginRight: 10 }} />
+            )}
+            onPress={() => handleNavigation('TelaDadosM')}
+            labelStyle={dynamicStyles.drawerLabel}
+            style={styles.drawerItem}
+          />
+
+          <DrawerItem
             label="Sair"
             icon={() => (
               <Ionicons name="log-out" size={24} color="#ff4444" style={{ marginRight: 10 }} />
@@ -281,6 +292,12 @@ function MainNavigator() {
         component={TelaCadastroM}
         options={{ title: 'Cadastro Moto' }}
       />
+      <Drawer.Screen
+        name="TelaDadosM"
+        component={TelaDadosM}
+        options={{ title: 'Cadastro Moto' }}
+      />
+
     </Drawer.Navigator>
   );
 }

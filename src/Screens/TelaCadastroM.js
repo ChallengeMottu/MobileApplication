@@ -21,6 +21,7 @@ export default function TelaCadastroM() {
   const [numeroChassi, setNumeroChassi] = useState('');
   const [codigoBeacon, setCodigoBeacon] = useState('');
   const [condicaoMecanica, setCondicaoMecanica] = useState('');
+  const [aparatoFisico, setAparatoFisico] = useState(''); // Novo estado adicionado
   const [status, setStatus] = useState('');
   const [anoFabricacao, setAnoFabricacao] = useState('');
 
@@ -36,6 +37,7 @@ export default function TelaCadastroM() {
         numeroChassi,
         codigoBeacon,
         condicaoMecanica,
+        aparatoFisico, // Adicionado
         status,
         anoFabricacao,
       };
@@ -55,6 +57,7 @@ export default function TelaCadastroM() {
         setNumeroChassi(dados.numeroChassi || '');
         setCodigoBeacon(dados.codigoBeacon || '');
         setCondicaoMecanica(dados.condicaoMecanica || '');
+        setAparatoFisico(dados.aparatoFisico || ''); // Adicionado
         setStatus(dados.status || '');
         setAnoFabricacao(dados.anoFabricacao || '');
       }
@@ -64,7 +67,7 @@ export default function TelaCadastroM() {
   };
 
   const handleCadastro = async () => {
-    if (!placa || !modelo || !numeroChassi || !condicaoMecanica || !status || !anoFabricacao) {
+    if (!placa || !modelo || !numeroChassi || !condicaoMecanica || !aparatoFisico || !status || !anoFabricacao) {
       Alert.alert('Campos obrigatórios', 'Por favor preencha todos os campos antes de cadastrar.');
       return;
     }
@@ -76,6 +79,7 @@ export default function TelaCadastroM() {
     setNumeroChassi('');
     setCodigoBeacon('');
     setCondicaoMecanica('');
+    setAparatoFisico(''); // Adicionado
     setStatus('');
     setAnoFabricacao('');
 
@@ -144,6 +148,18 @@ export default function TelaCadastroM() {
         </View>
 
         <View style={styles.inputContainer}>
+          <Text style={[styles.label, { color: colors.primary }]}>Ano de Fabricação</Text>
+          <TextInput
+            style={[styles.input, { backgroundColor: colors.inputBackground, color: colors.text, borderColor: colors.border }]}
+            value={anoFabricacao}
+            onChangeText={setAnoFabricacao}
+            placeholder="Ano de Fabricação"
+            placeholderTextColor={colors.textSecondary}
+            keyboardType="numeric"
+          />
+        </View>
+
+        <View style={styles.inputContainer}>
           <Text style={[styles.label, { color: colors.primary }]}>Status da Moto</Text>
           <View style={[styles.pickerContainer, { backgroundColor: colors.inputBackground, borderColor: colors.border }]}>
             <Picker
@@ -190,8 +206,8 @@ export default function TelaCadastroM() {
           <Text style={[styles.labelPergunta, { color: colors.textSecondary }]}>Está com falta de algum aparato físico?</Text>
           <View style={[styles.pickerContainer, { backgroundColor: colors.inputBackground, borderColor: colors.border }]}>
             <Picker
-              selectedValue={condicaoMecanica}
-              onValueChange={(itemValue) => setCondicaoMecanica(itemValue)}
+              selectedValue={aparatoFisico}
+              onValueChange={(itemValue) => setAparatoFisico(itemValue)}
               style={[styles.picker, { color: colors.text }]}
               dropdownIconColor={colors.text}
             >
