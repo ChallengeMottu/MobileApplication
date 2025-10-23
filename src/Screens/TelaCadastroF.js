@@ -7,10 +7,12 @@ import { Ionicons } from "@expo/vector-icons";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../configurations/firebaseConfig";
 import { useTheme } from '../context/ContextTheme';
+import { useTranslation } from 'react-i18next';
 
 export default function TelaCadastroF() {
   const { colors, theme } = useTheme();
   const navigation = useNavigation();
+  const { t } = useTranslation();
 
   let [fontsLoaded] = useFonts({
     DarkerGrotesque_500Medium,
@@ -102,7 +104,6 @@ export default function TelaCadastroF() {
   };
 
   const formatarTelefone = (text) => {
-    // Se o texto está vazio ou sendo apagado, permite a deleção
     if (text.length < telefone.length) {
       setTelefone(text);
       return;
@@ -110,7 +111,6 @@ export default function TelaCadastroF() {
 
     let cleaned = text.replace(/\D/g, '').slice(0, 11);
     
-    // Permite apagar completamente
     if (cleaned.length === 0) {
       setTelefone('');
       return;
@@ -134,7 +134,7 @@ export default function TelaCadastroF() {
 
   const handleCadastro = async () => {
     if (!nome || !dataNascimento || !cpf || !patio || !telefone || !email || !senha) {
-      Alert.alert('Campos obrigatórios', 'Por favor, preencha todos os campos antes de cadastrar.');
+      Alert.alert(t('campos_obrigatorios'), t('preencha_todos_campos'));
       return;
     }
 
@@ -145,24 +145,24 @@ export default function TelaCadastroF() {
       await salvarDados(user.uid);
 
       Alert.alert(
-        'Cadastro realizado',
-        'Funcionário cadastrado com sucesso!',
-        [{ text: 'Voltar para Login', onPress: () => navigation.navigate('TelaLogin') }]
+        t('cadastro_realizado'),
+        t('funcionario_cadastrado_sucesso'),
+        [{ text: t('voltar_login'), onPress: () => navigation.navigate('TelaLogin') }]
       );
     } catch (error) {
       console.log("Erro no cadastro:", error.message);
 
-      let errorMessage = "Não foi possível criar a conta.";
+      let errorMessage = t('nao_conseguir_criar_conta');
 
       if (error.code === 'auth/email-already-in-use') {
-        errorMessage = "Este e-mail já está em uso.";
+        errorMessage = t('email_em_uso');
       } else if (error.code === 'auth/weak-password') {
-        errorMessage = "Senha muito fraca. Use pelo menos 6 caracteres.";
+        errorMessage = t('senha_fraca');
       } else if (error.code === 'auth/invalid-email') {
-        errorMessage = "E-mail inválido.";
+        errorMessage = t('email_invalido');
       }
 
-      Alert.alert("Erro", errorMessage);
+      Alert.alert(t('erro_cadastro'), errorMessage);
     }
   };
 
@@ -180,7 +180,7 @@ export default function TelaCadastroF() {
       </TouchableOpacity>
 
       <Text style={[styles.subtitulo, { color: colors.text }]}>
-        Ainda sem cadastro de funcionário?{"\n"}Preencha seus dados e acesse o sistema
+        {t('cadastro_funcionario_titulo')}
       </Text>
 
       <View style={[styles.inputContainer, { backgroundColor: colors.inputBackground }]}>
@@ -188,7 +188,7 @@ export default function TelaCadastroF() {
           style={[styles.input, { color: colors.text }]}
           value={nome}
           onChangeText={setNome}
-          placeholder="Nome Completo"
+          placeholder={t('nome_completo')}
           placeholderTextColor={colors.textSecondary}
         />
       </View>
@@ -198,7 +198,7 @@ export default function TelaCadastroF() {
           style={[styles.input, { color: colors.text }]}
           value={dataNascimento}
           onChangeText={formatarData}
-          placeholder="Data de Nascimento"
+          placeholder={t('data_nascimento')}
           placeholderTextColor={colors.textSecondary}
           keyboardType="numeric"
           maxLength={10}
@@ -210,7 +210,7 @@ export default function TelaCadastroF() {
           style={[styles.input, { color: colors.text }]}
           value={cpf}
           onChangeText={formatarCPF}
-          placeholder="CPF"
+          placeholder={t('cpf')}
           placeholderTextColor={colors.textSecondary}
           keyboardType="numeric"
           maxLength={14}
@@ -222,7 +222,7 @@ export default function TelaCadastroF() {
           style={[styles.input, { color: colors.text }]}
           value={telefone}
           onChangeText={formatarTelefone}
-          placeholder="Telefone (XX) XXXXX-XXXX"
+          placeholder={t('telefone')}
           placeholderTextColor={colors.textSecondary}
           keyboardType="phone-pad"
           maxLength={15}
@@ -234,7 +234,7 @@ export default function TelaCadastroF() {
           style={[styles.input, { color: colors.text }]}
           value={patio}
           onChangeText={setPatio}
-          placeholder="Filial Mottu"
+          placeholder={t('filial_mottu')}
           placeholderTextColor={colors.textSecondary}
         />
       </View>
@@ -244,7 +244,7 @@ export default function TelaCadastroF() {
           style={[styles.input, { color: colors.text }]}
           value={email}
           onChangeText={setEmail}
-          placeholder="Email"
+          placeholder={t('email')}
           placeholderTextColor={colors.textSecondary}
           keyboardType="email-address"
         />
@@ -255,7 +255,7 @@ export default function TelaCadastroF() {
           style={[styles.input, { color: colors.text }]}
           value={senha}
           onChangeText={setSenha}
-          placeholder="Crie sua senha"
+          placeholder={t('crie_sua_senha')}
           placeholderTextColor={colors.textSecondary}
           secureTextEntry={!showPassword}
         />
@@ -272,7 +272,7 @@ export default function TelaCadastroF() {
         style={[styles.botao, { backgroundColor: colors.primary }]} 
         onPress={handleCadastro}
       >
-        <Text style={[styles.textoBotao, { color: colors.primaryText }]}>CADASTRAR</Text>
+        <Text style={[styles.textoBotao, { color: colors.primaryText }]}>{t('cadastrar')}</Text>
       </TouchableOpacity>
     </ScrollView>
   );

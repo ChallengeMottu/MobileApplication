@@ -2,6 +2,7 @@ import { View, Text, Image, Linking, StyleSheet, ScrollView, TouchableOpacity } 
 import { useFonts, DarkerGrotesque_500Medium, DarkerGrotesque_700Bold } from '@expo-google-fonts/darker-grotesque';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '../context/ContextTheme';
+import { useTranslation } from 'react-i18next';
 
 const equipe = [
   {
@@ -29,6 +30,7 @@ const equipe = [
 
 export default function TelaEquipe() {
   const { colors } = useTheme();
+  const { t } = useTranslation();
   
   let [fontsLoaded] = useFonts({
     DarkerGrotesque_500Medium,
@@ -43,9 +45,9 @@ export default function TelaEquipe() {
     <ScrollView style={[styles.container, { backgroundColor: colors.background }]}>
       {/* Header Section */}
       <View style={styles.header}>
-        <Text style={[styles.titulo, { color: colors.text }]}>Nossa Equipe</Text>
+        <Text style={[styles.titulo, { color: colors.text }]}>{t('nossa_equipe')}</Text>
         <Text style={[styles.subtitulo, { color: colors.textSecondary }]}>
-          Conheça os desenvolvedores por trás do Pulse
+          {t('conheca_desenvolvedores')}
         </Text>
       </View>
 
@@ -113,7 +115,7 @@ export default function TelaEquipe() {
       <View style={[styles.footer, { backgroundColor: colors.inputBackground }]}>
         <Ionicons name="people-outline" size={24} color={colors.primary} />
         <Text style={[styles.footerText, { color: colors.text }]}>
-          Equipe FIAP - Challenge Sprint 3
+          {t('equipe_fiap')}
         </Text>
       </View>
     </ScrollView>

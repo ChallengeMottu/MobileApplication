@@ -1,7 +1,19 @@
 import { Image, ScrollView, StyleSheet, Text, View, ImageBackground } from "react-native";
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 
 export default function TelaInicial() {
+  const { t } = useTranslation();
+
+  // Array dos itens da lista de mapeamento
+  const mappingItems = [
+    'identificacao_inteligente',
+    'alocacao_automatizada', 
+    'visualizacao_tempo_real',
+    'integracao_camera',
+    'analise_dados'
+  ];
+
   return (
     <ScrollView style={styles.container}>
       {/* SEÇÃO 1 - Hero com fundo */}
@@ -12,11 +24,11 @@ export default function TelaInicial() {
       >
         <View style={styles.heroContent}>
           <Text style={styles.heroTitle}>
-            Gerenciador da Maior Frota de Motos da América Latina
+            {t('gerenciador_maior_frota')}
           </Text>
-          <Text style={styles.heroNumber}>+100K</Text>
+          <Text style={styles.heroNumber}>{t('mais_100k')}</Text>
           <Text style={styles.heroSubtitle}>
-            motos com alocação inteligente
+            {t('motos_alocacao_inteligente')}
           </Text>
         </View>
         <View style={styles.heroMotoContainer}>
@@ -31,7 +43,7 @@ export default function TelaInicial() {
       {/* SEÇÃO 2 - Organização que acelera */}
       <View style={styles.sectionWhite}>
         <Text style={styles.sectionTitle}>
-          Organização que <Text style={styles.greenText}>acelera</Text> sua moto
+          {t('organizacao_acelera')}
         </Text>
 
         <View style={styles.featuresRow}>
@@ -42,7 +54,7 @@ export default function TelaInicial() {
               color="#01743A" 
             />
             <Text style={styles.featureText}>
-              Gestão eficiente
+              {t('gestao_eficiente')}
             </Text>
           </View>
 
@@ -53,7 +65,7 @@ export default function TelaInicial() {
               color="#01743A" 
             />
             <Text style={styles.featureText}>
-              Tecnologia
+              {t('tecnologia')}
             </Text>
           </View>
 
@@ -64,7 +76,7 @@ export default function TelaInicial() {
               color="#01743A" 
             />
             <Text style={styles.featureText}>
-              Comprometimento
+              {t('comprometimento')}
             </Text>
           </View>
         </View>
@@ -73,67 +85,25 @@ export default function TelaInicial() {
       {/* SEÇÃO 3 - Mapeamento e Gestão */}
       <View style={styles.sectionDark}>
         <Text style={styles.darkSectionTitle}>
-          Mapeamento e Gestão da Frota
+          {t('mapeamento_gestao_frota')}
         </Text>
         <Text style={styles.darkSectionSubtitle}>
-          Entenda como o Pulse garante um gerenciamento preciso
+          {t('entenda_pulse')}
         </Text>
 
         <View style={styles.checkList}>
-          <View style={styles.checkItem}>
-            <Image
-              source={require('../../assets/check.png')}
-              style={styles.checkIcon}
-              resizeMode="contain"
-            />
-            <Text style={styles.checkText}>
-              Identificação Inteligente das Motos com Uso de Tecnologias IoT
-            </Text>
-          </View>
-
-          <View style={styles.checkItem}>
-            <Image
-              source={require('../../assets/check.png')}
-              style={styles.checkIcon}
-              resizeMode="contain"
-            />
-            <Text style={styles.checkText}>
-              Alocação Automatizada das Motos com base em especificações
-            </Text>
-          </View>
-
-          <View style={styles.checkItem}>
-            <Image
-              source={require('../../assets/check.png')}
-              style={styles.checkIcon}
-              resizeMode="contain"
-            />
-            <Text style={styles.checkText}>
-              Visualização dinâmica em tempo real dos divisórios do pátio
-            </Text>
-          </View>
-
-          <View style={styles.checkItem}>
-            <Image
-              source={require('../../assets/check.png')}
-              style={styles.checkIcon}
-              resizeMode="contain"
-            />
-            <Text style={styles.checkText}>
-              Integração com Câmera de Segurança
-            </Text>
-          </View>
-
-          <View style={styles.checkItem}>
-            <Image
-              source={require('../../assets/check.png')}
-              style={styles.checkIcon}
-              resizeMode="contain"
-            />
-            <Text style={styles.checkText}>
-              Análise de dados para melhoria contínua
-            </Text>
-          </View>
+          {mappingItems.map((itemKey, index) => (
+            <View key={index} style={styles.checkItem}>
+              <Image
+                source={require('../../assets/check.png')}
+                style={styles.checkIcon}
+                resizeMode="contain"
+              />
+              <Text style={styles.checkText}>
+                {t(itemKey)}
+              </Text>
+            </View>
+          ))}
         </View>
       </View>
 
@@ -155,10 +125,10 @@ export default function TelaInicial() {
 
           <View style={styles.beaconTextBox}>
             <Text style={styles.beaconTitle}>
-              Tecnologia de identificação
+              {t('tecnologia_identificacao')}
             </Text>
             <Text style={styles.beaconDescription}>
-              O Bluetooth Low Energy (BLE), modelo Nrf52810, é uma tecnologia de comunicação sem fio de baixo consumo. Com o uso do mesmo, o sistema capacita as motos e facilita o processo de identificação de cada moto pertencente ao pátio.
+              {t('descricao_bluetooth')}
             </Text>
           </View>
         </View>
@@ -167,10 +137,10 @@ export default function TelaInicial() {
       {/* SEÇÃO 5 - Parceiros */}
       <View style={styles.sectionDark}>
         <Text style={styles.darkSectionTitle}>
-          Parceiros que impulsionam
+          {t('parceiros_impulsionam')}
         </Text>
         <Text style={styles.darkSectionTitle}>
-          a inovação
+          {t('inovacao')}
         </Text>
 
         <View style={styles.partnersRow}>
@@ -195,16 +165,16 @@ export default function TelaInicial() {
           resizeMode="contain"
         />
         <Text style={styles.footerTagline}>
-          Onde a Eficiência Encontra a Velocidade
+          {t('eficiencia_velocidade')}
         </Text>
 
         <View style={styles.footerDivider} />
 
         <Text style={styles.footerContactTitle}>
-          Não hesite em nos contactar
+          {t('nao_hesite_contactar')}
         </Text>
         <Text style={styles.footerEmail}>
-          pulsehelp@hotmail.com
+          {t('email_contato')}
         </Text>
       </View>
     </ScrollView>
@@ -394,7 +364,7 @@ const styles = StyleSheet.create({
   // RODAPÉ
   footer: {
     backgroundColor: '#01743A',
-    paddingVertical: 10,
+    paddingVertical: 40,
     paddingHorizontal: 30,
   },
   footerLogoImage: {
@@ -421,5 +391,6 @@ const styles = StyleSheet.create({
   footerEmail: {
     fontSize: 16,
     color: '#fff',
+    marginBottom: 20,
   },
 });

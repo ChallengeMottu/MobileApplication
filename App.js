@@ -4,7 +4,11 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { DrawerContentScrollView, DrawerItem, createDrawerNavigator } from '@react-navigation/drawer';
 import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, StyleSheet, Text, View, Alert } from 'react-native';
+import { ActivityIndicator, StyleSheet, Text, View, Alert, TouchableOpacity, Animated } from 'react-native';
+
+// APENAS ESTE IMPORT - ele já inicializa o i18n
+import './src/services/i18n';
+import { useTranslation } from 'react-i18next';
 
 import CabecalhoHeader from './src/Components/CabecalhoHeader';
 import TelaCadastroF from './src/Screens/TelaCadastroF';
@@ -22,6 +26,75 @@ import { ThemeProvider, useTheme } from './src/context/ContextTheme';
 import TelaDadosM from './src/Screens/TelaDadosM';
 
 const Drawer = createDrawerNavigator();
+
+function LanguageToggle() {
+  const { i18n } = useTranslation();
+  const { colors } = useTheme();
+  const [slideAnim] = useState(new Animated.Value(i18n.language === 'pt' ? 0 : 1));
+
+  const changeLanguage = (lng) => {
+    i18n.changeLanguage(lng);
+    Animated.spring(slideAnim, {
+      toValue: lng === 'pt' ? 0 : 1,
+      useNativeDriver: true,
+      friction: 5,
+    }).start();
+  };
+
+  const translateX = slideAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: [3, 71],
+  });
+
+  return (
+    <View style={styles.languageContainer}>
+      <Text style={[styles.languageLabel, { color: colors.text }]}>
+        Idioma / Language
+      </Text>
+      
+      <View style={[styles.toggleContainer, { 
+        backgroundColor: colors.primary + '20',
+        borderColor: colors.primary + '30',
+      }]}>
+        <TouchableOpacity
+          style={styles.toggleOption}
+          onPress={() => changeLanguage('pt')}
+          activeOpacity={0.7}
+        >
+          <Text style={[
+            styles.toggleText,
+            { color: i18n.language === 'pt' ? colors.text : colors.text + '80' }
+          ]}>
+            🇧🇷 PT
+          </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.toggleOption}
+          onPress={() => changeLanguage('es')}
+          activeOpacity={0.7}
+        >
+          <Text style={[
+            styles.toggleText,
+            { color: i18n.language === 'es' ? colors.text : colors.text + '80' }
+          ]}>
+            🇪🇸 ES
+          </Text>
+        </TouchableOpacity>
+
+        <Animated.View
+          style={[
+            styles.toggleBall,
+            { 
+              backgroundColor: colors.primary,
+              transform: [{ translateX }]
+            }
+          ]}
+        />
+      </View>
+    </View>
+  );
+}
 
 function CustomDrawerContent(props) {
   const navigation = useNavigation();
@@ -45,7 +118,6 @@ function CustomDrawerContent(props) {
     navigation.navigate(routeName);
   };
 
-  // Estilos dinâmicos baseados no tema
   const dynamicStyles = StyleSheet.create({
     drawerContainer: {
       backgroundColor: colors.background,
@@ -79,6 +151,13 @@ function CustomDrawerContent(props) {
           {isLoggedIn ? 'Funcionário' : 'Visitante'}
         </Text>
       </View>
+
+      {/* BOTÃO DE TROCA DE IDIOMA */}
+      <View style={styles.languageSection}>
+        <LanguageToggle />
+      </View>
+
+      <View style={[styles.divider, { backgroundColor: colors.primary + '30' }]} />
 
       <DrawerItem
         label="Início"
@@ -165,7 +244,7 @@ function CustomDrawerContent(props) {
           <DrawerItem
             label="Dados da Moto"
             icon={() => (
-              <Ionicons name="exit" size={24} color={colors.primary} style={{ marginRight: 10 }} />
+              <Ionicons name="information-circle" size={24} color={colors.primary} style={{ marginRight: 10 }} />
             )}
             onPress={() => handleNavigation('TelaDadosM')}
             labelStyle={dynamicStyles.drawerLabel}
@@ -297,7 +376,6 @@ function MainNavigator() {
         component={TelaDadosM}
         options={{ title: 'Cadastro Moto' }}
       />
-
     </Drawer.Navigator>
   );
 }
@@ -367,8 +445,63 @@ const styles = StyleSheet.create({
   },
   divider: {
     height: 1,
-    backgroundColor: '#333',
     marginVertical: 15,
     marginHorizontal: 15,
+  },
+  // ESTILOS DO BOTÃO DE IDIOMA
+  languageSection: {
+    paddingHorizontal: 20,
+    paddingVertical: 20,
+    marginBottom: 5,
+  },
+  languageContainer: {
+    alignItems: 'center',
+  },
+  languageLabel: {
+    fontSize: 13,
+    marginBottom: 14,
+    fontFamily: 'DarkerGrotesque_500Medium',
+    textTransform: 'uppercase',
+    letterSpacing: 1,
+    opacity: 0.7,
+  },
+  toggleContainer: {
+    width: 140,
+    height: 46,
+    borderRadius: 23,
+    flexDirection: 'row',
+    alignItems: 'center',
+    position: 'relative',
+    padding: 3,
+    borderWidth: 1.5,
+    borderColor: 'rgba(255, 255, 255, 0.1)',
+  },
+  toggleOption: {
+    flex: 1,
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 1,
+  },
+  toggleText: {
+    fontSize: 15,
+    fontFamily: 'DarkerGrotesque_800ExtraBold',
+    fontWeight: '700',
+    letterSpacing: 0.5,
+  },
+  toggleBall: {
+    position: 'absolute',
+    width: 66,
+    height: 40,
+    borderRadius: 20,
+    zIndex: 0,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+    elevation: 8,
   },
 });

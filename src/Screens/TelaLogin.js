@@ -7,9 +7,11 @@ import { signInWithEmailAndPassword, sendPasswordResetEmail } from "firebase/aut
 import { auth } from "../configurations/firebaseConfig";
 import { CommonActions } from '@react-navigation/native';
 import { useTheme } from '../context/ContextTheme';
+import { useTranslation } from 'react-i18next';
 
 export default function TelaLogin({ navigation }) {
   const { colors, theme } = useTheme();
+  const { t, i18n } = useTranslation();
   
   let [fontsLoaded] = useFonts({
     DarkerGrotesque_500Medium,
@@ -23,9 +25,14 @@ export default function TelaLogin({ navigation }) {
 
   if (!fontsLoaded) return null;
 
+  // Função para trocar idioma
+  const changeLanguage = (lng) => {
+    i18n.changeLanguage(lng);
+  };
+
   const handleLogin = async () => {
     if (!usuario || !senha) {
-      Alert.alert('Campos obrigatórios', 'Por favor, preencha o e-mail e a senha.');
+      Alert.alert(t('campos_obrigatorios'), t('preencha_email_senha'));
       return;
     }
 
@@ -60,7 +67,7 @@ export default function TelaLogin({ navigation }) {
       // Salvar dados completos no AsyncStorage
       await AsyncStorage.setItem('usuarioLogado', JSON.stringify(usuarioCompleto));
 
-      Alert.alert('Login realizado', 'Você entrou no sistema com sucesso!', [
+      Alert.alert(t('login_sucesso'), 'Você entrou no sistema com sucesso!', [
         {
           text: 'OK',
           onPress: () => {
@@ -76,19 +83,19 @@ export default function TelaLogin({ navigation }) {
     } catch (error) {
       console.error('Erro ao fazer login:', error);
       
-      let errorMessage = 'E-mail ou senha inválidos.';
+      let errorMessage = t('email_senha_invalidos');
       
       if (error.code === 'auth/invalid-credential') {
-        errorMessage = 'E-mail ou senha incorretos.';
+        errorMessage = t('email_incorreto');
       } else if (error.code === 'auth/user-not-found') {
-        errorMessage = 'Usuário não encontrado.';
+        errorMessage = t('usuario_nao_encontrado');
       } else if (error.code === 'auth/wrong-password') {
-        errorMessage = 'Senha incorreta.';
+        errorMessage = t('senha_incorreta');
       } else if (error.code === 'auth/network-request-failed') {
-        errorMessage = 'Erro de conexão. Verifique sua internet.';
+        errorMessage = t('erro_conexao');
       }
       
-      Alert.alert('Erro', errorMessage);
+      Alert.alert(t('erro_login'), errorMessage);
     } finally {
       setCarregando(false);
     }
@@ -97,8 +104,8 @@ export default function TelaLogin({ navigation }) {
   const handleEsqueciSenha = async () => {
     if (!usuario) {
       Alert.alert(
-        'Recuperação de Senha', 
-        'Por favor, digite seu e-mail no campo acima para redefinir sua senha.'
+        t('recuperacao_senha'), 
+        t('digite_email_recuperacao')
       );
       return;
     }
@@ -108,8 +115,8 @@ export default function TelaLogin({ navigation }) {
       await sendPasswordResetEmail(auth, usuario);
       
       Alert.alert(
-        'E-mail enviado!', 
-        `Enviamos um link de recuperação para: ${usuario}\n\nVerifique sua caixa de entrada e spam.`,
+        t('email_enviado'), 
+        t('email_recuperacao_enviado', { email: usuario }),
         [
           {
             text: 'OK',
@@ -123,14 +130,14 @@ export default function TelaLogin({ navigation }) {
       let errorMessage = 'Erro ao enviar e-mail de recuperação.';
       
       if (error.code === 'auth/user-not-found') {
-        errorMessage = 'E-mail não encontrado. Verifique o endereço digitado.';
+        errorMessage = t('email_nao_encontrado');
       } else if (error.code === 'auth/invalid-email') {
-        errorMessage = 'E-mail inválido. Verifique o formato do endereço.';
+        errorMessage = t('email_invalido');
       } else if (error.code === 'auth/network-request-failed') {
-        errorMessage = 'Erro de conexão. Verifique sua internet.';
+        errorMessage = t('erro_conexao');
       }
       
-      Alert.alert('Erro', errorMessage);
+      Alert.alert(t('erro_login'), errorMessage);
     } finally {
       setCarregando(false);
     }
@@ -139,12 +146,12 @@ export default function TelaLogin({ navigation }) {
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       <View style={[styles.card, { backgroundColor: colors.cardBackground }]}>
-        <Text style={[styles.titulo, { color: colors.text }]}>Bem-vindo de volta!</Text>
+        <Text style={[styles.titulo, { color: colors.text }]}>{t('bem_vindo')}</Text>
 
         {/* Texto informativo acima dos inputs */}
         <View style={styles.textoInfoContainer}>
           <Text style={[styles.textoInfo, { color: colors.textSecondary }]}>
-            Digite seu e-mail e senha para acessar o sistema
+            {t('digite_email_senha')}
           </Text>
         </View>
 
@@ -155,7 +162,7 @@ export default function TelaLogin({ navigation }) {
               backgroundColor: colors.inputBackground,
               color: colors.text 
             }]}
-            placeholder="E-mail"
+            placeholder={t('email')}
             placeholderTextColor={colors.textSecondary}
             value={usuario}
             onChangeText={setUsuario}
@@ -176,7 +183,7 @@ export default function TelaLogin({ navigation }) {
               backgroundColor: colors.inputBackground,
               color: colors.text 
             }]}
-            placeholder="Senha"
+            placeholder={t('senha')}
             placeholderTextColor={colors.textSecondary}
             secureTextEntry={!mostrarSenha}
             value={senha}
@@ -207,7 +214,7 @@ export default function TelaLogin({ navigation }) {
           disabled={carregando}
         >
           <Text style={[styles.textoBotao, { color: colors.primaryText }]}>
-            {carregando ? 'ENTRANDO...' : 'ENTRAR'}
+            {carregando ? t('entrando') : t('entrar')}
           </Text>
         </TouchableOpacity>
 
@@ -218,7 +225,7 @@ export default function TelaLogin({ navigation }) {
           disabled={carregando}
         >
           <Text style={[styles.linkTexto, { color: colors.text }]}>
-            Ainda não tem conta? Cadastre-se
+            {t('nao_tem_conta')}
           </Text>
         </TouchableOpacity>
 
@@ -229,14 +236,14 @@ export default function TelaLogin({ navigation }) {
           disabled={carregando}
         >
           <Text style={[styles.linkTexto, { color: colors.text }]}>
-            Esqueceu a senha?
+            {t('esqueceu_senha')}
           </Text>
         </TouchableOpacity>
 
         {/* Texto informativo para recuperação */}
         <View style={styles.textoRecuperacaoContainer}>
           <Text style={[styles.textoRecuperacao, { color: colors.textSecondary }]}>
-            Para redefinir sua senha, digite seu e-mail acima e clique em "Esqueceu a senha?"
+            {t('texto_recuperacao')}
           </Text>
         </View>
       </View>
