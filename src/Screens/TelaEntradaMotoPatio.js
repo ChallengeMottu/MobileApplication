@@ -3,9 +3,12 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Alert,
 import { Ionicons } from '@expo/vector-icons';
 import { Picker } from '@react-native-picker/picker';
 import { useTheme } from '../context/ContextTheme';
+import { useTranslation } from 'react-i18next';
 
 const EntradaMotoPatio = ({ navigation }) => {
   const { colors, theme } = useTheme();
+  const { t } = useTranslation();
+  
   const [etapaAtual, setEtapaAtual] = useState(1);
   const [placa, setPlaca] = useState('');
   const [formData, setFormData] = useState({
@@ -37,19 +40,19 @@ const EntradaMotoPatio = ({ navigation }) => {
 
   const handleBuscarMoto = () => {
     if (!placa.trim()) {
-      Alert.alert('Atenção', 'Por favor, digite a placa da moto.');
+      Alert.alert(t('atencao'), t('digite_placa_moto'));
       return;
     }
     setEtapaAtual(2);
   };
 
   const handleDigitalizarPlaca = () => {
-    Alert.alert('Câmera', 'Funcionalidade de digitalização será implementada');
+    Alert.alert(t('camera'), t('funcionalidade_digitalizacao'));
   };
 
   const handleControlarMoto = () => {
     if (!formData.modelo || !formData.numeroChassi || !formData.condicaoMecanica || !formData.status || !formData.anoFabricacao) {
-      Alert.alert('Campos obrigatórios', 'Por favor preencha todos os campos antes de continuar.');
+      Alert.alert(t('campos_obrigatorios'), t('preencha_todos_campos_antes_continuar'));
       return;
     }
     setEtapaAtual(3);
@@ -74,12 +77,12 @@ const EntradaMotoPatio = ({ navigation }) => {
 
   const confirmarCodigoManual = () => {
     if (!codigoBeacon.trim()) {
-      Alert.alert('Atenção', 'Por favor, digite o código do beacon.');
+      Alert.alert(t('atencao'), t('digite_codigo_beacon'));
       return;
     }
     setBeaconDetectado({
       codigo: codigoBeacon,
-      sinal: 'Manual',
+      sinal: t('manual'),
       bateria: 'N/A'
     });
     setModalCodigoVisible(false);
@@ -88,8 +91,8 @@ const EntradaMotoPatio = ({ navigation }) => {
 
   const handleFinalizarEntrada = () => {
     Alert.alert(
-      'Sucesso!',
-      'Beacon associado à moto com sucesso!',
+      t('sucesso'),
+      t('beacon_associado_sucesso'),
       [
         {
           text: 'OK',
@@ -123,13 +126,13 @@ const EntradaMotoPatio = ({ navigation }) => {
           </TouchableOpacity>
 
           <View style={[styles.card, { backgroundColor: colors.cardBackground }]}>
-            <Text style={[styles.titulo, { color: colors.text }]}>Entrada de moto e Alocação</Text>
-            <Text style={[styles.subtitulo, { color: colors.textSecondary }]}>Processo de entrada de moto informada no pátio</Text>
+            <Text style={[styles.titulo, { color: colors.text }]}>{t('entrada_moto_alocacao')}</Text>
+            <Text style={[styles.subtitulo, { color: colors.textSecondary }]}>{t('processo_entrada_moto_patio')}</Text>
 
             <View style={[styles.separador, { backgroundColor: colors.border }]} />
 
             <View style={styles.inputContainer}>
-              <Text style={[styles.label, { color: colors.textSecondary }]}>Escolha entre</Text>
+              <Text style={[styles.label, { color: colors.textSecondary }]}>{t('escolha_entre')}</Text>
               <TextInput
                 style={[styles.input, { 
                   backgroundColor: colors.inputBackground, 
@@ -138,13 +141,13 @@ const EntradaMotoPatio = ({ navigation }) => {
                 }]}
                 value={placa}
                 onChangeText={handlePlacaChange}
-                placeholder="Digite a placa da moto"
+                placeholder={t('digite_placa_moto')}
                 placeholderTextColor={colors.placeholderTextColor}
               />
             </View>
 
             <View style={styles.inputContainer}>
-              <Text style={[styles.label, { color: colors.textSecondary }]}>Digitalizar a placa</Text>
+              <Text style={[styles.label, { color: colors.textSecondary }]}>{t('digitalizar_placa')}</Text>
               <TouchableOpacity style={[styles.cameraButton, { 
                 backgroundColor: colors.inputBackground, 
                 borderColor: colors.border 
@@ -154,7 +157,7 @@ const EntradaMotoPatio = ({ navigation }) => {
             </View>
 
             <TouchableOpacity style={[styles.botao, { backgroundColor: colors.primary }]} onPress={handleBuscarMoto}>
-              <Text style={[styles.textoBotao, { color: colors.primaryText }]}>Buscar</Text>
+              <Text style={[styles.textoBotao, { color: colors.primaryText }]}>{t('buscar')}</Text>
             </TouchableOpacity>
           </View>
         </ScrollView>
@@ -170,10 +173,10 @@ const EntradaMotoPatio = ({ navigation }) => {
           </TouchableOpacity>
 
           <View style={[styles.card, { backgroundColor: colors.cardBackground }]}>
-            <Text style={[styles.titulo, { color: colors.text }]}>Ficha da Moto</Text>
+            <Text style={[styles.titulo, { color: colors.text }]}>{t('ficha_moto')}</Text>
 
             <View style={styles.inputContainer}>
-              <Text style={[styles.inputLabel, { color: colors.text }]}>Modelo</Text>
+              <Text style={[styles.inputLabel, { color: colors.text }]}>{t('modelo')}</Text>
               <View style={[styles.pickerContainer, { 
                 backgroundColor: colors.inputBackground, 
                 borderColor: colors.border 
@@ -184,7 +187,7 @@ const EntradaMotoPatio = ({ navigation }) => {
                   style={[styles.picker, { color: colors.text }]}
                   dropdownIconColor={colors.text}
                 >
-                  <Picker.Item style={styles.pickerItem} label="Modelo" value="" />
+                  <Picker.Item style={styles.pickerItem} label={t('modelo')} value="" />
                   <Picker.Item style={styles.pickerItem} label="Sport 110i" value="Sport 110i" />
                   <Picker.Item style={styles.pickerItem} label="Mottu E" value="Mottu E" />
                   <Picker.Item style={styles.pickerItem} label="Mottu Pop 110i" value="Mottu Pop 110i" />
@@ -193,7 +196,7 @@ const EntradaMotoPatio = ({ navigation }) => {
             </View>
 
             <View style={styles.inputContainer}>
-              <Text style={[styles.inputLabel, { color: colors.text }]}>Ano Fabricação</Text>
+              <Text style={[styles.inputLabel, { color: colors.text }]}>{t('ano_fabricacao')}</Text>
               <TextInput
                 style={[styles.input, { 
                   backgroundColor: colors.inputBackground, 
@@ -202,13 +205,13 @@ const EntradaMotoPatio = ({ navigation }) => {
                 }]}
                 value={formData.anoFabricacao}
                 onChangeText={(value) => handleInputChange('anoFabricacao', value)}
-                placeholder="Ano Fabricação"
+                placeholder={t('ano_fabricacao')}
                 placeholderTextColor={colors.placeholderTextColor}
               />
             </View>
 
             <View style={styles.inputContainer}>
-              <Text style={[styles.inputLabel, { color: colors.text }]}>Número de Chassi</Text>
+              <Text style={[styles.inputLabel, { color: colors.text }]}>{t('numero_chassi')}</Text>
               <TextInput
                 style={[styles.input, { 
                   backgroundColor: colors.inputBackground, 
@@ -217,13 +220,13 @@ const EntradaMotoPatio = ({ navigation }) => {
                 }]}
                 value={formData.numeroChassi}
                 onChangeText={(value) => handleInputChange('numeroChassi', value)}
-                placeholder="Número de Chassi"
+                placeholder={t('numero_chassi')}
                 placeholderTextColor={colors.placeholderTextColor}
               />
             </View>
 
             <View style={styles.inputContainer}>
-              <Text style={[styles.inputLabel, { color: colors.text }]}>Status</Text>
+              <Text style={[styles.inputLabel, { color: colors.text }]}>{t('status')}</Text>
               <View style={[styles.pickerContainer, { 
                 backgroundColor: colors.inputBackground, 
                 borderColor: colors.border 
@@ -234,17 +237,17 @@ const EntradaMotoPatio = ({ navigation }) => {
                   style={[styles.picker, { color: colors.text }]}
                   dropdownIconColor={colors.text}
                 >
-                  <Picker.Item style={styles.pickerItem} label="Status" value="" />
-                  <Picker.Item style={styles.pickerItem} label="Sem Placa" value="Sem Placa" />
-                  <Picker.Item style={styles.pickerItem} label="Com Placa" value="Com Placa" />
-                  <Picker.Item style={styles.pickerItem} label="Situação de Furto" value="Situação de Furto" />
-                  <Picker.Item style={styles.pickerItem} label="Situação de Acidente" value="Situação de Acidente" />
+                  <Picker.Item style={styles.pickerItem} label={t('status')} value="" />
+                  <Picker.Item style={styles.pickerItem} label={t('sem_placa')} value="Sem Placa" />
+                  <Picker.Item style={styles.pickerItem} label={t('com_placa')} value="Com Placa" />
+                  <Picker.Item style={styles.pickerItem} label={t('situacao_furto')} value="Situação de Furto" />
+                  <Picker.Item style={styles.pickerItem} label={t('situacao_acidente')} value="Situação de Acidente" />
                 </Picker>
               </View>
             </View>
 
             <View style={styles.inputContainer}>
-              <Text style={[styles.inputLabel, { color: colors.text }]}>Condição Mecânica</Text>
+              <Text style={[styles.inputLabel, { color: colors.text }]}>{t('condicao_mecanica')}</Text>
               <View style={[styles.pickerContainer, { 
                 backgroundColor: colors.inputBackground, 
                 borderColor: colors.border 
@@ -255,12 +258,12 @@ const EntradaMotoPatio = ({ navigation }) => {
                   style={[styles.picker, { color: colors.text }]}
                   dropdownIconColor={colors.text}
                 >
-                  <Picker.Item style={styles.pickerItem} label="Condição Mecânica" value="" />
-                  <Picker.Item style={styles.pickerItem} label="Bom Estado Mecânico" value="Bom Estado Mecânico" />
-                  <Picker.Item style={styles.pickerItem} label="Gravemente Danificada" value="Gravemente Danificada" />
-                  <Picker.Item style={styles.pickerItem} label="Inoperante" value="Inoperante" />
-                  <Picker.Item style={styles.pickerItem} label="Necessita de Revisão" value="Necessita de Revisão" />
-                  <Picker.Item style={styles.pickerItem} label="Pequenos Reparos" value="Pequenos Reparos" />
+                  <Picker.Item style={styles.pickerItem} label={t('condicao_mecanica')} value="" />
+                  <Picker.Item style={styles.pickerItem} label={t('bom_estado_mecanico')} value="Bom Estado Mecânico" />
+                  <Picker.Item style={styles.pickerItem} label={t('gravemente_danificada')} value="Gravemente Danificada" />
+                  <Picker.Item style={styles.pickerItem} label={t('inoperante')} value="Inoperante" />
+                  <Picker.Item style={styles.pickerItem} label={t('necessita_revisao')} value="Necessita de Revisão" />
+                  <Picker.Item style={styles.pickerItem} label={t('pequenos_reparos')} value="Pequenos Reparos" />
                 </Picker>
               </View>
             </View>
@@ -274,7 +277,7 @@ const EntradaMotoPatio = ({ navigation }) => {
             </View>
 
             <TouchableOpacity style={[styles.botao, { backgroundColor: colors.primary }]} onPress={handleControlarMoto}>
-              <Text style={[styles.textoBotao, { color: colors.primaryText }]}>Controlar moto</Text>
+              <Text style={[styles.textoBotao, { color: colors.primaryText }]}>{t('controlar_moto')}</Text>
             </TouchableOpacity>
           </View>
         </ScrollView>
@@ -290,7 +293,7 @@ const EntradaMotoPatio = ({ navigation }) => {
           </TouchableOpacity>
 
           <View style={[styles.card, { backgroundColor: colors.cardBackground }]}>
-            <Text style={[styles.titulo, { color: colors.text }]}>Ficha da Moto</Text>
+            <Text style={[styles.titulo, { color: colors.text }]}>{t('ficha_moto')}</Text>
 
             <View style={styles.inputContainer}>
               <TextInput style={[styles.input, styles.inputReadonly, { 
@@ -337,9 +340,9 @@ const EntradaMotoPatio = ({ navigation }) => {
             </View>
 
             <View style={[styles.cardProcedimento, { backgroundColor: colors.cardBackground }]}>
-              <Text style={[styles.tituloProcedimento, { color: colors.text }]}>Procedimento de controle</Text>
-              <Text style={[styles.textoProcedimento, { color: colors.textSecondary }]}>1. Ligue o beacon</Text>
-              <Text style={[styles.textoProcedimento, { color: colors.textSecondary }]}>2. Clique no botão rastrear para encontrar automaticamente ou dispositivo</Text>
+              <Text style={[styles.tituloProcedimento, { color: colors.text }]}>{t('procedimento_controle')}</Text>
+              <Text style={[styles.textoProcedimento, { color: colors.textSecondary }]}>{t('ligue_beacon')}</Text>
+              <Text style={[styles.textoProcedimento, { color: colors.textSecondary }]}>{t('clique_rastrear_encontrar')}</Text>
 
               <TouchableOpacity 
                 style={[styles.botaoRastrear, 
@@ -355,12 +358,12 @@ const EntradaMotoPatio = ({ navigation }) => {
                   <Ionicons name="bluetooth" size={20} color={colors.primaryText} />
                 )}
                 <Text style={[styles.textoBotaoRastrear, { color: colors.primaryText }]}>
-                  {rastreandoBeacon ? 'Rastreando...' : 'Rastrear'}
+                  {rastreandoBeacon ? t('rastreando') : t('rastrear')}
                 </Text>
               </TouchableOpacity>
 
               <TouchableOpacity onPress={handleCodigoManual}>
-                <Text style={[styles.linkCodigo, { color: colors.primary }]}>Se preferir, informe diretamente o código do Beacon</Text>
+                <Text style={[styles.linkCodigo, { color: colors.primary }]}>{t('informe_codigo_beacon')}</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -372,48 +375,48 @@ const EntradaMotoPatio = ({ navigation }) => {
           <View style={styles.containerEtapa4}>
             <View style={[styles.cardSucesso, { backgroundColor: colors.primary }]}>
               <Ionicons name="checkmark-circle" size={48} color={colors.primaryText} />
-              <Text style={[styles.tituloSucesso, { color: colors.primaryText }]}>Beacon Associado</Text>
-              <Text style={[styles.textoSucesso, { color: colors.primaryText }]}>O beacon foi associado à moto com sucesso!</Text>
+              <Text style={[styles.tituloSucesso, { color: colors.primaryText }]}>{t('beacon_associado')}</Text>
+              <Text style={[styles.textoSucesso, { color: colors.primaryText }]}>{t('beacon_associado_sucesso')}</Text>
             </View>
 
             <View style={[styles.cardInfo, { backgroundColor: colors.cardBackground }]}>
-              <Text style={[styles.tituloInfo, { color: colors.text }]}>Beacon Detectado</Text>
+              <Text style={[styles.tituloInfo, { color: colors.text }]}>{t('beacon_detectado')}</Text>
               <View style={styles.infoRow}>
-                <Text style={[styles.infoLabel, { color: colors.textSecondary }]}>Código:</Text>
+                <Text style={[styles.infoLabel, { color: colors.textSecondary }]}>{t('codigo')}:</Text>
                 <Text style={[styles.infoValue, { color: colors.text }]}>{beaconDetectado?.codigo}</Text>
               </View>
               <View style={styles.infoRow}>
-                <Text style={[styles.infoLabel, { color: colors.textSecondary }]}>Sinal:</Text>
+                <Text style={[styles.infoLabel, { color: colors.textSecondary }]}>{t('sinal')}:</Text>
                 <Text style={[styles.infoValue, { color: colors.text }]}>{beaconDetectado?.sinal}</Text>
               </View>
               <View style={styles.infoRow}>
-                <Text style={[styles.infoLabel, { color: colors.textSecondary }]}>Bateria:</Text>
+                <Text style={[styles.infoLabel, { color: colors.textSecondary }]}>{t('bateria')}:</Text>
                 <Text style={[styles.infoValue, { color: colors.text }]}>{beaconDetectado?.bateria}</Text>
               </View>
               <View style={styles.infoRow}>
-                <Text style={[styles.infoLabel, { color: colors.textSecondary }]}>Status:</Text>
-                <Text style={[styles.infoValue, { color: colors.primary }]}>Conectado</Text>
+                <Text style={[styles.infoLabel, { color: colors.textSecondary }]}>{t('status')}:</Text>
+                <Text style={[styles.infoValue, { color: colors.primary }]}>{t('conectado')}</Text>
               </View>
             </View>
 
             <View style={[styles.cardInfo, { backgroundColor: colors.cardBackground }]}>
-              <Text style={[styles.tituloInfo, { color: colors.text }]}>Moto Registrada</Text>
+              <Text style={[styles.tituloInfo, { color: colors.text }]}>{t('moto_registrada')}</Text>
               <View style={styles.infoRow}>
-                <Text style={[styles.infoLabel, { color: colors.textSecondary }]}>Placa:</Text>
+                <Text style={[styles.infoLabel, { color: colors.textSecondary }]}>{t('placa')}:</Text>
                 <Text style={[styles.infoValue, { color: colors.text }]}>{placa}</Text>
               </View>
               <View style={styles.infoRow}>
-                <Text style={[styles.infoLabel, { color: colors.textSecondary }]}>Modelo:</Text>
+                <Text style={[styles.infoLabel, { color: colors.textSecondary }]}>{t('modelo')}:</Text>
                 <Text style={[styles.infoValue, { color: colors.text }]}>{formData.modelo}</Text>
               </View>
               <View style={styles.infoRow}>
-                <Text style={[styles.infoLabel, { color: colors.textSecondary }]}>Status:</Text>
+                <Text style={[styles.infoLabel, { color: colors.textSecondary }]}>{t('status')}:</Text>
                 <Text style={[styles.infoValue, { color: colors.text }]}>{formData.status}</Text>
               </View>
             </View>
 
             <TouchableOpacity style={[styles.botao, { backgroundColor: colors.primary }]} onPress={handleFinalizarEntrada}>
-              <Text style={[styles.textoBotao, { color: colors.primaryText }]}>Finalizar Entrada</Text>
+              <Text style={[styles.textoBotao, { color: colors.primaryText }]}>{t('finalizar_entrada')}</Text>
             </TouchableOpacity>
           </View>
         </ScrollView>
@@ -427,8 +430,8 @@ const EntradaMotoPatio = ({ navigation }) => {
       >
         <View style={styles.modalContainer}>
           <View style={[styles.modalContent, { backgroundColor: colors.cardBackground }]}>
-            <Text style={[styles.modalTitulo, { color: colors.text }]}>Procedimento de controle</Text>
-            <Text style={[styles.modalSubtitulo, { color: colors.textSecondary }]}>Digite o código UUID do Beacon</Text>
+            <Text style={[styles.modalTitulo, { color: colors.text }]}>{t('procedimento_controle')}</Text>
+            <Text style={[styles.modalSubtitulo, { color: colors.textSecondary }]}>{t('digite_codigo_uuid_beacon')}</Text>
             
             <TextInput
               style={[styles.modalInput, { 
@@ -438,7 +441,7 @@ const EntradaMotoPatio = ({ navigation }) => {
               }]}
               value={codigoBeacon}
               onChangeText={handleCodigoBeaconChange}
-              placeholder="Código do beacon"
+              placeholder={t('codigo_beacon')}
               placeholderTextColor={colors.placeholderTextColor}
             />
             
@@ -447,14 +450,14 @@ const EntradaMotoPatio = ({ navigation }) => {
                 style={[styles.modalButtonCancel, { backgroundColor: colors.inputBackground }]}
                 onPress={() => setModalCodigoVisible(false)}
               >
-                <Text style={[styles.modalButtonText, { color: colors.text }]}>Cancelar</Text>
+                <Text style={[styles.modalButtonText, { color: colors.text }]}>{t('cancelar')}</Text>
               </TouchableOpacity>
               
               <TouchableOpacity 
                 style={[styles.modalButtonConfirm, { backgroundColor: colors.primary }]}
                 onPress={confirmarCodigoManual}
               >
-                <Text style={[styles.modalButtonText, { color: colors.primaryText }]}>Confirmar</Text>
+                <Text style={[styles.modalButtonText, { color: colors.primaryText }]}>{t('confirmar')}</Text>
               </TouchableOpacity>
             </View>
           </View>

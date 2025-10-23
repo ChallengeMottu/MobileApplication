@@ -2,9 +2,11 @@ import React, { useState, useCallback } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Alert, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '../context/ContextTheme';
+import { useTranslation } from 'react-i18next';
 
 const LocalizarMotoPatio = ({ navigation }) => {
   const { colors, theme } = useTheme();
+  const { t } = useTranslation();
   
   const [etapaAtual, setEtapaAtual] = useState(1);
   const [placa, setPlaca] = useState('');
@@ -17,46 +19,46 @@ const LocalizarMotoPatio = ({ navigation }) => {
 
   const handleBuscarMoto = () => {
     if (!placa.trim()) {
-      Alert.alert('Atenção', 'Por favor, digite a placa da moto.');
+      Alert.alert(t('atencao'), t('digite_placa_moto'));
       return;
     }
 
     // Simular busca da moto
     setMotoEncontrada({
       placa: placa.toUpperCase(),
-      localizacao: 'Zona A - Setor 3',
+      localizacao: t('zona_a_setor_3'),
       modelo: 'Sport 110i',
-      status: 'Estacionada'
+      status: t('estacionada')
     });
     setEtapaAtual(2);
   };
 
   const handleDigitalizarPlaca = () => {
-    Alert.alert('Câmera', 'Funcionalidade de digitalização será implementada');
+    Alert.alert(t('camera'), t('funcionalidade_digitalizacao'));
   };
 
   const handleAcionarAlarme = () => {
     setAlarmeAtivo(true);
     setEtapaAtual(3);
-    Alert.alert('Alarme Acionado', 'O alarme da moto foi ativado com sucesso!');
+    Alert.alert(t('alarme_acionado'), t('alarme_ativado_sucesso'));
   };
 
   const handlePararAlarme = () => {
     Alert.alert(
-      'Confirmar',
-      'Deseja realmente parar o alarme?',
+      t('confirmar'),
+      t('deseja_parar_alarme'),
       [
         {
-          text: 'Cancelar',
+          text: t('cancelar'),
           style: 'cancel'
         },
         {
-          text: 'Parar Alarme',
+          text: t('parar_alarme'),
           onPress: () => {
             setAlarmeAtivo(false);
             Alert.alert(
-              'Alarme Parado',
-              'O alarme foi desativado com sucesso!',
+              t('alarme_parado'),
+              t('alarme_desativado_sucesso'),
               [
                 {
                   text: 'OK',
@@ -90,15 +92,15 @@ const LocalizarMotoPatio = ({ navigation }) => {
           </TouchableOpacity>
 
           <View style={[styles.card, { backgroundColor: colors.cardBackground }]}>
-            <Text style={[styles.titulo, { color: colors.text }]}>Identificar Localização</Text>
+            <Text style={[styles.titulo, { color: colors.text }]}>{t('identificar_localizacao')}</Text>
             <Text style={[styles.subtitulo, { color: colors.textSecondary }]}>
-              Busque uma moto específica dentro do pátio
+              {t('buscar_moto_patio')}
             </Text>
 
             <View style={[styles.separador, { backgroundColor: colors.textSecondary }]} />
 
             <View style={styles.inputContainer}>
-              <Text style={[styles.label, { color: colors.textSecondary }]}>Escolha entre</Text>
+              <Text style={[styles.label, { color: colors.textSecondary }]}>{t('escolha_entre')}</Text>
               <TextInput
                 style={[styles.input, { 
                   backgroundColor: colors.inputBackground,
@@ -107,13 +109,13 @@ const LocalizarMotoPatio = ({ navigation }) => {
                 }]}
                 value={placa}
                 onChangeText={handlePlacaChange}
-                placeholder="Digite a placa da moto"
+                placeholder={t('digite_placa_moto')}
                 placeholderTextColor={colors.textSecondary}
               />
             </View>
 
             <View style={styles.inputContainer}>
-              <Text style={[styles.label, { color: colors.textSecondary }]}>Digitalizar a placa</Text>
+              <Text style={[styles.label, { color: colors.textSecondary }]}>{t('digitalizar_placa')}</Text>
               <TouchableOpacity 
                 style={[styles.cameraButton, { 
                   backgroundColor: colors.inputBackground,
@@ -129,7 +131,7 @@ const LocalizarMotoPatio = ({ navigation }) => {
               style={[styles.botao, { backgroundColor: colors.primary }]} 
               onPress={handleBuscarMoto}
             >
-              <Text style={[styles.textoBotao, { color: colors.primaryText }]}>Buscar</Text>
+              <Text style={[styles.textoBotao, { color: colors.primaryText }]}>{t('buscar')}</Text>
             </TouchableOpacity>
           </View>
         </ScrollView>
@@ -148,10 +150,10 @@ const LocalizarMotoPatio = ({ navigation }) => {
           </TouchableOpacity>
 
           <View style={[styles.card, { backgroundColor: colors.cardBackground }]}>
-            <Text style={[styles.titulo, { color: colors.text }]}>Moto procurada</Text>
+            <Text style={[styles.titulo, { color: colors.text }]}>{t('moto_procurada')}</Text>
 
             <View style={styles.inputContainer}>
-              <Text style={[styles.inputLabel, { color: colors.text }]}>Placa</Text>
+              <Text style={[styles.inputLabel, { color: colors.text }]}>{t('placa')}</Text>
               <View style={[styles.inputInfo, { 
                 backgroundColor: colors.inputBackground,
                 borderColor: colors.textSecondary
@@ -163,7 +165,7 @@ const LocalizarMotoPatio = ({ navigation }) => {
             </View>
 
             <View style={styles.inputContainer}>
-              <Text style={[styles.inputLabel, { color: colors.text }]}>Localização da zona</Text>
+              <Text style={[styles.inputLabel, { color: colors.text }]}>{t('localizacao_zona')}</Text>
               <View style={[styles.inputInfo, { 
                 backgroundColor: colors.inputBackground,
                 borderColor: colors.textSecondary
@@ -183,14 +185,14 @@ const LocalizarMotoPatio = ({ navigation }) => {
             </View>
 
             <Text style={[styles.textoInstrucao, { color: colors.text }]}>
-              Dirija-se a zona de localização antes de acionar alarme
+              {t('dirija_se_zona_antes_alarme')}
             </Text>
 
             <TouchableOpacity 
               style={[styles.botao, { backgroundColor: colors.primary }]} 
               onPress={handleAcionarAlarme}
             >
-              <Text style={[styles.textoBotao, { color: colors.primaryText }]}>Acionar alarme</Text>
+              <Text style={[styles.textoBotao, { color: colors.primaryText }]}>{t('acionar_alarme')}</Text>
             </TouchableOpacity>
           </View>
         </ScrollView>
@@ -209,10 +211,10 @@ const LocalizarMotoPatio = ({ navigation }) => {
           </TouchableOpacity>
 
           <View style={[styles.card, { backgroundColor: colors.cardBackground }]}>
-            <Text style={[styles.titulo, { color: colors.text }]}>Moto procurada</Text>
+            <Text style={[styles.titulo, { color: colors.text }]}>{t('moto_procurada')}</Text>
 
             <View style={styles.inputContainer}>
-              <Text style={[styles.inputLabel, { color: colors.text }]}>Placa</Text>
+              <Text style={[styles.inputLabel, { color: colors.text }]}>{t('placa')}</Text>
               <View style={[styles.inputInfo, { 
                 backgroundColor: colors.inputBackground,
                 borderColor: colors.textSecondary
@@ -224,7 +226,7 @@ const LocalizarMotoPatio = ({ navigation }) => {
             </View>
 
             <View style={styles.inputContainer}>
-              <Text style={[styles.inputLabel, { color: colors.text }]}>Localização da zona</Text>
+              <Text style={[styles.inputLabel, { color: colors.text }]}>{t('localizacao_zona')}</Text>
               <View style={[styles.inputInfo, { 
                 backgroundColor: colors.inputBackground,
                 borderColor: colors.textSecondary
@@ -244,13 +246,13 @@ const LocalizarMotoPatio = ({ navigation }) => {
             </View>
 
             <Text style={[styles.textoInstrucao, { color: colors.text }]}>
-              Dirija-se a zona de localização antes de acionar alarme
+              {t('dirija_se_zona_antes_alarme')}
             </Text>
 
             {/* Card de controle do alarme */}
             <View style={[styles.cardAlarme, { backgroundColor: colors.primary }]}>
               <Text style={[styles.tituloAlarme, { color: colors.primaryText }]}>
-                QUANDO ALARME ESTIVER ACIONADO
+                {t('quando_alarme_acionado')}
               </Text>
               
               <TouchableOpacity 
@@ -261,12 +263,12 @@ const LocalizarMotoPatio = ({ navigation }) => {
                 onPress={handlePararAlarme}
               >
                 <Text style={[styles.textoBotaoPararAlarme, { color: colors.primaryText }]}>
-                  Parar alarme
+                  {t('parar_alarme')}
                 </Text>
               </TouchableOpacity>
               
               <Text style={[styles.textoAlarmeAtivo, { color: colors.primaryText }]}>
-                Alarme em funcionamento...
+                {t('alarme_em_funcionamento')}
               </Text>
             </View>
           </View>

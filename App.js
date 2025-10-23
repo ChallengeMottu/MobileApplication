@@ -236,7 +236,7 @@ function CustomDrawerContent(props) {
             icon={() => (
               <Ionicons name="exit" size={24} color={colors.primary} style={{ marginRight: 10 }} />
             )}
-            onPress={() => handleNavigation('TelaCadastroM')}
+            onPress={() => handleNavigation('TelaScanner')}
             labelStyle={dynamicStyles.drawerLabel}
             style={styles.drawerItem}
           />

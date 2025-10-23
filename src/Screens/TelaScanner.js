@@ -2,12 +2,14 @@ import { useState } from 'react';
 import { ActivityIndicator, Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import { useTheme } from '../context/ContextTheme'; // importa o contexto do tema
+import { useTheme } from '../context/ContextTheme';
+import { useTranslation } from 'react-i18next';
 
 export default function TelaScanner() {
     const navigation = useNavigation();
     const [rastreandoStatus, setRastreandoStatus] = useState(false);
-    const { colors } = useTheme(); // pega as cores do tema
+    const { colors } = useTheme();
+    const { t } = useTranslation();
 
     const toggleRastreando = () => {
         setRastreandoStatus(prevStatus => !prevStatus);
@@ -30,10 +32,10 @@ export default function TelaScanner() {
                 </View>
 
                 <Text style={[styles.titulo, { color: colors.text }]}>
-                    Entrada de Motos no Pátio
+                    {t('entrada_motos_patio')}
                 </Text>
                 <Text style={[styles.subtitulo, { color: colors.textSecondary }]}>
-                    Identifique o código de uso da moto mais próxima ao dispositivo
+                    {t('identifique_codigo_uso_moto')}
                 </Text>
 
                 {!rastreandoStatus ? (
@@ -42,7 +44,7 @@ export default function TelaScanner() {
                         style={[styles.botao, { backgroundColor: colors.primary }]}
                     >
                         <Text style={[styles.textoBotao, { color: colors.primaryText }]}>
-                            RASTREAR
+                            {t('rastrear')}
                         </Text>
                     </TouchableOpacity>
                 ) : (
@@ -51,7 +53,7 @@ export default function TelaScanner() {
                         style={[styles.botao, { backgroundColor: colors.primary }]}
                     >
                         <Text style={[styles.textoBotao, { color: colors.primaryText }]}>
-                            PARAR RASTREAMENTO
+                            {t('parar_rastreamento')}
                         </Text>
                     </TouchableOpacity>
                 )}
@@ -59,7 +61,7 @@ export default function TelaScanner() {
                 {rastreandoStatus && (
                     <View style={[styles.rastreandoContainer, { backgroundColor: colors.cardSecondary }]}>
                         <Text style={{ color: colors.text, textAlign: 'center' }}>
-                            Rastreando Motos...
+                            {t('rastreando_motos')}
                         </Text>
                         <ActivityIndicator size="large" color={colors.text} style={styles.spinner} />
                     </View>

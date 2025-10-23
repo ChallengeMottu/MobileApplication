@@ -4,9 +4,11 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useEffect, useState } from 'react';
 import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View, TextInput, ActivityIndicator } from 'react-native';
 import { useTheme } from '../context/ContextTheme';
+import { useTranslation } from 'react-i18next';
 
 export default function TelaInfos({ navigation }) {
     const { colors, theme } = useTheme();
+    const { t } = useTranslation();
     
     const [fontsLoaded] = useFonts({
         DarkerGrotesque_500Medium,
@@ -27,7 +29,7 @@ export default function TelaInfos({ navigation }) {
                 setUsuario(JSON.parse(usuarioLogado));
             } catch (error) {
                 console.error('Erro ao carregar dados:', error);
-                Alert.alert('Erro', 'Sessão expirada. Faça login novamente.');
+                Alert.alert(t('erro'), t('sessao_expirada'));
             } finally {
                 setCarregando(false);
             }
@@ -37,10 +39,10 @@ export default function TelaInfos({ navigation }) {
     }, [navigation]);
 
     const handleLogout = async () => {
-        Alert.alert('CONFIRMAR', 'Deseja realmente sair da conta?', [
-            { text: 'Cancelar', style: 'cancel' },
+        Alert.alert(t('confirmar'), t('deseja_sair_conta'), [
+            { text: t('cancelar'), style: 'cancel' },
             {
-                text: 'Sair',
+                text: t('sair'),
                 style: 'destructive',
                 onPress: async () => {
                     await AsyncStorage.removeItem('usuarioLogado');
@@ -65,7 +67,7 @@ export default function TelaInfos({ navigation }) {
     if (!usuario) {
         return (
             <View style={[styles.loadingContainer, { backgroundColor: colors.background }]}>
-                <Text style={[styles.errorText, { color: '#ff4444' }]}>Usuário não identificado</Text>
+                <Text style={[styles.errorText, { color: '#ff4444' }]}>{t('usuario_nao_identificado')}</Text>
             </View>
         );
     }
@@ -84,7 +86,7 @@ export default function TelaInfos({ navigation }) {
             </TouchableOpacity>
 
             {/* Título */}
-            <Text style={[styles.title, { color: colors.text }]}>Editar Perfil</Text>
+            <Text style={[styles.title, { color: colors.text }]}>{t('editar_perfil')}</Text>
 
             {/* Ícone redondo */}
             <View style={styles.iconWrapper}>
@@ -95,7 +97,7 @@ export default function TelaInfos({ navigation }) {
 
             {/* Campos */}
             <View style={styles.form}>
-                <Text style={[styles.label, { color: colors.text }]}>Nome</Text>
+                <Text style={[styles.label, { color: colors.text }]}>{t('nome')}</Text>
                 <TextInput 
                     style={[styles.input, { 
                         backgroundColor: colors.inputBackground, 
@@ -106,7 +108,7 @@ export default function TelaInfos({ navigation }) {
                     placeholderTextColor={colors.textSecondary}
                 />
 
-                <Text style={[styles.label, { color: colors.text }]}>E-mail</Text>
+                <Text style={[styles.label, { color: colors.text }]}>{t('email')}</Text>
                 <TextInput 
                     style={[styles.input, { 
                         backgroundColor: colors.inputBackground, 
@@ -117,7 +119,7 @@ export default function TelaInfos({ navigation }) {
                     placeholderTextColor={colors.textSecondary}
                 />
 
-                <Text style={[styles.label, { color: colors.text }]}>Telefone</Text>
+                <Text style={[styles.label, { color: colors.text }]}>{t('telefone')}</Text>
                 <TextInput 
                     style={[styles.input, { 
                         backgroundColor: colors.inputBackground, 
@@ -128,7 +130,7 @@ export default function TelaInfos({ navigation }) {
                     placeholderTextColor={colors.textSecondary}
                 />
 
-                <Text style={[styles.label, { color: colors.text }]}>CPF</Text>
+                <Text style={[styles.label, { color: colors.text }]}>{t('cpf')}</Text>
                 <TextInput 
                     style={[styles.input, { 
                         backgroundColor: colors.inputBackground, 
@@ -139,7 +141,7 @@ export default function TelaInfos({ navigation }) {
                     placeholderTextColor={colors.textSecondary}
                 />
 
-                <Text style={[styles.label, { color: colors.text }]}>Filial Mottu</Text>
+                <Text style={[styles.label, { color: colors.text }]}>{t('filial_mottu')}</Text>
                 <TextInput 
                     style={[styles.input, { 
                         backgroundColor: colors.inputBackground, 
@@ -150,7 +152,7 @@ export default function TelaInfos({ navigation }) {
                     placeholderTextColor={colors.textSecondary}
                 />
 
-                <Text style={[styles.label, { color: colors.text }]}>Cargo</Text>
+                <Text style={[styles.label, { color: colors.text }]}>{t('cargo')}</Text>
                 <TextInput 
                     style={[styles.input, { 
                         backgroundColor: colors.inputBackground, 
@@ -168,7 +170,7 @@ export default function TelaInfos({ navigation }) {
                 onPress={handleNovaSenha} 
                 activeOpacity={0.8}
             >
-                <Text style={styles.changePasswordText}>Alterar Senha</Text>
+                <Text style={styles.changePasswordText}>{t('alterar_senha')}</Text>
                 <Ionicons name="key-outline" size={20} color="#fff" style={{ marginLeft: 8 }} />
             </TouchableOpacity>
 
@@ -178,7 +180,7 @@ export default function TelaInfos({ navigation }) {
                 onPress={handleLogout} 
                 activeOpacity={0.8}
             >
-                <Text style={styles.logoutText}>Sair da conta</Text>
+                <Text style={styles.logoutText}>{t('sair_conta')}</Text>
                 <Ionicons name="log-out-outline" size={20} color="#fff" style={{ marginLeft: 8 }} />
             </TouchableOpacity>
         </ScrollView>

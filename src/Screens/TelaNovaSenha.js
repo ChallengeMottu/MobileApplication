@@ -6,9 +6,11 @@ import { useNavigation } from '@react-navigation/native';
 import { EmailAuthProvider, reauthenticateWithCredential, updatePassword } from 'firebase/auth';
 import { auth } from '../configurations/firebaseConfig';
 import { useTheme } from '../context/ContextTheme';
+import { useTranslation } from 'react-i18next';
 
 export default function TelaNovaSenha() {
     const { colors, theme } = useTheme();
+    const { t } = useTranslation();
     
     let [fontsLoaded] = useFonts({
         DarkerGrotesque_500Medium,
@@ -28,24 +30,24 @@ export default function TelaNovaSenha() {
 
     const handleAlterarSenha = async () => {
         if (!senhaAtual || !novaSenha || !confirmarSenha) {
-            Alert.alert('Atenção', 'Preencha todos os campos!');
+            Alert.alert(t('atencao'), t('preencha_todos_campos'));
             return;
         }
 
         if (novaSenha !== confirmarSenha) {
-            Alert.alert("Erro", "As senhas não coincidem!");
+            Alert.alert(t('erro'), t('senhas_nao_coincidem'));
             return;
         }
 
         if (novaSenha.length < 6) {
-            Alert.alert("Erro", "A nova senha deve ter pelo menos 6 caracteres.");
+            Alert.alert(t('erro'), t('senha_minimo_caracteres'));
             return;
         }
 
         try {
             const user = auth.currentUser;
             if (!user || !user.email) {
-                Alert.alert("Erro", "Nenhum usuário logado.");
+                Alert.alert(t('erro'), t('nenhum_usuario_logado'));
                 return;
             }
 
@@ -55,11 +57,11 @@ export default function TelaNovaSenha() {
 
             // Atualizar senha
             await updatePassword(user, novaSenha);
-            Alert.alert("Sucesso", "Senha alterada com sucesso!");
+            Alert.alert(t('sucesso'), t('senha_alterada_sucesso'));
             navigation.navigate('TelaLogin');
         } catch (error) {
             console.log(error);
-            Alert.alert("Erro", "Não foi possível alterar a senha.");
+            Alert.alert(t('erro'), t('nao_foi_possivel_alterar_senha'));
         }
     };
 
@@ -70,7 +72,7 @@ export default function TelaNovaSenha() {
             </TouchableOpacity>
             
             <View style={[styles.card, { backgroundColor: colors.cardBackground }]}>
-                <Text style={[styles.titulo, { color: colors.text }]}>Alterar senha</Text>
+                <Text style={[styles.titulo, { color: colors.text }]}>{t('alterar_senha')}</Text>
 
                 {/* Senha atual */}
                 <View style={styles.inputContainer}>
@@ -79,7 +81,7 @@ export default function TelaNovaSenha() {
                             backgroundColor: colors.inputBackground,
                             color: colors.text 
                         }]}
-                        placeholder="Senha atual"
+                        placeholder={t('senha_atual')}
                         placeholderTextColor={colors.textSecondary}
                         secureTextEntry={!mostrarSenhaAtual}
                         value={senhaAtual}
@@ -104,7 +106,7 @@ export default function TelaNovaSenha() {
                             backgroundColor: colors.inputBackground,
                             color: colors.text 
                         }]}
-                        placeholder="Nova senha"
+                        placeholder={t('nova_senha')}
                         placeholderTextColor={colors.textSecondary}
                         secureTextEntry={!mostrarSenha1}
                         value={novaSenha}
@@ -129,7 +131,7 @@ export default function TelaNovaSenha() {
                             backgroundColor: colors.inputBackground,
                             color: colors.text 
                         }]}
-                        placeholder="Confirmar nova senha"
+                        placeholder={t('confirmar_nova_senha')}
                         placeholderTextColor={colors.textSecondary}
                         secureTextEntry={!mostrarSenha2}
                         value={confirmarSenha}
@@ -151,7 +153,7 @@ export default function TelaNovaSenha() {
                     style={[styles.botao, { backgroundColor: colors.primary }]} 
                     onPress={handleAlterarSenha}
                 >
-                    <Text style={[styles.textoBotao, { color: colors.primaryText }]}>Salvar senha</Text>
+                    <Text style={[styles.textoBotao, { color: colors.primaryText }]}>{t('salvar_senha')}</Text>
                 </TouchableOpacity>
             </View>
         </View>
