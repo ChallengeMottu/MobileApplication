@@ -5,14 +5,14 @@ import pt from '../locales/pt.json'
 import es from '../locales/es.json'
 
 i18n.use(initReactI18next).init({
-    lng:"pt",//Idioma padrão
-    fallbackLng:"es",//Fallback se não encontrar tradução
+    lng:"pt",
+    fallbackLng:"es",
     resources:{
         pt:{translation:pt},
         es:{translation:es}
     },
     interpolation:{
-        escapeValue: false //React ja faz proteção contra XSS
+        escapeValue: false 
     },
 })
 
