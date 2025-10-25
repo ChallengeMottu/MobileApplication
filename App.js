@@ -6,7 +6,6 @@ import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, StyleSheet, Text, View, Alert, TouchableOpacity, Animated } from 'react-native';
 
-// APENAS ESTE IMPORT - ele já inicializa o i18n
 import './src/services/i18n';
 import { useTranslation } from 'react-i18next';
 
@@ -24,6 +23,9 @@ import Tela from './src/Screens/Tela';
 import TelaCadastroM from './src/Screens/TelaCadastroM';
 import { ThemeProvider, useTheme } from './src/context/ContextTheme';
 import TelaDadosM from './src/Screens/TelaDadosM';
+import TelaAdm from './src/Screens/TelaAdm';
+import TelaMecanico from './src/Screens/TelaMecanico';
+import TelaDashboard from './src/Screens/TelaDashboard';
 
 const Drawer = createDrawerNavigator();
 
@@ -252,6 +254,36 @@ function CustomDrawerContent(props) {
           />
 
           <DrawerItem
+            label="Tela ADM"
+            icon={() => (
+              <Ionicons name="information-circle" size={24} color={colors.primary} style={{ marginRight: 10 }} />
+            )}
+            onPress={() => handleNavigation('TelaAdm')}
+            labelStyle={dynamicStyles.drawerLabel}
+            style={styles.drawerItem}
+          />
+
+          <DrawerItem
+            label="Tela Mecanico"
+            icon={() => (
+              <Ionicons name="information-circle" size={24} color={colors.primary} style={{ marginRight: 10 }} />
+            )}
+            onPress={() => handleNavigation('TelaMecanico')}
+            labelStyle={dynamicStyles.drawerLabel}
+            style={styles.drawerItem}
+          />
+
+          <DrawerItem
+            label="Tela Dashboard"
+            icon={() => (
+              <Ionicons name="information-circle" size={24} color={colors.primary} style={{ marginRight: 10 }} />
+            )}
+            onPress={() => handleNavigation('TelaDashboard')}
+            labelStyle={dynamicStyles.drawerLabel}
+            style={styles.drawerItem}
+          />
+
+          <DrawerItem
             label="Sair"
             icon={() => (
               <Ionicons name="log-out" size={24} color="#ff4444" style={{ marginRight: 10 }} />
@@ -375,6 +407,21 @@ function MainNavigator() {
         name="TelaDadosM"
         component={TelaDadosM}
         options={{ title: 'Cadastro Moto' }}
+      />
+      <Drawer.Screen
+        name="TelaAdm"
+        component={TelaAdm}
+        options={{ title: 'Tela ADM' }}
+      />
+      <Drawer.Screen
+        name="TelaMecanico"
+        component={TelaMecanico}
+        options={{ title: 'Tela Mecanico' }}
+      />
+      <Drawer.Screen
+        name="TelaDashboard"
+        component={TelaDashboard}
+        options={{ title: 'Tela Dashboard' }}
       />
     </Drawer.Navigator>
   );
