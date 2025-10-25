@@ -41,7 +41,7 @@ export default function TelaCadastroM() {
         status,
         anoFabricacao: parseInt(anoFabricacao) || 0,
         dataCadastro: new Date().toISOString(),
-        id: Date.now().toString(), // ID único baseado no timestamp
+        id: Date.now().toString(),
       };
 
       // Buscar motos existentes
@@ -92,7 +92,6 @@ export default function TelaCadastroM() {
     }
   };
 
-  // Hook de efeito para carregar dados ao iniciar
   useEffect(() => {
     carregarDados();
   }, []);
@@ -117,15 +116,7 @@ export default function TelaCadastroM() {
             {
               text: 'OK',
               onPress: () => {
-                // Limpar formulário após cadastro bem-sucedido
-                setPlaca('');
-                setModelo('');
-                setNumeroChassi('');
-                setCodigoBeacon('');
-                setCondicaoMecanica('');
-                setAparatoFisico('');
-                setStatus('');
-                setAnoFabricacao('');
+                limparFormulario();
                 navigation.navigate('TelaFuncionario');
               }
             }
@@ -218,10 +209,11 @@ export default function TelaCadastroM() {
               dropdownIconColor={colors.text}
             >
               <Picker.Item label={t('selecione')} value="" />
-              <Picker.Item label={t('sem_placa')} value="Moto sem placa" />
-              <Picker.Item label={t('com_placa')} value="Moto normal com placa" />
-              <Picker.Item label={t('situacao_furto')} value="Moto parada por situação de furto" />
-              <Picker.Item label={t('situacao_acidente')} value="Moto parada por situação de acidente" />
+              <Picker.Item label="Disponível" value="Moto normal com placa" />
+              <Picker.Item label="Em Uso" value="Moto sem placa" />
+              <Picker.Item label="Em Manutenção - Furto" value="Moto parada por situação de furto" />
+              <Picker.Item label="Em Manutenção - Acidente" value="Moto parada por situação de acidente" />
+              <Picker.Item label="Em Manutenção - Geral" value="Moto em manutenção" />
             </Picker>
           </View>
         </View>
@@ -307,7 +299,7 @@ export default function TelaCadastroM() {
         </TouchableOpacity>
 
         <TouchableOpacity 
-          style={[styles.botaoLimpar, { backgroundColor: colors.inputBackground }]} 
+          style={[styles.botaoLimpar, { backgroundColor: colors.inputBackground, borderColor: colors.border }]} 
           onPress={limparFormulario}
         >
           <Text style={[styles.textoBotaoLimpar, { color: colors.text }]}>
@@ -423,7 +415,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 10,
     borderWidth: 1,
-    borderColor: '#ccc',
   },
   textoBotaoLimpar: {
     fontSize: 14,
