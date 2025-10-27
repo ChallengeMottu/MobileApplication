@@ -125,7 +125,7 @@ export default function TelaAdm({ navigation }) {
                             shadowColor: colors.primary
                         }
                     ]}
-                    onPress={() => handleNavigate('TelaDashboard')}
+                    onPress={() => handleNavigate('TelaStatusMotos')}
                     activeOpacity={0.8}
                 >
                     <View style={styles.flowButtonContent}>

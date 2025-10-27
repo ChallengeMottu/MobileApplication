@@ -27,6 +27,7 @@ import TelaAdm from './src/Screens/TelaAdm';
 import TelaMecanico from './src/Screens/TelaMecanico';
 import TelaDashboard from './src/Screens/TelaDashboard';
 import TelaRegistroFluxos from './src/Screens/TelaRegistroFluxos';
+import TelaStatusMotos from './src/Screens/TelaStatusMotos';
 
 const Drawer = createDrawerNavigator();
 
@@ -283,6 +284,7 @@ function CustomDrawerContent(props) {
             labelStyle={dynamicStyles.drawerLabel}
             style={styles.drawerItem}
           />
+          
 
           <DrawerItem
             label="Tela Registro Fluxos"
@@ -290,6 +292,16 @@ function CustomDrawerContent(props) {
               <Ionicons name="information-circle" size={24} color={colors.primary} style={{ marginRight: 10 }} />
             )}
             onPress={() => handleNavigation('TelaRegistroFluxos')}
+            labelStyle={dynamicStyles.drawerLabel}
+            style={styles.drawerItem}
+          />
+
+          <DrawerItem
+            label="Tela Status Motos"
+            icon={() => (
+              <Ionicons name="information-circle" size={24} color={colors.primary} style={{ marginRight: 10 }} />
+            )}
+            onPress={() => handleNavigation('TelaStatusMotos')}
             labelStyle={dynamicStyles.drawerLabel}
             style={styles.drawerItem}
           />
@@ -438,6 +450,11 @@ function MainNavigator() {
         name="TelaRegistroFluxos"
         component={TelaRegistroFluxos}
         options={{ title: 'Tela Registro Fluxos' }}
+      />
+      <Drawer.Screen
+        name="TelaStatusMotos"
+        component={TelaStatusMotos}
+        options={{ title: 'Tela Status Motos' }}
       />
     </Drawer.Navigator>
   );
