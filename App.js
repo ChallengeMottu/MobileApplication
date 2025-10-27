@@ -26,6 +26,7 @@ import TelaDadosM from './src/Screens/TelaDadosM';
 import TelaAdm from './src/Screens/TelaAdm';
 import TelaMecanico from './src/Screens/TelaMecanico';
 import TelaDashboard from './src/Screens/TelaDashboard';
+import TelaRegistroFluxos from './src/Screens/TelaRegistroFluxos';
 
 const Drawer = createDrawerNavigator();
 
@@ -284,6 +285,16 @@ function CustomDrawerContent(props) {
           />
 
           <DrawerItem
+            label="Tela Registro Fluxos"
+            icon={() => (
+              <Ionicons name="information-circle" size={24} color={colors.primary} style={{ marginRight: 10 }} />
+            )}
+            onPress={() => handleNavigation('TelaRegistroFluxos')}
+            labelStyle={dynamicStyles.drawerLabel}
+            style={styles.drawerItem}
+          />
+
+          <DrawerItem
             label="Sair"
             icon={() => (
               <Ionicons name="log-out" size={24} color="#ff4444" style={{ marginRight: 10 }} />
@@ -422,6 +433,11 @@ function MainNavigator() {
         name="TelaDashboard"
         component={TelaDashboard}
         options={{ title: 'Tela Dashboard' }}
+      />
+      <Drawer.Screen
+        name="TelaRegistroFluxos"
+        component={TelaRegistroFluxos}
+        options={{ title: 'Tela Registro Fluxos' }}
       />
     </Drawer.Navigator>
   );

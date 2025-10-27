@@ -125,29 +125,6 @@ export default function TelaAdm({ navigation }) {
                             shadowColor: colors.primary
                         }
                     ]}
-                    onPress={() => handleNavigate('TelaStatusMotos')}
-                    activeOpacity={0.8}
-                >
-                    <View style={styles.flowButtonContent}>
-                        <View style={[styles.flowIconContainer, { backgroundColor: colors.primary }]}>
-                            <Ionicons name="bicycle" size={22} color="#fff" />
-                        </View>
-                        <Text style={[styles.flowButtonText, { color: colors.text }]}>
-                            {t('acompanhar_status_motos')}
-                        </Text>
-                        <Ionicons name="chevron-forward" size={20} color={colors.primary} />
-                    </View>
-                </TouchableOpacity>
-
-                <TouchableOpacity 
-                    style={[
-                        styles.flowButton,
-                        { 
-                            backgroundColor: colors.cardBackground,
-                            borderColor: colors.primary,
-                            shadowColor: colors.primary
-                        }
-                    ]}
                     onPress={() => handleNavigate('TelaDashboard')}
                     activeOpacity={0.8}
                 >

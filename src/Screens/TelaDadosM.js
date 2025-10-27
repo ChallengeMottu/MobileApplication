@@ -1,169 +1,351 @@
-import { DarkerGrotesque_500Medium, DarkerGrotesque_700Bold, useFonts } from '@expo-google-fonts/darker-grotesque';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useNavigation, useFocusEffect } from '@react-navigation/native';
-import { useCallback, useState } from 'react';
-import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, TextInput, Animated } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useTheme } from '../context/ContextTheme';
+import { useTranslation } from 'react-i18next';
 
-export default function TelaDadosM() {
-  const navigation = useNavigation();
+export default function TelaDadosM({ navigation }) {
   const { colors } = useTheme();
+  const { t } = useTranslation();
+  const [placa, setPlaca] = useState('');
+  const [motoEncontrada, setMotoEncontrada] = useState(null);
+  const [buscando, setBuscando] = useState(false);
+  const [erro, setErro] = useState('');
+  const [animacaoValor] = useState(new Animated.Value(0));
 
-  let [fontsLoaded] = useFonts({
-    DarkerGrotesque_500Medium,
-    DarkerGrotesque_700Bold,
-  });
+  useEffect(() => {
+    iniciarAnimacao();
+  }, []);
 
-  const [motos, setMotos] = useState([]);
+  const iniciarAnimacao = () => {
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(animacaoValor, {
+          toValue: 1,
+          duration: 2000,
+          useNativeDriver: true,
+        }),
+        Animated.timing(animacaoValor, {
+          toValue: 0,
+          duration: 2000,
+          useNativeDriver: true,
+        }),
+      ])
+    ).start();
+  };
 
-  // Carrega os dados sempre que a tela ganha foco
-  useFocusEffect(
-    useCallback(() => {
-      carregarMotos();
-    }, [])
-  );
+  const buscarMoto = async () => {
+    if (!placa.trim()) {
+      setErro('Por favor, digite uma placa');
+      return;
+    }
 
-  const carregarMotos = async () => {
+    setBuscando(true);
+    setErro('');
+    setMotoEncontrada(null);
+
     try {
-      const dadosSalvos = await AsyncStorage.getItem('dadosMoto');
-      if (dadosSalvos) {
-        const moto = JSON.parse(dadosSalvos);
-        setMotos([moto]); // Coloca em array para exibir
+      const motosSalvas = await AsyncStorage.getItem('motosCadastradas');
+      
+      if (motosSalvas) {
+        const listaMotos = JSON.parse(motosSalvas);
+        const moto = listaMotos.find(m => m.placa.toUpperCase() === placa.toUpperCase());
+        
+        if (moto) {
+          setMotoEncontrada(moto);
+          setErro('');
+        } else {
+          setErro('Moto não encontrada no sistema');
+          setMotoEncontrada(null);
+        }
       } else {
-        setMotos([]);
+        setErro('Nenhuma moto cadastrada no sistema');
       }
     } catch (error) {
-      console.log('Erro ao carregar motos:', error);
+      console.error('Erro ao buscar moto:', error);
+      setErro('Erro ao buscar dados da moto');
+    } finally {
+      setBuscando(false);
     }
   };
 
-  const confirmarExclusao = (index) => {
-    Alert.alert(
-      'Confirmar Exclusão',
-      'Tem certeza que deseja excluir esta moto?',
-      [
-        {
-          text: 'Cancelar',
-          style: 'cancel',
-        },
-        {
-          text: 'Excluir',
-          onPress: () => excluirMoto(index),
-          style: 'destructive',
-        },
-      ]
-    );
+  const limparBusca = () => {
+    setPlaca('');
+    setMotoEncontrada(null);
+    setErro('');
   };
 
-  const excluirMoto = async (index) => {
-    try {
-      await AsyncStorage.removeItem('dadosMoto');
-      setMotos([]);
-      Alert.alert('Sucesso', 'Moto excluída com sucesso!');
-    } catch (error) {
-      console.log('Erro ao excluir moto:', error);
-      Alert.alert('Erro', 'Não foi possível excluir a moto.');
+  const getStatusColor = (status) => {
+    if (status === 'Moto normal com placa') return '#00FF94';
+    if (status === 'Moto sem placa') return '#FFD600';
+    if (status?.toLowerCase().includes('manutenção') || 
+        status?.toLowerCase().includes('manutencao') ||
+        status?.toLowerCase().includes('acidente') ||
+        status?.toLowerCase().includes('furto')) return '#FF3D71';
+    return colors.text;
+  };
+
+  const getStatusIcon = (status) => {
+    if (status === 'Moto normal com placa') return 'checkmark-circle';
+    if (status === 'Moto sem placa') return 'time';
+    if (status?.toLowerCase().includes('manutenção') || 
+        status?.toLowerCase().includes('manutencao') ||
+        status?.toLowerCase().includes('acidente') ||
+        status?.toLowerCase().includes('furto')) return 'construct';
+    return 'alert-circle';
+  };
+
+  const formatarData = (dataISO) => {
+    const data = new Date(dataISO);
+    return data.toLocaleDateString('pt-BR') + ' às ' + data.toLocaleTimeString('pt-BR');
+  };
+
+  const calcularTempoDesde = (dataISO) => {
+    const agora = new Date();
+    const dataCadastro = new Date(dataISO);
+    const diffMs = agora - dataCadastro;
+    const diffDias = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+    const diffHoras = Math.floor((diffMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    
+    if (diffDias > 0) {
+      return `${diffDias} ${diffDias === 1 ? 'dia' : 'dias'}`;
     }
+    return `${diffHoras} ${diffHoras === 1 ? 'hora' : 'horas'}`;
   };
 
-  if (!fontsLoaded) return null;
+  const pulseOpacity = animacaoValor.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0.6, 1],
+  });
+
+  const DataField = ({ icon, label, value, color }) => (
+    <View style={[styles.dataField, { backgroundColor: colors.cardBackground }]}>
+      <View style={[styles.dataIconContainer, { backgroundColor: color + '15' }]}>
+        <Ionicons name={icon} size={24} color={color} />
+      </View>
+      <View style={styles.dataContent}>
+        <Text style={[styles.dataLabel, { color: colors.textSecondary }]}>{label}</Text>
+        <Text style={[styles.dataValue, { color: colors.text }]}>{value || 'N/A'}</Text>
+      </View>
+    </View>
+  );
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
-      <View style={styles.header}>
-        <TouchableOpacity style={styles.goBack} onPress={() => navigation.goBack()}>
-          <Ionicons name="arrow-back" size={24} color={colors.text} />
-        </TouchableOpacity>
-        <Text style={[styles.headerTitle, { color: colors.text }]}>Motos Cadastradas</Text>
-        <TouchableOpacity
-          style={[styles.addButton, { backgroundColor: colors.primary }]}
-          onPress={() => navigation.navigate('TelaCadastroM')}
-        >
-          <Ionicons name="add" size={24} color={colors.primaryText} />
+    <ScrollView style={[styles.container, { backgroundColor: colors.background }]}>
+      {/* Header */}
+      <View style={[styles.header, { backgroundColor: colors.primary }]}>
+        <View style={styles.headerContent}>
+          <Ionicons name="search" size={32} color="#fff" />
+          <Text style={styles.headerTitle}>Consultar Moto</Text>
+        </View>
+        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+          <Ionicons name="close" size={28} color="#fff" />
         </TouchableOpacity>
       </View>
 
-      <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
-        {motos.length === 0 ? (
-          <View style={styles.emptyContainer}>
-            <Ionicons name="bicycle-outline" size={80} color={colors.textSecondary} />
-            <Text style={[styles.emptyText, { color: colors.textSecondary }]}>
-              Nenhuma moto cadastrada
-            </Text>
-            <Text style={[styles.emptySubtext, { color: colors.textSecondary }]}>
-              Clique no botão + para adicionar uma nova moto
-            </Text>
+      {/* Search Section */}
+      <View style={[styles.searchSection, { backgroundColor: colors.cardBackground }]}>
+        <Text style={[styles.searchTitle, { color: colors.text }]}>
+          <Ionicons name="barcode" size={20} color={colors.primary} /> Digite a Placa
+        </Text>
+        
+        <View style={styles.searchContainer}>
+          <View style={[styles.inputWrapper, { backgroundColor: colors.inputBackground, borderColor: colors.border }]}>
+            <Ionicons name="car" size={24} color={colors.primary} style={styles.inputIcon} />
+            <TextInput
+              style={[styles.searchInput, { color: colors.text }]}
+              value={placa}
+              onChangeText={setPlaca}
+              placeholder="Ex: ABC1234"
+              placeholderTextColor={colors.textSecondary}
+              autoCapitalize="characters"
+              maxLength={7}
+            />
+            {placa.length > 0 && (
+              <TouchableOpacity onPress={limparBusca}>
+                <Ionicons name="close-circle" size={24} color={colors.textSecondary} />
+              </TouchableOpacity>
+            )}
           </View>
-        ) : (
-          motos.map((moto, index) => (
-            <View key={index} style={[styles.card, { backgroundColor: colors.cardBackground }]}>
-              <View style={styles.cardHeader}>
-                <View style={styles.placaContainer}>
-                  <Text style={[styles.placa, { color: colors.primary }]}>{moto.placa || 'Sem Placa'}</Text>
-                  <Text style={[styles.modelo, { color: colors.text }]}>{moto.modelo}</Text>
-                </View>
-                <TouchableOpacity
-                  style={[styles.deleteButton, { backgroundColor: '#FF4444' }]}
-                  onPress={() => confirmarExclusao(index)}
-                >
-                  <Ionicons name="trash-outline" size={20} color="#FFF" />
-                </TouchableOpacity>
-              </View>
 
-              <View style={[styles.separador, { backgroundColor: colors.border }]} />
+          <TouchableOpacity
+            style={[styles.searchButton, { backgroundColor: buscando ? colors.inputBackground : colors.primary }]}
+            onPress={buscarMoto}
+            disabled={buscando}
+            activeOpacity={0.8}
+          >
+            <Ionicons name={buscando ? "hourglass" : "search"} size={24} color="#fff" />
+            <Text style={styles.searchButtonText}>
+              {buscando ? 'BUSCANDO...' : 'BUSCAR'}
+            </Text>
+          </TouchableOpacity>
+        </View>
 
-              <View style={styles.infoRow}>
-                <View style={styles.infoItem}>
-                  <Text style={[styles.infoLabel, { color: colors.textSecondary }]}>Chassi</Text>
-                  <Text style={[styles.infoValue, { color: colors.text }]}>{moto.numeroChassi}</Text>
-                </View>
-                <View style={styles.infoItem}>
-                  <Text style={[styles.infoLabel, { color: colors.textSecondary }]}>Ano</Text>
-                  <Text style={[styles.infoValue, { color: colors.text }]}>{moto.anoFabricacao || 'N/A'}</Text>
-                </View>
-              </View>
-
-              <View style={styles.infoRow}>
-                <View style={styles.infoItemFull}>
-                  <Text style={[styles.infoLabel, { color: colors.textSecondary }]}>Status</Text>
-                  <Text style={[styles.infoValue, { color: colors.text }]} numberOfLines={2}>
-                    {moto.status}
-                  </Text>
-                </View>
-              </View>
-
-              <View style={styles.infoRow}>
-                <View style={styles.infoItemFull}>
-                  <Text style={[styles.infoLabel, { color: colors.textSecondary }]}>Condição Mecânica</Text>
-                  <Text style={[styles.infoValue, { color: colors.text }]} numberOfLines={2}>
-                    {moto.condicaoMecanica}
-                  </Text>
-                </View>
-              </View>
-
-              {moto.aparatoFisico && (
-                <View style={styles.infoRow}>
-                  <View style={styles.infoItemFull}>
-                    <Text style={[styles.infoLabel, { color: colors.textSecondary }]}>Aparato Físico</Text>
-                    <Text style={[styles.infoValue, { color: colors.text }]}>{moto.aparatoFisico}</Text>
-                  </View>
-                </View>
-              )}
-
-              {moto.codigoBeacon && (
-                <View style={styles.infoRow}>
-                  <View style={styles.infoItemFull}>
-                    <Text style={[styles.infoLabel, { color: colors.textSecondary }]}>Código Beacon</Text>
-                    <Text style={[styles.infoValue, { color: colors.text }]}>{moto.codigoBeacon}</Text>
-                  </View>
-                </View>
-              )}
-            </View>
-          ))
+        {erro && (
+          <View style={[styles.errorContainer, { backgroundColor: '#FF3D71' + '20', borderColor: '#FF3D71' }]}>
+            <Ionicons name="alert-circle" size={24} color="#FF3D71" />
+            <Text style={[styles.errorText, { color: '#FF3D71' }]}>{erro}</Text>
+          </View>
         )}
-      </ScrollView>
-    </View>
+      </View>
+
+      {/* Results Section */}
+      {motoEncontrada && (
+        <View style={styles.resultsSection}>
+          {/* Status Card */}
+          <View style={[styles.statusCard, { 
+            backgroundColor: colors.cardBackground,
+            borderTopColor: getStatusColor(motoEncontrada.status)
+          }]}>
+            <View style={styles.statusHeader}>
+              <View style={[styles.statusIconBg, { backgroundColor: getStatusColor(motoEncontrada.status) + '20' }]}>
+                <Ionicons 
+                  name={getStatusIcon(motoEncontrada.status)} 
+                  size={40} 
+                  color={getStatusColor(motoEncontrada.status)} 
+                />
+              </View>
+              <View style={styles.statusInfo}>
+                <Text style={[styles.statusPlaca, { color: colors.text }]}>{motoEncontrada.placa}</Text>
+                <Text style={[styles.statusModelo, { color: colors.textSecondary }]}>
+                  {motoEncontrada.modelo}
+                </Text>
+              </View>
+            </View>
+            
+            <View style={[styles.statusBadge, { backgroundColor: getStatusColor(motoEncontrada.status) + '20' }]}>
+              <Text style={[styles.statusText, { color: getStatusColor(motoEncontrada.status) }]}>
+                {motoEncontrada.status}
+              </Text>
+            </View>
+          </View>
+
+          {/* Information Section */}
+          <View style={styles.infoSection}>
+            <Text style={[styles.sectionTitle, { color: colors.text }]}>
+              <Ionicons name="information-circle" size={20} color={colors.primary} /> Informações Básicas
+            </Text>
+
+            <DataField
+              icon="key"
+              label="Número do Chassi"
+              value={motoEncontrada.numeroChassi}
+              color="#00D9FF"
+            />
+
+            <DataField
+              icon="calendar"
+              label="Ano de Fabricação"
+              value={motoEncontrada.anoFabricacao?.toString()}
+              color="#9D4EDD"
+            />
+
+            <DataField
+              icon="bluetooth"
+              label="Código Beacon"
+              value={motoEncontrada.codigoBeacon === 'N/A' ? 'Não associado' : motoEncontrada.codigoBeacon}
+              color={motoEncontrada.codigoBeacon === 'N/A' ? '#FF6B00' : '#00FF94'}
+            />
+          </View>
+
+          {/* Technical Section */}
+          <View style={styles.infoSection}>
+            <Text style={[styles.sectionTitle, { color: colors.text }]}>
+              <Ionicons name="build" size={20} color={colors.primary} /> Condições Físicas
+            </Text>
+
+            <DataField
+              icon="settings"
+              label="Condição Mecânica"
+              value={motoEncontrada.condicaoMecanica}
+              color="#FFD600"
+            />
+
+            <DataField
+              icon="checkmark-done"
+              label="Aparato Físico"
+              value={motoEncontrada.aparatoFisico}
+              color="#00FF94"
+            />
+          </View>
+
+          {/* Registry Section */}
+          <View style={styles.infoSection}>
+            <Text style={[styles.sectionTitle, { color: colors.text }]}>
+              <Ionicons name="time" size={20} color={colors.primary} /> Informações de Registro
+            </Text>
+
+            <View style={[styles.registryCard, { backgroundColor: colors.cardBackground }]}>
+              <View style={styles.registryItem}>
+                <Ionicons name="calendar-outline" size={20} color={colors.primary} />
+                <View style={styles.registryContent}>
+                  <Text style={[styles.registryLabel, { color: colors.textSecondary }]}>
+                    Data de Cadastro
+                  </Text>
+                  <Text style={[styles.registryValue, { color: colors.text }]}>
+                    {formatarData(motoEncontrada.dataCadastro)}
+                  </Text>
+                </View>
+              </View>
+
+              <View style={[styles.registryDivider, { backgroundColor: colors.border }]} />
+
+              <View style={styles.registryItem}>
+                <Ionicons name="hourglass-outline" size={20} color={colors.primary} />
+                <View style={styles.registryContent}>
+                  <Text style={[styles.registryLabel, { color: colors.textSecondary }]}>
+                    Tempo no Sistema
+                  </Text>
+                  <Text style={[styles.registryValue, { color: colors.text }]}>
+                    {calcularTempoDesde(motoEncontrada.dataCadastro)}
+                  </Text>
+                </View>
+              </View>
+
+              <View style={[styles.registryDivider, { backgroundColor: colors.border }]} />
+
+              <View style={styles.registryItem}>
+                <Ionicons name="finger-print" size={20} color={colors.primary} />
+                <View style={styles.registryContent}>
+                  <Text style={[styles.registryLabel, { color: colors.textSecondary }]}>
+                    ID do Sistema
+                  </Text>
+                  <Text style={[styles.registryValue, { color: colors.text }]}>
+                    #{motoEncontrada.id}
+                  </Text>
+                </View>
+              </View>
+            </View>
+          </View>
+
+          {/* Action Button */}
+          <TouchableOpacity
+            style={[styles.actionButton, { backgroundColor: colors.primary }]}
+            onPress={limparBusca}
+            activeOpacity={0.8}
+          >
+            <Ionicons name="refresh" size={24} color="#fff" />
+            <Text style={styles.actionButtonText}>NOVA CONSULTA</Text>
+          </TouchableOpacity>
+        </View>
+      )}
+
+      {/* Empty State */}
+      {!motoEncontrada && !erro && placa.length === 0 && (
+        <View style={styles.emptyState}>
+          <Animated.View style={{ opacity: pulseOpacity }}>
+            <Ionicons name="search-outline" size={80} color={colors.primary} />
+          </Animated.View>
+          <Text style={[styles.emptyTitle, { color: colors.text }]}>
+            Consulte uma moto
+          </Text>
+          <Text style={[styles.emptySubtitle, { color: colors.textSecondary }]}>
+            Digite a placa da moto para visualizar todos os dados cadastrados no sistema
+          </Text>
+        </View>
+      )}
+    </ScrollView>
   );
 }
 
@@ -172,120 +354,259 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   header: {
+    paddingTop: 50,
+    paddingBottom: 25,
+    paddingHorizontal: 20,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  headerContent: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 20,
-    paddingTop: 50,
-    paddingBottom: 20,
-  },
-  goBack: {
-    padding: 8,
+    gap: 12,
   },
   headerTitle: {
     fontSize: 24,
-    fontFamily: 'DarkerGrotesque_700Bold',
-    flex: 1,
-    textAlign: 'center',
-    marginHorizontal: 10,
+    fontWeight: 'bold',
+    color: '#fff',
+    letterSpacing: 0.5,
   },
-  addButton: {
+  backButton: {
     width: 40,
     height: 40,
     borderRadius: 20,
-    alignItems: 'center',
+    backgroundColor: 'rgba(255,255,255,0.2)',
     justifyContent: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 3,
-    elevation: 5,
-  },
-  scrollView: {
-    flex: 1,
-  },
-  scrollContent: {
-    padding: 20,
-    paddingBottom: 40,
-  },
-  emptyContainer: {
-    flex: 1,
     alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: 100,
-    paddingHorizontal: 40,
   },
-  emptyText: {
-    fontSize: 20,
-    fontFamily: 'DarkerGrotesque_700Bold',
+  searchSection: {
+    marginHorizontal: 20,
     marginTop: 20,
-    textAlign: 'center',
-  },
-  emptySubtext: {
-    fontSize: 16,
-    fontFamily: 'DarkerGrotesque_500Medium',
-    marginTop: 8,
-    textAlign: 'center',
-  },
-  card: {
-    borderRadius: 12,
     padding: 20,
-    marginBottom: 15,
+    borderRadius: 16,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 4,
+    shadowRadius: 8,
+    elevation: 6,
   },
-  cardHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
+  searchTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
     marginBottom: 15,
   },
-  placaContainer: {
-    flex: 1,
+  searchContainer: {
+    gap: 12,
   },
-  placa: {
-    fontSize: 28,
-    fontFamily: 'DarkerGrotesque_700Bold',
+  inputWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderRadius: 12,
+    paddingHorizontal: 16,
+    borderWidth: 2,
+    height: 56,
+  },
+  inputIcon: {
+    marginRight: 12,
+  },
+  searchInput: {
+    flex: 1,
+    fontSize: 18,
+    fontWeight: '600',
     letterSpacing: 1,
   },
-  modelo: {
-    fontSize: 18,
-    fontFamily: 'DarkerGrotesque_500Medium',
-    marginTop: 4,
-  },
-  deleteButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 8,
+  searchButton: {
+    flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    marginLeft: 10,
+    gap: 12,
+    paddingVertical: 16,
+    borderRadius: 12,
+    shadowColor: '#01743A',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 6,
   },
-  separador: {
-    height: 1,
-    marginVertical: 15,
+  searchButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+    letterSpacing: 1,
   },
-  infoRow: {
+  errorContainer: {
     flexDirection: 'row',
-    marginBottom: 15,
-    gap: 15,
+    alignItems: 'center',
+    gap: 12,
+    marginTop: 15,
+    padding: 16,
+    borderRadius: 12,
+    borderWidth: 2,
   },
-  infoItem: {
+  errorText: {
+    flex: 1,
+    fontSize: 15,
+    fontWeight: '600',
+  },
+  resultsSection: {
+    paddingHorizontal: 20,
+    paddingTop: 20,
+    paddingBottom: 40,
+  },
+  statusCard: {
+    padding: 20,
+    borderRadius: 16,
+    marginBottom: 20,
+    borderTopWidth: 4,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    elevation: 6,
+  },
+  statusHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 16,
+    marginBottom: 16,
+  },
+  statusIconBg: {
+    width: 70,
+    height: 70,
+    borderRadius: 35,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  statusInfo: {
     flex: 1,
   },
-  infoItemFull: {
-    flex: 1,
-  },
-  infoLabel: {
-    fontSize: 14,
-    fontFamily: 'DarkerGrotesque_500Medium',
+  statusPlaca: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    letterSpacing: 1,
     marginBottom: 4,
   },
-  infoValue: {
+  statusModelo: {
     fontSize: 16,
-    fontFamily: 'DarkerGrotesque_700Bold',
+    fontWeight: '600',
+  },
+  statusBadge: {
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    borderRadius: 12,
+    alignSelf: 'flex-start',
+  },
+  statusText: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    letterSpacing: 0.5,
+  },
+  infoSection: {
+    marginBottom: 20,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 15,
+  },
+  dataField: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 16,
+    borderRadius: 12,
+    marginBottom: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  dataIconContainer: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 14,
+  },
+  dataContent: {
+    flex: 1,
+  },
+  dataLabel: {
+    fontSize: 13,
+    marginBottom: 4,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
+  dataValue: {
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  registryCard: {
+    padding: 16,
+    borderRadius: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  registryItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    paddingVertical: 8,
+  },
+  registryContent: {
+    flex: 1,
+  },
+  registryLabel: {
+    fontSize: 13,
+    marginBottom: 4,
+  },
+  registryValue: {
+    fontSize: 15,
+    fontWeight: '600',
+  },
+  registryDivider: {
+    height: 1,
+    marginVertical: 12,
+  },
+  actionButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 12,
+    paddingVertical: 18,
+    borderRadius: 12,
+    marginTop: 10,
+    shadowColor: '#01743A',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 6,
+  },
+  actionButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+    letterSpacing: 1,
+  },
+  emptyState: {
+    alignItems: 'center',
+    paddingVertical: 80,
+    paddingHorizontal: 40,
+  },
+  emptyTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginTop: 20,
+    marginBottom: 12,
+  },
+  emptySubtitle: {
+    fontSize: 16,
+    textAlign: 'center',
+    lineHeight: 24,
   },
 });
