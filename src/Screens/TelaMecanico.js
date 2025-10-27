@@ -25,7 +25,7 @@ export default function TelaAdm({ navigation }) {
                 }
             } catch (error) {
                 console.error('Erro ao carregar dados:', error);
-                Alert.alert('Erro', 'Não foi possível carregar os dados do usuário');
+                Alert.alert(t('erro'), t('nao_foi_possivel_carregar_dados'));
             } finally {
                 setCarregando(false);
             }
@@ -39,19 +39,19 @@ export default function TelaAdm({ navigation }) {
     };
 
     const getNomeUsuario = () => {
-        if (!usuario) return 'Administrador';
+        if (!usuario) return t('administrador');
         
         if (usuario.nome) return usuario.nome.split(' ')[0];
         if (usuario.displayName) return usuario.displayName.split(' ')[0];
         if (usuario.email) return usuario.email.split('@')[0];
         
-        return 'Administrador';
+        return t('administrador');
     };
 
     if (carregando) {
         return (
             <View style={[styles.loadingContainer, { backgroundColor: colors.background }]}>
-                <Text style={[styles.loadingText, { color: colors.text }]}>Carregando...</Text>
+                <Text style={[styles.loadingText, { color: colors.text }]}>{t('carregando')}</Text>
             </View>
         );
     }
@@ -72,11 +72,11 @@ export default function TelaAdm({ navigation }) {
                     <View style={styles.profileImageContainer}>
                         <Ionicons name="camera" size={32} color="#fff" />
                     </View>
-                    <Text style={styles.editText}>Editar imagem</Text>
+                    <Text style={styles.editText}>{t('editar_imagem')}</Text>
                 </View>
 
                 <Text style={styles.welcomeText}>
-                    Olá, {getNomeUsuario()}!
+                    {t('ola')}, {getNomeUsuario()}!
                 </Text>
             </ImageBackground>
 
@@ -85,7 +85,7 @@ export default function TelaAdm({ navigation }) {
                 <View style={styles.sectionHeader}>
                     <Ionicons name="stats-chart" size={24} color={colors.primary} />
                     <Text style={[styles.sectionTitle, { color: colors.text }]}>
-                        Monitoramento ativo
+                        {t('monitoramento_ativo')}
                     </Text>
                 </View>
                 
@@ -101,7 +101,7 @@ export default function TelaAdm({ navigation }) {
                         <Ionicons name="map" size={80} color="rgba(255,255,255,0.3)" />
                     </View>
                     <View style={styles.mapLabelContainer}>
-                        <Text style={styles.mapLabel}>MAPA</Text>
+                        <Text style={styles.mapLabel}>{t('mapa')}</Text>
                         <Ionicons name="arrow-forward" size={20} color="#fff" style={styles.mapArrow} />
                     </View>
                 </TouchableOpacity>
@@ -112,32 +112,9 @@ export default function TelaAdm({ navigation }) {
                 <View style={styles.sectionHeader}>
                     <Ionicons name="time" size={24} color={colors.primary} />
                     <Text style={[styles.flowTitle, { color: colors.text }]}>
-                        Fluxo diário
+                        {t('fluxo_diario')}
                     </Text>
                 </View>
-
-                <TouchableOpacity 
-                    style={[
-                        styles.flowButton,
-                        { 
-                            backgroundColor: colors.cardBackground,
-                            borderColor: colors.primary,
-                            shadowColor: colors.primary
-                        }
-                    ]}
-                    onPress={() => handleNavigate('TelaStatusMotos')}
-                    activeOpacity={0.8}
-                >
-                    <View style={styles.flowButtonContent}>
-                        <View style={[styles.flowIconContainer, { backgroundColor: colors.primary }]}>
-                            <Ionicons name="bicycle" size={22} color="#fff" />
-                        </View>
-                        <Text style={[styles.flowButtonText, { color: colors.text }]}>
-                            Identificar Motos
-                        </Text>
-                        <Ionicons name="chevron-forward" size={20} color={colors.primary} />
-                    </View>
-                </TouchableOpacity>
 
                 <TouchableOpacity 
                     style={[
@@ -156,7 +133,7 @@ export default function TelaAdm({ navigation }) {
                             <Ionicons name="bar-chart" size={22} color="#fff" />
                         </View>
                         <Text style={[styles.flowButtonText, { color: colors.text }]}>
-                            Monitorar status operacional
+                            {t('monitorar_status_operacional')}
                         </Text>
                         <Ionicons name="chevron-forward" size={20} color={colors.primary} />
                     </View>

@@ -224,5 +224,16 @@
   "top_3_modelos": "Top 3 Modelos",
   "moto": "moto",
   "nenhum_modelo_cadastrado": "Ningún modelo registrado aún",
-  "dados_atualizados_tempo_real": "Datos actualizados en tiempo real"
+  "dados_atualizados_tempo_real": "Datos actualizados en tiempo real",
+
+  "carregando": "Cargando...",
+  "editar_imagem": "Editar imagen",
+  "ola": "Hola",
+  "administrador": "Administrador",
+  "monitoramento_ativo": "Monitoreo activo",
+  "mapa": "MAPA",
+  "fluxo_diario": "Flujo diario",
+  "identificar_motos": "Identificar Motos",
+  "monitorar_status_operacional": "Monitorear estado operacional",
+  "nao_foi_possivel_carregar_dados": "No se pudieron cargar los datos del usuario"
 }
