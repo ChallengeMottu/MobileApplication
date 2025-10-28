@@ -37,7 +37,7 @@ export default function TelaDadosM({ navigation }) {
 
   const buscarMoto = async () => {
     if (!placa.trim()) {
-      setErro('Por favor, digite uma placa');
+      setErro(t('por_favor_digite_placa'));
       return;
     }
 
@@ -56,15 +56,15 @@ export default function TelaDadosM({ navigation }) {
           setMotoEncontrada(moto);
           setErro('');
         } else {
-          setErro('Moto não encontrada no sistema');
+          setErro(t('moto_nao_encontrada'));
           setMotoEncontrada(null);
         }
       } else {
-        setErro('Nenhuma moto cadastrada no sistema');
+        setErro(t('nenhuma_moto_cadastrada'));
       }
     } catch (error) {
       console.error('Erro ao buscar moto:', error);
-      setErro('Erro ao buscar dados da moto');
+      setErro(t('erro_buscar_dados'));
     } finally {
       setBuscando(false);
     }
@@ -137,7 +137,7 @@ export default function TelaDadosM({ navigation }) {
       <View style={[styles.header, { backgroundColor: colors.primary }]}>
         <View style={styles.headerContent}>
           <Ionicons name="search" size={32} color="#fff" />
-          <Text style={styles.headerTitle}>Consultar Moto</Text>
+          <Text style={styles.headerTitle}>{t('consultar_moto')}</Text>
         </View>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
           <Ionicons name="close" size={28} color="#fff" />
@@ -147,7 +147,7 @@ export default function TelaDadosM({ navigation }) {
       {/* Search Section */}
       <View style={[styles.searchSection, { backgroundColor: colors.cardBackground }]}>
         <Text style={[styles.searchTitle, { color: colors.text }]}>
-          <Ionicons name="barcode" size={20} color={colors.primary} /> Digite a Placa
+          <Ionicons name="barcode" size={20} color={colors.primary} /> {t('digite_placa')}
         </Text>
         
         <View style={styles.searchContainer}>
@@ -157,7 +157,7 @@ export default function TelaDadosM({ navigation }) {
               style={[styles.searchInput, { color: colors.text }]}
               value={placa}
               onChangeText={setPlaca}
-              placeholder="Ex: ABC1234"
+              placeholder={t('exemplo_placa')}
               placeholderTextColor={colors.textSecondary}
               autoCapitalize="characters"
               maxLength={7}
@@ -177,7 +177,7 @@ export default function TelaDadosM({ navigation }) {
           >
             <Ionicons name={buscando ? "hourglass" : "search"} size={24} color="#fff" />
             <Text style={styles.searchButtonText}>
-              {buscando ? 'BUSCANDO...' : 'BUSCAR'}
+              {buscando ? t('buscando') : t('buscar')}
             </Text>
           </TouchableOpacity>
         </View>
@@ -224,27 +224,27 @@ export default function TelaDadosM({ navigation }) {
           {/* Information Section */}
           <View style={styles.infoSection}>
             <Text style={[styles.sectionTitle, { color: colors.text }]}>
-              <Ionicons name="information-circle" size={20} color={colors.primary} /> Informações Básicas
+              <Ionicons name="information-circle" size={20} color={colors.primary} /> {t('informacoes_basicas')}
             </Text>
 
             <DataField
               icon="key"
-              label="Número do Chassi"
+              label={t('numero_chassi')}
               value={motoEncontrada.numeroChassi}
               color="#00D9FF"
             />
 
             <DataField
               icon="calendar"
-              label="Ano de Fabricação"
+              label={t('ano_fabricacao')}
               value={motoEncontrada.anoFabricacao?.toString()}
               color="#9D4EDD"
             />
 
             <DataField
               icon="bluetooth"
-              label="Código Beacon"
-              value={motoEncontrada.codigoBeacon === 'N/A' ? 'Não associado' : motoEncontrada.codigoBeacon}
+              label={t('codigo_beacon')}
+              value={motoEncontrada.codigoBeacon === 'N/A' ? t('nao_associado') : motoEncontrada.codigoBeacon}
               color={motoEncontrada.codigoBeacon === 'N/A' ? '#FF6B00' : '#00FF94'}
             />
           </View>
@@ -252,19 +252,19 @@ export default function TelaDadosM({ navigation }) {
           {/* Technical Section */}
           <View style={styles.infoSection}>
             <Text style={[styles.sectionTitle, { color: colors.text }]}>
-              <Ionicons name="build" size={20} color={colors.primary} /> Condições Físicas
+              <Ionicons name="build" size={20} color={colors.primary} /> {t('condicoes_fisicas')}
             </Text>
 
             <DataField
               icon="settings"
-              label="Condição Mecânica"
+              label={t('condicao_mecanica')}
               value={motoEncontrada.condicaoMecanica}
               color="#FFD600"
             />
 
             <DataField
               icon="checkmark-done"
-              label="Aparato Físico"
+              label={t('aparato_fisico')}
               value={motoEncontrada.aparatoFisico}
               color="#00FF94"
             />
@@ -273,7 +273,7 @@ export default function TelaDadosM({ navigation }) {
           {/* Registry Section */}
           <View style={styles.infoSection}>
             <Text style={[styles.sectionTitle, { color: colors.text }]}>
-              <Ionicons name="time" size={20} color={colors.primary} /> Informações de Registro
+              <Ionicons name="time" size={20} color={colors.primary} /> {t('informacoes_registro')}
             </Text>
 
             <View style={[styles.registryCard, { backgroundColor: colors.cardBackground }]}>
@@ -281,7 +281,7 @@ export default function TelaDadosM({ navigation }) {
                 <Ionicons name="calendar-outline" size={20} color={colors.primary} />
                 <View style={styles.registryContent}>
                   <Text style={[styles.registryLabel, { color: colors.textSecondary }]}>
-                    Data de Cadastro
+                    {t('data_cadastro')}
                   </Text>
                   <Text style={[styles.registryValue, { color: colors.text }]}>
                     {formatarData(motoEncontrada.dataCadastro)}
@@ -295,7 +295,7 @@ export default function TelaDadosM({ navigation }) {
                 <Ionicons name="hourglass-outline" size={20} color={colors.primary} />
                 <View style={styles.registryContent}>
                   <Text style={[styles.registryLabel, { color: colors.textSecondary }]}>
-                    Tempo no Sistema
+                    {t('tempo_sistema')}
                   </Text>
                   <Text style={[styles.registryValue, { color: colors.text }]}>
                     {calcularTempoDesde(motoEncontrada.dataCadastro)}
@@ -309,7 +309,7 @@ export default function TelaDadosM({ navigation }) {
                 <Ionicons name="finger-print" size={20} color={colors.primary} />
                 <View style={styles.registryContent}>
                   <Text style={[styles.registryLabel, { color: colors.textSecondary }]}>
-                    ID do Sistema
+                    {t('id_sistema')}
                   </Text>
                   <Text style={[styles.registryValue, { color: colors.text }]}>
                     #{motoEncontrada.id}
@@ -326,7 +326,7 @@ export default function TelaDadosM({ navigation }) {
             activeOpacity={0.8}
           >
             <Ionicons name="refresh" size={24} color="#fff" />
-            <Text style={styles.actionButtonText}>NOVA CONSULTA</Text>
+            <Text style={styles.actionButtonText}>{t('nova_consulta')}</Text>
           </TouchableOpacity>
         </View>
       )}
@@ -338,10 +338,10 @@ export default function TelaDadosM({ navigation }) {
             <Ionicons name="search-outline" size={80} color={colors.primary} />
           </Animated.View>
           <Text style={[styles.emptyTitle, { color: colors.text }]}>
-            Consulte uma moto
+            {t('consulte_moto')}
           </Text>
           <Text style={[styles.emptySubtitle, { color: colors.textSecondary }]}>
-            Digite a placa da moto para visualizar todos os dados cadastrados no sistema
+            {t('digite_placa_visualizar_dados')}
           </Text>
         </View>
       )}

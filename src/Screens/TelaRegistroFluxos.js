@@ -183,11 +183,11 @@ export default function TelaRegistroFluxos({ navigation }) {
       <View style={[styles.header, { backgroundColor: colors.primary }]}>
         <View style={styles.headerContent}>
           <Ionicons name="clipboard" size={32} color="#fff" />
-          <Text style={styles.headerTitle}>Registro de Fluxos</Text>
+          <Text style={styles.headerTitle}>{t('registro_fluxos')}</Text>
         </View>
         <View style={styles.liveIndicator}>
           <Animated.View style={[styles.liveDot, { opacity: pulseOpacity }]} />
-          <Text style={styles.liveText}>LIVE</Text>
+          <Text style={styles.liveText}>{t('live')}</Text>
         </View>
       </View>
 
@@ -210,7 +210,7 @@ export default function TelaRegistroFluxos({ navigation }) {
             styles.toggleButtonText,
             { color: tipoFluxo === 'OPERADORES' ? '#fff' : colors.text }
           ]}>
-            OPERADORES
+            {t('operadores')}
           </Text>
         </TouchableOpacity>
 
@@ -231,7 +231,7 @@ export default function TelaRegistroFluxos({ navigation }) {
             styles.toggleButtonText,
             { color: tipoFluxo === 'MECANICOS' ? '#fff' : colors.text }
           ]}>
-            MECÂNICOS
+            {t('mecanicos')}
           </Text>
         </TouchableOpacity>
       </View>
@@ -241,12 +241,12 @@ export default function TelaRegistroFluxos({ navigation }) {
         <View style={styles.content}>
           <View style={styles.section}>
             <Text style={[styles.sectionTitle, { color: colors.text }]}>
-              <Ionicons name="today" size={20} color={colors.primary} /> Atividades de Hoje
+              <Ionicons name="today" size={20} color={colors.primary} /> {t('atividades_hoje')}
             </Text>
 
             <StatCard
               icon="add-circle"
-              label="Associações Realizadas"
+              label={t('associacoes_realizadas')}
               value={associacoesHoje}
               color="#00FF94"
               unit="hoje"
@@ -254,7 +254,7 @@ export default function TelaRegistroFluxos({ navigation }) {
 
             <StatCard
               icon="remove-circle"
-              label="Desassociações Realizadas"
+              label={t('desassociacoes_realizadas')}
               value={desassociacoesHoje}
               color="#FF3D71"
               unit="hoje"
@@ -263,18 +263,18 @@ export default function TelaRegistroFluxos({ navigation }) {
 
           <View style={styles.section}>
             <Text style={[styles.sectionTitle, { color: colors.text }]}>
-              <Ionicons name="stats-chart" size={20} color={colors.primary} /> Status Geral
+              <Ionicons name="stats-chart" size={20} color={colors.primary} /> {t('status_geral')}
             </Text>
 
             <ProgressBar
-              label="Beacons Associados"
+              label={t('beacons_associados')}
               current={beaconsAssociados}
               total={motos.length}
               color="#00D9FF"
             />
 
             <ProgressBar
-              label="Beacons Disponíveis"
+              label={t('beacons_disponiveis')}
               current={beaconsDisponiveis}
               total={motos.length}
               color="#9D4EDD"
@@ -283,7 +283,7 @@ export default function TelaRegistroFluxos({ navigation }) {
 
           <View style={styles.section}>
             <Text style={[styles.sectionTitle, { color: colors.text }]}>
-              <Ionicons name="time" size={20} color={colors.primary} /> Histórico Total
+              <Ionicons name="time" size={20} color={colors.primary} /> {t('historico_total')}
             </Text>
 
             <View style={styles.historicoContainer}>
@@ -293,7 +293,7 @@ export default function TelaRegistroFluxos({ navigation }) {
                   {fluxos?.operadores?.totalAssociacoes || 0}
                 </Text>
                 <Text style={[styles.historicoLabel, { color: colors.textSecondary }]}>
-                  Total Associações
+                  {t('total_associacoes')}
                 </Text>
               </View>
 
@@ -303,7 +303,7 @@ export default function TelaRegistroFluxos({ navigation }) {
                   {fluxos?.operadores?.totalDesassociacoes || 0}
                 </Text>
                 <Text style={[styles.historicoLabel, { color: colors.textSecondary }]}>
-                  Total Desassociações
+                  {t('total_desassociacoes')}
                 </Text>
               </View>
             </View>
@@ -316,29 +316,29 @@ export default function TelaRegistroFluxos({ navigation }) {
         <View style={styles.content}>
           <View style={styles.section}>
             <Text style={[styles.sectionTitle, { color: colors.text }]}>
-              <Ionicons name="construct" size={20} color={colors.primary} /> Manutenções Ativas
+              <Ionicons name="construct" size={20} color={colors.primary} /> {t('manutencoes_ativas')}
             </Text>
 
             <StatCard
               icon="build"
-              label="Motos em Manutenção"
+              label={t('motos_em_manutencao')}
               value={motosEmManutencao.length}
               color="#FFD600"
-              unit="motos"
+              unit={t('motos')}
             />
 
             <StatCard
               icon="time-outline"
-              label="Tempo Médio em Manutenção"
+              label={t('tempo_medio_manutencao')}
               value={tempoMedioManutencao}
               color="#FF6B00"
-              unit="horas"
+              unit={t('horas')}
             />
           </View>
 
           <View style={styles.section}>
             <Text style={[styles.sectionTitle, { color: colors.text }]}>
-              <Ionicons name="list" size={20} color={colors.primary} /> Motos em Manutenção
+              <Ionicons name="list" size={20} color={colors.primary} /> {t('motos_manutencao')}
             </Text>
 
             {motosEmManutencao.length > 0 ? (
@@ -377,10 +377,10 @@ export default function TelaRegistroFluxos({ navigation }) {
               <View style={[styles.emptyState, { backgroundColor: colors.cardBackground }]}>
                 <Ionicons name="checkmark-circle" size={48} color="#00FF94" />
                 <Text style={[styles.emptyText, { color: colors.text }]}>
-                  Nenhuma moto em manutenção
+                  {t('nenhuma_moto_manutencao')}
                 </Text>
                 <Text style={[styles.emptySubtext, { color: colors.textSecondary }]}>
-                  Todas as motos estão operacionais!
+                  {t('todas_motos_operacionais')}
                 </Text>
               </View>
             )}
@@ -388,7 +388,7 @@ export default function TelaRegistroFluxos({ navigation }) {
 
           <View style={styles.section}>
             <Text style={[styles.sectionTitle, { color: colors.text }]}>
-              <Ionicons name="checkmark-done" size={20} color={colors.primary} /> Estatísticas Gerais
+              <Ionicons name="checkmark-done" size={20} color={colors.primary} /> {t('estatisticas_gerais')}
             </Text>
 
             <View style={styles.historicoContainer}>
@@ -398,7 +398,7 @@ export default function TelaRegistroFluxos({ navigation }) {
                   {fluxos?.mecanicos?.manutencoesFinalizadas || 0}
                 </Text>
                 <Text style={[styles.historicoLabel, { color: colors.textSecondary }]}>
-                  Finalizadas
+                  {t('finalizadas')}
                 </Text>
               </View>
 
@@ -408,7 +408,7 @@ export default function TelaRegistroFluxos({ navigation }) {
                   {motosEmManutencao.length}
                 </Text>
                 <Text style={[styles.historicoLabel, { color: colors.textSecondary }]}>
-                  Em Andamento
+                  {t('em_andamento')}
                 </Text>
               </View>
             </View>
@@ -420,7 +420,7 @@ export default function TelaRegistroFluxos({ navigation }) {
       <View style={[styles.footer, { backgroundColor: colors.cardBackground }]}>
         <Ionicons name="information-circle" size={20} color={colors.primary} />
         <Text style={[styles.footerText, { color: colors.textSecondary }]}>
-          Última atualização: {new Date().toLocaleTimeString('pt-BR')}
+          {t('ultima_atualizacao')}: {new Date().toLocaleTimeString('pt-BR')}
         </Text>
       </View>
     </ScrollView>

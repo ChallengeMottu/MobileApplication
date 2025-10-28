@@ -41,7 +41,7 @@ export default function TelaStatusMotos({ navigation }) {
 
   const buscarMoto = async () => {
     if (!placa.trim()) {
-      setErro('Por favor, digite uma placa');
+      setErro(t('por_favor_digite_placa'));
       return;
     }
 
@@ -64,15 +64,15 @@ export default function TelaStatusMotos({ navigation }) {
           setNovoStatus(moto.status);
           setErro('');
         } else {
-          setErro('Moto não encontrada no sistema');
+          setErro(t('moto_nao_encontrada'));
           setMotoEncontrada(null);
         }
       } else {
-        setErro('Nenhuma moto cadastrada no sistema');
+        setErro(t('nenhuma_moto_cadastrada'));
       }
     } catch (error) {
       console.error('Erro ao buscar moto:', error);
-      setErro('Erro ao buscar dados da moto');
+      setErro(t('erro_buscar_dados'));
     } finally {
       setBuscando(false);
     }
@@ -90,7 +90,7 @@ export default function TelaStatusMotos({ navigation }) {
 
   const salvarAlteracoes = async () => {
     if (novoStatus === 'Moto em manutenção' && !diagnostico.trim()) {
-      Alert.alert('Diagnóstico obrigatório', 'Por favor, informe o diagnóstico do problema');
+      Alert.alert(t('diagnostico_obrigatorio'), t('informe_diagnostico_problema'));
       return;
     }
 
@@ -113,8 +113,8 @@ export default function TelaStatusMotos({ navigation }) {
         await AsyncStorage.setItem('motosCadastradas', JSON.stringify(listaMotos));
         
         Alert.alert(
-          'Status Atualizado',
-          'O status operacional da moto foi atualizado com sucesso!',
+          t('status_atualizado'),
+          t('status_atualizado_sucesso'),
           [
             {
               text: 'OK',
@@ -127,7 +127,7 @@ export default function TelaStatusMotos({ navigation }) {
       }
     } catch (error) {
       console.error('Erro ao salvar alterações:', error);
-      Alert.alert('Erro', 'Não foi possível salvar as alterações');
+      Alert.alert(t('erro'), t('erro_salvar_alteracoes'));
     } finally {
       setSalvando(false);
     }
@@ -206,7 +206,7 @@ export default function TelaStatusMotos({ navigation }) {
       <View style={[styles.header, { backgroundColor: colors.primary }]}>
         <View style={styles.headerContent}>
           <Ionicons name="pulse" size={32} color="#fff" />
-          <Text style={styles.headerTitle}>Status Operacional</Text>
+          <Text style={styles.headerTitle}>{t('status_operacional')}</Text>
         </View>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
           <Ionicons name="close" size={28} color="#fff" />
@@ -216,7 +216,7 @@ export default function TelaStatusMotos({ navigation }) {
       {/* Search Section */}
       <View style={[styles.searchSection, { backgroundColor: colors.cardBackground }]}>
         <Text style={[styles.searchTitle, { color: colors.text }]}>
-          <Ionicons name="barcode" size={20} color={colors.primary} /> Digite a Placa
+          <Ionicons name="barcode" size={20} color={colors.primary} /> {t('digite_placa')}
         </Text>
         
         <View style={styles.searchContainer}>
@@ -226,7 +226,7 @@ export default function TelaStatusMotos({ navigation }) {
               style={[styles.searchInput, { color: colors.text }]}
               value={placa}
               onChangeText={setPlaca}
-              placeholder="Ex: ABC1234"
+              placeholder={t('exemplo_placa')}
               placeholderTextColor={colors.textSecondary}
               autoCapitalize="characters"
               maxLength={7}
@@ -246,7 +246,7 @@ export default function TelaStatusMotos({ navigation }) {
           >
             <Ionicons name={buscando ? "hourglass" : "search"} size={24} color="#fff" />
             <Text style={styles.searchButtonText}>
-              {buscando ? 'BUSCANDO...' : 'BUSCAR'}
+              {buscando ? t('buscando') : t('buscar')}
             </Text>
           </TouchableOpacity>
         </View>
@@ -285,7 +285,7 @@ export default function TelaStatusMotos({ navigation }) {
             
             <View style={[styles.currentStatusBadge, { backgroundColor: getStatusColor(motoEncontrada.status) + '20' }]}>
               <Text style={[styles.currentStatusLabel, { color: colors.textSecondary }]}>
-                Status Atual:
+                {t('status_atual')}
               </Text>
               <Text style={[styles.currentStatusText, { color: getStatusColor(motoEncontrada.status) }]}>
                 {motoEncontrada.status}
@@ -298,19 +298,19 @@ export default function TelaStatusMotos({ navigation }) {
             <View style={styles.changeSectionHeader}>
               <Ionicons name="swap-horizontal" size={24} color={colors.primary} />
               <Text style={[styles.changeSectionTitle, { color: colors.text }]}>
-                Alterar Status Operacional
+                {t('alterar_status_operacional')}
               </Text>
             </View>
 
             <StatusButton
-              label="DISPONÍVEL"
+              label={t('disponivel')}
               value="Moto normal com placa"
               icon="checkmark-circle"
               color="#00FF94"
             />
 
             <StatusButton
-              label="EM MANUTENÇÃO"
+              label={t('em_manutencao')}
               value="Moto em manutenção"
               icon="construct"
               color="#FF3D71"
@@ -322,7 +322,7 @@ export default function TelaStatusMotos({ navigation }) {
                 <View style={styles.diagnosticoHeader}>
                   <Ionicons name="clipboard" size={20} color="#FF6B00" />
                   <Text style={[styles.diagnosticoLabel, { color: colors.text }]}>
-                    Diagnóstico do Problema
+                    {t('diagnostico_problema')}
                   </Text>
                 </View>
                 <TextInput
@@ -333,14 +333,14 @@ export default function TelaStatusMotos({ navigation }) {
                   }]}
                   value={diagnostico}
                   onChangeText={setDiagnostico}
-                  placeholder="Descreva o problema identificado na moto..."
+                  placeholder={t('descreva_problema_moto')}
                   placeholderTextColor={colors.textSecondary}
                   multiline
                   numberOfLines={4}
                   textAlignVertical="top"
                 />
                 <Text style={[styles.diagnosticoHint, { color: colors.textSecondary }]}>
-                  <Ionicons name="information-circle" size={14} /> Este diagnóstico ficará registrado no histórico da moto
+                  <Ionicons name="information-circle" size={14} /> {t('diagnostico_registrado_historico')}
                 </Text>
               </Animated.View>
             )}
@@ -357,7 +357,7 @@ export default function TelaStatusMotos({ navigation }) {
               >
                 <Ionicons name={salvando ? "hourglass" : "save"} size={24} color="#fff" />
                 <Text style={styles.saveButtonText}>
-                  {salvando ? 'SALVANDO...' : 'SALVAR ALTERAÇÕES'}
+                  {salvando ? t('salvando') : t('salvar_alteracoes')}
                 </Text>
               </TouchableOpacity>
             )}
@@ -367,7 +367,7 @@ export default function TelaStatusMotos({ navigation }) {
           <View style={styles.infoAlert}>
             <Ionicons name="alert-circle" size={20} color="#FFD600" />
             <Text style={[styles.infoAlertText, { color: colors.text }]}>
-              A alteração do status será registrada no histórico da moto com data e hora
+              {t('alteracao_registrada_historico')}
             </Text>
           </View>
         </View>
@@ -380,10 +380,10 @@ export default function TelaStatusMotos({ navigation }) {
             <Ionicons name="settings-outline" size={80} color={colors.primary} />
           </Animated.View>
           <Text style={[styles.emptyTitle, { color: colors.text }]}>
-            Monitorar Status
+            {t('monitorar_status')}
           </Text>
           <Text style={[styles.emptySubtitle, { color: colors.textSecondary }]}>
-            Digite a placa da moto para visualizar e alterar o status operacional
+            {t('digite_placa_visualizar_status')}
           </Text>
         </View>
       )}
