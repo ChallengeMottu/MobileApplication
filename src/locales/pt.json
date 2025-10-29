@@ -313,6 +313,25 @@
   "id_sistema": "ID do Sistema",
   "nova_consulta": "NOVA CONSULTA",
   "consulte_moto": "Consulte uma moto",
-  "digite_placa_visualizar_dados": "Digite a placa da moto para visualizar todos os dados cadastrados no sistema"
+  "digite_placa_visualizar_dados": "Digite a placa da moto para visualizar todos os dados cadastrados no sistema",
+
+    "carregando": "Carregando...",
+  "operador": "Operador",
+  "ola": "Olá",
+  "deseja_realizar_hoje": "O que deseja realizar hoje?",
+  "localizar_motos": "LOCALIZAR MOTOS",
+  "funcionalidades": "Funcionalidades",
+  "cadastrar_moto": "Cadastrar Moto",
+  "registre_nova_motocicleta": "Registre uma nova motocicleta",
+  "visualizar_moto": "Visualizar Moto",
+  "consulte_dados_moto": "Consulte dados da moto",
+  "entrada_alocacao": "Entrada e Alocação",
+  "registre_entrada_moto": "Registre entrada da moto",
+  "saida_moto": "Saída da Moto",
+  "registre_saida_patio": "Registre saída do pátio",
+  "minhas_informacoes": "Minhas Informações",
+  "veja_dados_cadastrais": "Veja seus dados cadastrais",
+  "nao_foi_possivel_carregar_dados": "Não foi possível carregar os dados do usuário",
+  "erro": "Erro"
 
 }

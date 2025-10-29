@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, TextInput, Animated } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, TextInput, Animated, Alert, Modal, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as ImagePicker from 'expo-image-picker';
 import { useTheme } from '../context/ContextTheme';
 import { useTranslation } from 'react-i18next';
 
@@ -13,6 +14,9 @@ export default function TelaDadosM({ navigation }) {
   const [buscando, setBuscando] = useState(false);
   const [erro, setErro] = useState('');
   const [animacaoValor] = useState(new Animated.Value(0));
+  const [showCamera, setShowCamera] = useState(false);
+  const [capturedImage, setCapturedImage] = useState(null);
+  const [processando, setProcessando] = useState(false);
 
   useEffect(() => {
     iniciarAnimacao();
@@ -37,7 +41,7 @@ export default function TelaDadosM({ navigation }) {
 
   const buscarMoto = async () => {
     if (!placa.trim()) {
-      setErro(t('por_favor_digite_placa'));
+      setErro('Por favor, digite uma placa');
       return;
     }
 
@@ -56,15 +60,15 @@ export default function TelaDadosM({ navigation }) {
           setMotoEncontrada(moto);
           setErro('');
         } else {
-          setErro(t('moto_nao_encontrada'));
+          setErro('Moto não encontrada no sistema');
           setMotoEncontrada(null);
         }
       } else {
-        setErro(t('nenhuma_moto_cadastrada'));
+        setErro('Nenhuma moto cadastrada no sistema');
       }
     } catch (error) {
       console.error('Erro ao buscar moto:', error);
-      setErro(t('erro_buscar_dados'));
+      setErro('Erro ao buscar dados da moto');
     } finally {
       setBuscando(false);
     }
@@ -74,6 +78,94 @@ export default function TelaDadosM({ navigation }) {
     setPlaca('');
     setMotoEncontrada(null);
     setErro('');
+    setCapturedImage(null);
+  };
+
+  const openCamera = async () => {
+    const permission = await ImagePicker.requestCameraPermissionsAsync();
+    if (!permission.granted) {
+      Alert.alert('Permissão necessária', 'Habilite o acesso à câmera para continuar.');
+      return;
+    }
+
+    const result = await ImagePicker.launchCameraAsync({
+      allowsEditing: false,
+      quality: 0.3,
+      base64: true,
+    });
+
+    if (!result.canceled && result.assets && result.assets.length > 0) {
+      const asset = result.assets[0];
+      if (asset.uri && asset.base64) {
+        setCapturedImage(asset.uri);
+        setShowCamera(true);
+        sendToOCR(asset.base64);
+      }
+    }
+  };
+
+  const sendToOCR = async (base64Image, type = 'jpeg') => {
+    setProcessando(true);
+    try {
+      const base64WithPrefix = `data:image/${type};base64,${base64Image}`;
+      const response = await fetch('https://api.ocr.space/parse/image', {
+        method: 'POST',
+        headers: {
+          apikey: 'K87694494388957',
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: `base64Image=${encodeURIComponent(base64WithPrefix)}&language=por`,
+      });
+
+      const data = await response.json();
+      
+      if (data.IsErroredOnProcessing) {
+        Alert.alert('Erro', 'Não foi possível processar a imagem');
+        setProcessando(false);
+        return;
+      }
+
+      const parsedText = data?.ParsedResults?.[0]?.ParsedText || '';
+      
+      // Extrair placa do texto (formato brasileiro: ABC1234 ou ABC-1234)
+      const placaMatch = parsedText.match(/[A-Z]{3}[-]?[0-9]{4}/i);
+      
+      if (placaMatch) {
+        const placaDetectada = placaMatch[0].replace('-', '').toUpperCase();
+        setPlaca(placaDetectada);
+        setShowCamera(false);
+        Alert.alert(
+          'Placa Detectada',
+          `Placa encontrada: ${placaDetectada}\n\nDeseja buscar os dados dessa moto?`,
+          [
+            { text: 'Cancelar', style: 'cancel' },
+            { 
+              text: 'Buscar', 
+              onPress: () => {
+                setPlaca(placaDetectada);
+                setTimeout(() => buscarMoto(), 100);
+              }
+            }
+          ]
+        );
+      } else {
+        Alert.alert(
+          'Placa não detectada',
+          'Não foi possível identificar a placa na imagem. Tente novamente com melhor iluminação.',
+          [{ text: 'OK', onPress: () => setShowCamera(false) }]
+        );
+      }
+    } catch (error) {
+      console.error(error);
+      Alert.alert('Erro', 'Erro ao processar imagem');
+    } finally {
+      setProcessando(false);
+    }
+  };
+
+  const closeCameraModal = () => {
+    setShowCamera(false);
+    setProcessando(false);
   };
 
   const getStatusColor = (status) => {
@@ -137,9 +229,9 @@ export default function TelaDadosM({ navigation }) {
       <View style={[styles.header, { backgroundColor: colors.primary }]}>
         <View style={styles.headerContent}>
           <Ionicons name="search" size={32} color="#fff" />
-          <Text style={styles.headerTitle}>{t('consultar_moto')}</Text>
+          <Text style={styles.headerTitle}>Consultar Moto</Text>
         </View>
-        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+        <TouchableOpacity onPress={() => navigation.navigate('TelaFuncionario')} style={styles.backButton}>
           <Ionicons name="close" size={28} color="#fff" />
         </TouchableOpacity>
       </View>
@@ -147,26 +239,44 @@ export default function TelaDadosM({ navigation }) {
       {/* Search Section */}
       <View style={[styles.searchSection, { backgroundColor: colors.cardBackground }]}>
         <Text style={[styles.searchTitle, { color: colors.text }]}>
-          <Ionicons name="barcode" size={20} color={colors.primary} /> {t('digite_placa')}
+          <Ionicons name="barcode" size={20} color={colors.primary} /> Digite a Placa
         </Text>
         
         <View style={styles.searchContainer}>
-          <View style={[styles.inputWrapper, { backgroundColor: colors.inputBackground, borderColor: colors.border }]}>
-            <Ionicons name="car" size={24} color={colors.primary} style={styles.inputIcon} />
-            <TextInput
-              style={[styles.searchInput, { color: colors.text }]}
-              value={placa}
-              onChangeText={setPlaca}
-              placeholder={t('exemplo_placa')}
-              placeholderTextColor={colors.textSecondary}
-              autoCapitalize="characters"
-              maxLength={7}
-            />
-            {placa.length > 0 && (
-              <TouchableOpacity onPress={limparBusca}>
-                <Ionicons name="close-circle" size={24} color={colors.textSecondary} />
-              </TouchableOpacity>
-            )}
+          <View style={styles.buttonRow}>
+            <View style={[styles.inputWrapper, { 
+              backgroundColor: colors.inputBackground, 
+              borderColor: colors.border,
+              flex: 1 
+            }]}>
+              <Ionicons name="car" size={24} color={colors.primary} style={styles.inputIcon} />
+              <TextInput
+                style={[styles.searchInput, { color: colors.text }]}
+                value={placa}
+                onChangeText={setPlaca}
+                placeholder="Ex: ABC1234"
+                placeholderTextColor={colors.textSecondary}
+                autoCapitalize="characters"
+                maxLength={7}
+              />
+              {placa.length > 0 && (
+                <TouchableOpacity onPress={limparBusca}>
+                  <Ionicons name="close-circle" size={24} color={colors.textSecondary} />
+                </TouchableOpacity>
+              )}
+            </View>
+
+            {/* Botão da Câmera */}
+            <TouchableOpacity
+              style={[styles.cameraButton, { 
+                backgroundColor: colors.primary,
+                borderColor: colors.primary 
+              }]}
+              onPress={openCamera}
+              activeOpacity={0.8}
+            >
+              <Ionicons name="camera" size={28} color="#fff" />
+            </TouchableOpacity>
           </View>
 
           <TouchableOpacity
@@ -177,7 +287,7 @@ export default function TelaDadosM({ navigation }) {
           >
             <Ionicons name={buscando ? "hourglass" : "search"} size={24} color="#fff" />
             <Text style={styles.searchButtonText}>
-              {buscando ? t('buscando') : t('buscar')}
+              {buscando ? 'BUSCANDO...' : 'BUSCAR'}
             </Text>
           </TouchableOpacity>
         </View>
@@ -189,6 +299,51 @@ export default function TelaDadosM({ navigation }) {
           </View>
         )}
       </View>
+
+      {/* Modal da Câmera */}
+      <Modal
+        visible={showCamera}
+        animationType="fade"
+        transparent={true}
+        onRequestClose={closeCameraModal}
+      >
+        <View style={styles.modalContainer}>
+          <View style={[styles.modalContent, { backgroundColor: colors.cardBackground }]}>
+            <View style={styles.modalHeader}>
+              <Text style={[styles.modalTitle, { color: colors.text }]}>
+                Processando Imagem
+              </Text>
+              <TouchableOpacity onPress={closeCameraModal}>
+                <Ionicons name="close" size={28} color={colors.text} />
+              </TouchableOpacity>
+            </View>
+
+            {capturedImage && (
+              <Image 
+                source={{ uri: capturedImage }} 
+                style={styles.capturedImage}
+                resizeMode="contain"
+              />
+            )}
+
+            {processando ? (
+              <View style={styles.processingContainer}>
+                <Ionicons name="sync" size={40} color={colors.primary} />
+                <Text style={[styles.processingText, { color: colors.text }]}>
+                  Processando imagem...
+                </Text>
+              </View>
+            ) : (
+              <View style={styles.processingContainer}>
+                <Ionicons name="checkmark-circle" size={40} color="#00FF94" />
+                <Text style={[styles.processingText, { color: colors.text }]}>
+                  Imagem processada com sucesso!
+                </Text>
+              </View>
+            )}
+          </View>
+        </View>
+      </Modal>
 
       {/* Results Section */}
       {motoEncontrada && (
@@ -224,27 +379,27 @@ export default function TelaDadosM({ navigation }) {
           {/* Information Section */}
           <View style={styles.infoSection}>
             <Text style={[styles.sectionTitle, { color: colors.text }]}>
-              <Ionicons name="information-circle" size={20} color={colors.primary} /> {t('informacoes_basicas')}
+              <Ionicons name="information-circle" size={20} color={colors.primary} /> Informações Básicas
             </Text>
 
             <DataField
               icon="key"
-              label={t('numero_chassi')}
+              label="Número do Chassi"
               value={motoEncontrada.numeroChassi}
               color="#00D9FF"
             />
 
             <DataField
               icon="calendar"
-              label={t('ano_fabricacao')}
+              label="Ano de Fabricação"
               value={motoEncontrada.anoFabricacao?.toString()}
               color="#9D4EDD"
             />
 
             <DataField
               icon="bluetooth"
-              label={t('codigo_beacon')}
-              value={motoEncontrada.codigoBeacon === 'N/A' ? t('nao_associado') : motoEncontrada.codigoBeacon}
+              label="Código Beacon"
+              value={motoEncontrada.codigoBeacon === 'N/A' ? 'Não associado' : motoEncontrada.codigoBeacon}
               color={motoEncontrada.codigoBeacon === 'N/A' ? '#FF6B00' : '#00FF94'}
             />
           </View>
@@ -252,19 +407,19 @@ export default function TelaDadosM({ navigation }) {
           {/* Technical Section */}
           <View style={styles.infoSection}>
             <Text style={[styles.sectionTitle, { color: colors.text }]}>
-              <Ionicons name="build" size={20} color={colors.primary} /> {t('condicoes_fisicas')}
+              <Ionicons name="build" size={20} color={colors.primary} /> Condições Físicas
             </Text>
 
             <DataField
               icon="settings"
-              label={t('condicao_mecanica')}
+              label="Condição Mecânica"
               value={motoEncontrada.condicaoMecanica}
               color="#FFD600"
             />
 
             <DataField
               icon="checkmark-done"
-              label={t('aparato_fisico')}
+              label="Aparato Físico"
               value={motoEncontrada.aparatoFisico}
               color="#00FF94"
             />
@@ -273,7 +428,7 @@ export default function TelaDadosM({ navigation }) {
           {/* Registry Section */}
           <View style={styles.infoSection}>
             <Text style={[styles.sectionTitle, { color: colors.text }]}>
-              <Ionicons name="time" size={20} color={colors.primary} /> {t('informacoes_registro')}
+              <Ionicons name="time" size={20} color={colors.primary} /> Informações de Registro
             </Text>
 
             <View style={[styles.registryCard, { backgroundColor: colors.cardBackground }]}>
@@ -281,7 +436,7 @@ export default function TelaDadosM({ navigation }) {
                 <Ionicons name="calendar-outline" size={20} color={colors.primary} />
                 <View style={styles.registryContent}>
                   <Text style={[styles.registryLabel, { color: colors.textSecondary }]}>
-                    {t('data_cadastro')}
+                    Data de Cadastro
                   </Text>
                   <Text style={[styles.registryValue, { color: colors.text }]}>
                     {formatarData(motoEncontrada.dataCadastro)}
@@ -295,7 +450,7 @@ export default function TelaDadosM({ navigation }) {
                 <Ionicons name="hourglass-outline" size={20} color={colors.primary} />
                 <View style={styles.registryContent}>
                   <Text style={[styles.registryLabel, { color: colors.textSecondary }]}>
-                    {t('tempo_sistema')}
+                    Tempo no Sistema
                   </Text>
                   <Text style={[styles.registryValue, { color: colors.text }]}>
                     {calcularTempoDesde(motoEncontrada.dataCadastro)}
@@ -309,7 +464,7 @@ export default function TelaDadosM({ navigation }) {
                 <Ionicons name="finger-print" size={20} color={colors.primary} />
                 <View style={styles.registryContent}>
                   <Text style={[styles.registryLabel, { color: colors.textSecondary }]}>
-                    {t('id_sistema')}
+                    ID do Sistema
                   </Text>
                   <Text style={[styles.registryValue, { color: colors.text }]}>
                     #{motoEncontrada.id}
@@ -326,7 +481,7 @@ export default function TelaDadosM({ navigation }) {
             activeOpacity={0.8}
           >
             <Ionicons name="refresh" size={24} color="#fff" />
-            <Text style={styles.actionButtonText}>{t('nova_consulta')}</Text>
+            <Text style={styles.actionButtonText}>NOVA CONSULTA</Text>
           </TouchableOpacity>
         </View>
       )}
@@ -338,11 +493,21 @@ export default function TelaDadosM({ navigation }) {
             <Ionicons name="search-outline" size={80} color={colors.primary} />
           </Animated.View>
           <Text style={[styles.emptyTitle, { color: colors.text }]}>
-            {t('consulte_moto')}
+            Consulte uma moto
           </Text>
           <Text style={[styles.emptySubtitle, { color: colors.textSecondary }]}>
-            {t('digite_placa_visualizar_dados')}
+            Digite a placa da moto ou use a câmera para escanear a placa
           </Text>
+          
+          {/* Botão da Câmera no Empty State */}
+          <TouchableOpacity
+            style={[styles.cameraButtonEmpty, { backgroundColor: colors.primary }]}
+            onPress={openCamera}
+            activeOpacity={0.8}
+          >
+            <Ionicons name="camera" size={28} color="#fff" />
+            <Text style={styles.cameraButtonText}>ESCANEAR PLACA</Text>
+          </TouchableOpacity>
         </View>
       )}
     </ScrollView>
@@ -399,6 +564,10 @@ const styles = StyleSheet.create({
   searchContainer: {
     gap: 12,
   },
+  buttonRow: {
+    flexDirection: 'row',
+    gap: 12,
+  },
   inputWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -428,6 +597,40 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 8,
     elevation: 6,
+  },
+  cameraButton: {
+    width: 60,
+    height: 56,
+    borderRadius: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 2.5,
+    shadowColor: '#01743A',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 6,
+    elevation: 5,
+  },
+  cameraButtonEmpty: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 12,
+    paddingVertical: 16,
+    paddingHorizontal: 24,
+    borderRadius: 12,
+    marginTop: 20,
+    shadowColor: '#01743A',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 6,
+  },
+  cameraButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+    letterSpacing: 1,
   },
   searchButtonText: {
     color: '#fff',
@@ -608,5 +811,48 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textAlign: 'center',
     lineHeight: 24,
+  },
+  modalContainer: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.85)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  modalContent: {
+    width: '100%',
+    maxWidth: 400,
+    borderRadius: 20,
+    padding: 24,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.4,
+    shadowRadius: 12,
+    elevation: 10,
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  capturedImage: {
+    width: '100%',
+    height: 250,
+    borderRadius: 12,
+    marginBottom: 20,
+  },
+  processingContainer: {
+    alignItems: 'center',
+    paddingVertical: 20,
+  },
+  processingText: {
+    fontSize: 16,
+    marginTop: 16,
+    fontWeight: '600',
   },
 });

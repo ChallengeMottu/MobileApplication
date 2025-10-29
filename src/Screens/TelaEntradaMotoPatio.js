@@ -120,7 +120,7 @@ const EntradaMotoPatio = ({ navigation }) => {
         <ScrollView style={[styles.scrollView, { backgroundColor: colors.background }]} contentContainerStyle={styles.scrollContent}>
           <TouchableOpacity 
             style={styles.goBack} 
-            onPress={() => navigation?.goBack()}
+            onPress={() => navigation.navigate('TelaFuncionario')}
           >
             <Ionicons name="arrow-back" size={20} color={colors.text} />
           </TouchableOpacity>
