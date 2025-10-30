@@ -4,6 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { Picker } from '@react-native-picker/picker';
 import { useTheme } from '../context/ContextTheme';
 import { useTranslation } from 'react-i18next';
+import * as ImagePicker from 'expo-image-picker';
 
 const EntradaMotoPatio = ({ navigation }) => {
   const { colors, theme } = useTheme();
@@ -22,6 +23,9 @@ const EntradaMotoPatio = ({ navigation }) => {
   const [modalCodigoVisible, setModalCodigoVisible] = useState(false);
   const [rastreandoBeacon, setRastreandoBeacon] = useState(false);
   const [beaconDetectado, setBeaconDetectado] = useState(null);
+  const [processandoImagem, setProcessandoImagem] = useState(false);
+  const [modalCameraVisible, setModalCameraVisible] = useState(false);
+  const [imagemCapturada, setImagemCapturada] = useState(null);
 
   const handleInputChange = useCallback((field, value) => {
     setFormData(prevData => ({
@@ -46,8 +50,97 @@ const EntradaMotoPatio = ({ navigation }) => {
     setEtapaAtual(2);
   };
 
-  const handleDigitalizarPlaca = () => {
-    Alert.alert(t('camera'), t('funcionalidade_digitalizacao'));
+  const handleDigitalizarPlaca = async () => {
+    // Solicitar permissão da câmera
+    const { status } = await ImagePicker.requestCameraPermissionsAsync();
+    
+    if (status !== 'granted') {
+      Alert.alert(
+        t('permissao_negada'),
+        t('precisamos_acesso_camera_digitalizar_placa'),
+        [{ text: t('ok') }]
+      );
+      return;
+    }
+
+    // Abrir câmera
+    const result = await ImagePicker.launchCameraAsync({
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 0.8,
+      base64: true,
+    });
+
+    if (!result.canceled && result.assets && result.assets.length > 0) {
+      const asset = result.assets[0];
+      setImagemCapturada(asset.uri);
+      setModalCameraVisible(true);
+      processarImagemPlaca(asset.base64);
+    }
+  };
+
+  const processarImagemPlaca = async (base64Image) => {
+    setProcessandoImagem(true);
+    
+    try {
+      // Simular processamento de OCR (substitua por sua API real)
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      // Simular detecção de placa (padrão brasileiro: ABC1234 ou ABC-1234)
+      const placasSimuladas = ['ABC1234', 'XYZ5678', 'DEF9012', 'GHI3456', 'JKL7890'];
+      const placaDetectada = placasSimuladas[Math.floor(Math.random() * placasSimuladas.length)];
+      
+      setModalCameraVisible(false);
+      
+      Alert.alert(
+        t('placa_detectada'),
+        `${t('placa_identificada')}: ${placaDetectada}\n\n${t('deseja_usar_esta_placa')}`,
+        [
+          {
+            text: t('cancelar'),
+            style: 'cancel',
+            onPress: () => {
+              setImagemCapturada(null);
+              setProcessandoImagem(false);
+            }
+          },
+          {
+            text: t('usar_placa'),
+            onPress: () => {
+              setPlaca(placaDetectada);
+              setImagemCapturada(null);
+              setProcessandoImagem(false);
+              Alert.alert(t('sucesso'), t('placa_definida_sucesso'));
+            }
+          }
+        ]
+      );
+      
+    } catch (error) {
+      console.error('Erro ao processar imagem:', error);
+      setModalCameraVisible(false);
+      setProcessandoImagem(false);
+      Alert.alert(
+        t('erro'),
+        t('nao_foi_possivel_identificar_placa'),
+        [
+          {
+            text: t('tentar_novamente'),
+            onPress: handleDigitalizarPlaca
+          },
+          {
+            text: t('cancelar'),
+            style: 'cancel'
+          }
+        ]
+      );
+    }
+  };
+
+  const fecharModalCamera = () => {
+    setModalCameraVisible(false);
+    setImagemCapturada(null);
+    setProcessandoImagem(false);
   };
 
   const handleControlarMoto = () => {
@@ -132,7 +225,7 @@ const EntradaMotoPatio = ({ navigation }) => {
             <View style={[styles.separador, { backgroundColor: colors.border }]} />
 
             <View style={styles.inputContainer}>
-              <Text style={[styles.label, { color: colors.textSecondary }]}>{t('escolha_entre')}</Text>
+              <Text style={[styles.label, { color: colors.textSecondary }]}>{t('digitar_placa_manualmente')}</Text>
               <TextInput
                 style={[styles.input, { 
                   backgroundColor: colors.inputBackground, 
@@ -143,26 +236,85 @@ const EntradaMotoPatio = ({ navigation }) => {
                 onChangeText={handlePlacaChange}
                 placeholder={t('digite_placa_moto')}
                 placeholderTextColor={colors.placeholderTextColor}
+                autoCapitalize="characters"
+                maxLength={7}
               />
             </View>
 
             <View style={styles.inputContainer}>
-              <Text style={[styles.label, { color: colors.textSecondary }]}>{t('digitalizar_placa')}</Text>
-              <TouchableOpacity style={[styles.cameraButton, { 
-                backgroundColor: colors.inputBackground, 
-                borderColor: colors.border 
-              }]} onPress={handleDigitalizarPlaca}>
-                <Ionicons name="camera" size={24} color={colors.textSecondary} />
+              <Text style={[styles.label, { color: colors.textSecondary }]}>{t('ou')}</Text>
+              <TouchableOpacity 
+                style={[styles.cameraButton, { 
+                  backgroundColor: colors.primary, 
+                  borderColor: colors.primary 
+                }]} 
+                onPress={handleDigitalizarPlaca}
+              >
+                <Ionicons name="camera" size={24} color="#fff" />
+                <Text style={[styles.cameraButtonText, { color: '#fff' }]}>{t('digitalizar_placa_camera')}</Text>
               </TouchableOpacity>
             </View>
 
-            <TouchableOpacity style={[styles.botao, { backgroundColor: colors.primary }]} onPress={handleBuscarMoto}>
+            <TouchableOpacity 
+              style={[styles.botao, { backgroundColor: colors.primary }]} 
+              onPress={handleBuscarMoto}
+              disabled={!placa.trim()}
+            >
               <Text style={[styles.textoBotao, { color: colors.primaryText }]}>{t('buscar')}</Text>
             </TouchableOpacity>
           </View>
         </ScrollView>
       )}
 
+      {/* Modal da Câmera */}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalCameraVisible}
+        onRequestClose={fecharModalCamera}
+      >
+        <View style={styles.modalCameraContainer}>
+          <View style={[styles.modalCameraContent, { backgroundColor: colors.cardBackground }]}>
+            <View style={styles.modalCameraHeader}>
+              <Text style={[styles.modalCameraTitulo, { color: colors.text }]}>
+                {t('processando_imagem_placa')}
+              </Text>
+              <TouchableOpacity onPress={fecharModalCamera}>
+                <Ionicons name="close" size={24} color={colors.text} />
+              </TouchableOpacity>
+            </View>
+
+            {imagemCapturada && (
+              <Image 
+                source={{ uri: imagemCapturada }} 
+                style={styles.imagemCapturada}
+                resizeMode="contain"
+              />
+            )}
+
+            {processandoImagem ? (
+              <View style={styles.processandoContainer}>
+                <ActivityIndicator size="large" color={colors.primary} />
+                <Text style={[styles.processandoTexto, { color: colors.text }]}>
+                  {t('analisando_imagem_placa')}
+                </Text>
+                <Text style={[styles.processandoSubtexto, { color: colors.textSecondary }]}>
+                  {t('isso_pode_levar_algun_segundos')}
+                </Text>
+              </View>
+            ) : (
+              <View style={styles.instrucoesContainer}>
+                <Ionicons name="camera-outline" size={48} color={colors.primary} />
+                <Text style={[styles.instrucoesTexto, { color: colors.text }]}>
+                  {t('posicione_placa_quadro')}
+                </Text>
+              </View>
+            )}
+          </View>
+        </View>
+      </Modal>
+
+      {/* Resto do código das outras etapas permanece igual */}
       {etapaAtual === 2 && (
         <ScrollView style={[styles.scrollView, { backgroundColor: colors.background }]} contentContainerStyle={styles.scrollContent}>
           <TouchableOpacity 
@@ -495,6 +647,12 @@ const styles = StyleSheet.create({
     width: '100%',
     maxWidth: 400,
     padding: 25,
+    borderRadius: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
   },
   titulo: {
     fontSize: 24,
@@ -519,10 +677,12 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 14,
     marginBottom: 8,
+    fontWeight: '500',
   },
   inputLabel: {
     fontSize: 14,
     marginBottom: 8,
+    fontWeight: '500',
   },
   input: {
     borderRadius: 8,
@@ -545,15 +705,20 @@ const styles = StyleSheet.create({
   },
   pickerItem: {
     fontSize: 14,
-    color: '#000',
   },
   cameraButton: {
     borderRadius: 8,
-    padding: 14,
+    padding: 16,
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1,
     height: 60,
+    flexDirection: 'row',
+    gap: 10,
+  },
+  cameraButtonText: {
+    fontSize: 16,
+    fontWeight: 'bold',
   },
   imagemMotoContainer: {
     alignItems: 'center',
@@ -577,6 +742,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     padding: 20,
     marginTop: 20,
+    borderWidth: 1,
   },
   tituloProcedimento: {
     fontSize: 18,
@@ -588,6 +754,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     textAlign: 'center',
     marginBottom: 5,
+    lineHeight: 20,
   },
   botaoRastrear: {
     borderRadius: 8,
@@ -630,11 +797,13 @@ const styles = StyleSheet.create({
   textoSucesso: {
     fontSize: 14,
     textAlign: 'center',
+    lineHeight: 20,
   },
   cardInfo: {
     borderRadius: 8,
     padding: 20,
     marginBottom: 20,
+    borderWidth: 1,
   },
   tituloInfo: {
     fontSize: 18,
@@ -677,6 +846,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     textAlign: 'center',
     marginBottom: 20,
+    lineHeight: 20,
   },
   modalInput: {
     borderRadius: 8,
@@ -705,6 +875,61 @@ const styles = StyleSheet.create({
   modalButtonText: {
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  // Novos estilos para o modal da câmera
+  modalCameraContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.8)',
+    padding: 20,
+  },
+  modalCameraContent: {
+    borderRadius: 12,
+    padding: 20,
+    width: '100%',
+    maxWidth: 400,
+  },
+  modalCameraHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  modalCameraTitulo: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  imagemCapturada: {
+    width: '100%',
+    height: 200,
+    borderRadius: 8,
+    marginBottom: 20,
+  },
+  processandoContainer: {
+    alignItems: 'center',
+    paddingVertical: 20,
+  },
+  processandoTexto: {
+    fontSize: 16,
+    fontWeight: '600',
+    marginTop: 16,
+    textAlign: 'center',
+  },
+  processandoSubtexto: {
+    fontSize: 14,
+    marginTop: 8,
+    textAlign: 'center',
+  },
+  instrucoesContainer: {
+    alignItems: 'center',
+    paddingVertical: 30,
+  },
+  instrucoesTexto: {
+    fontSize: 16,
+    marginTop: 16,
+    textAlign: 'center',
+    lineHeight: 22,
   },
 });
 
