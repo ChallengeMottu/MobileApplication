@@ -3,10 +3,12 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Picker } from '@react-native-picker/picker';
 import { useNavigation } from '@react-navigation/native';
 import { useEffect, useState } from 'react';
-import { Alert, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Alert, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View, ActivityIndicator } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '../context/ContextTheme';
 import { useTranslation } from 'react-i18next';
+import { cadastrarMoto } from '../services/motorcycleService';
+import * as Notifications from 'expo-notifications';
 
 export default function TelaCadastroM() {
   const navigation = useNavigation();
@@ -26,12 +28,92 @@ export default function TelaCadastroM() {
   const [aparatoFisico, setAparatoFisico] = useState('');
   const [status, setStatus] = useState('');
   const [anoFabricacao, setAnoFabricacao] = useState('');
+  const [parkingId, setParkingId] = useState('1');
   const [carregando, setCarregando] = useState(false);
 
-  // Função para salvar dados no AsyncStorage
-  const salvarDados = async () => {
+  // Validar placa no formato brasileiro
+  const validarPlaca = (placa) => {
+    const regex = /^([A-Z]{3}[0-9]{4}|[A-Z]{3}[0-9][A-Z][0-9]{2})$/;
+    return regex.test(placa.toUpperCase());
+  };
+
+  // Validar chassi (17 caracteres)
+  const validarChassi = (chassi) => {
+    return chassi && chassi.length === 17;
+  };
+
+  // Enviar notificação de cadastro
+  const enviarNotificacaoCadastro = async (placa, salvaNaAPI) => {
     try {
-      const dadosMoto = {
+      await Notifications.scheduleNotificationAsync({
+        content: {
+          title: salvaNaAPI ? '✅ Moto Cadastrada!' : '💾 Moto Salva Localmente',
+          body: salvaNaAPI 
+            ? `A moto ${placa} foi cadastrada com sucesso no sistema!`
+            : `A moto ${placa} foi salva no dispositivo e será sincronizada quando possível.`,
+          data: { tipo: 'cadastro_moto', placa },
+        },
+        trigger: null,
+      });
+    } catch (error) {
+      console.log('Erro ao enviar notificação:', error);
+    }
+  };
+
+  // Salvar TODOS os dados localmente (backup completo)
+  const salvarLocalmente = async (dadosCompletos) => {
+    try {
+      const motosSalvas = await AsyncStorage.getItem('motosCadastradas');
+      let listaMotos = motosSalvas ? JSON.parse(motosSalvas) : [];
+
+      // Verificar se a placa já existe localmente
+      const placaExistente = listaMotos.find(moto => moto.placa === dadosCompletos.placa);
+      if (placaExistente) {
+        throw new Error('Placa já cadastrada localmente');
+      }
+
+      // Adicionar à lista
+      listaMotos.push(dadosCompletos);
+
+      // Salvar lista completa
+      await AsyncStorage.setItem('motosCadastradas', JSON.stringify(listaMotos));
+      
+      // Salvar individualmente também
+      await AsyncStorage.setItem('dadosMoto', JSON.stringify(dadosCompletos));
+      
+      console.log('✅ Moto salva localmente:', dadosCompletos);
+      return true;
+    } catch (error) {
+      console.log('❌ Erro ao salvar localmente:', error);
+      throw error;
+    }
+  };
+
+  // Função principal de cadastro
+  const handleCadastro = async () => {
+    // Validações básicas
+    if (!placa || !modelo || !numeroChassi || !condicaoMecanica || !aparatoFisico || !status || !anoFabricacao) {
+      Alert.alert(t('campos_obrigatorios'), t('preencha_todos_campos'));
+      return;
+    }
+
+    // Validar formato da placa
+    if (!validarPlaca(placa)) {
+      Alert.alert('Placa Inválida', 'A placa deve estar no formato ABC1234 ou ABC1D23');
+      return;
+    }
+
+    // Validar chassi
+    if (!validarChassi(numeroChassi)) {
+      Alert.alert('Chassi Inválido', 'O número de chassi deve ter exatamente 17 caracteres');
+      return;
+    }
+
+    setCarregando(true);
+
+    try {
+      // 📦 DADOS COMPLETOS - para salvar localmente
+      const dadosCompletosLocais = {
         placa: placa.toUpperCase(),
         modelo,
         numeroChassi: numeroChassi.toUpperCase(),
@@ -40,78 +122,77 @@ export default function TelaCadastroM() {
         aparatoFisico,
         status,
         anoFabricacao: parseInt(anoFabricacao) || 0,
+        parkingId: parseInt(parkingId) || 1,
         dataCadastro: new Date().toISOString(),
-        id: Date.now().toString(),
+        id: Date.now().toString(), // ID local temporário
+        sincronizadoComAPI: false, // Flag de sincronização
+        apiId: null, // ID retornado pela API (se houver)
       };
 
-      // Buscar motos existentes
-      const motosSalvas = await AsyncStorage.getItem('motosCadastradas');
-      let listaMotos = motosSalvas ? JSON.parse(motosSalvas) : [];
+      // 🌐 DADOS PARA API - apenas o que a API aceita
+      const dadosParaAPI = {
+        placa: placa.toUpperCase(),
+        modelo,
+        numeroChassi: numeroChassi.toUpperCase(),
+        condicaoMecanica,
+        status,
+        parkingId: parseInt(parkingId) || 1,
+      };
 
-      // Verificar se a placa já existe
-      const placaExistente = listaMotos.find(moto => moto.placa === dadosMoto.placa);
-      if (placaExistente) {
-        Alert.alert('Placa já cadastrada', 'Já existe uma moto cadastrada com esta placa.');
-        return false;
-      }
-
-      // Adicionar nova moto à lista
-      listaMotos.push(dadosMoto);
-
-      // Salvar lista atualizada
-      await AsyncStorage.setItem('motosCadastradas', JSON.stringify(listaMotos));
+      console.log('📤 Tentando cadastrar na API...');
       
-      // Também salvar individualmente para fácil acesso
-      await AsyncStorage.setItem('dadosMoto', JSON.stringify(dadosMoto));
-      
-      console.log('Moto cadastrada com sucesso:', dadosMoto);
-      return true;
-    } catch (error) {
-      console.log('Erro ao salvar dados:', error);
-      return false;
-    }
-  };
+      // Tentar cadastrar na API
+      const resultado = await cadastrarMoto(dadosParaAPI);
 
-  // Função para carregar dados do AsyncStorage
-  const carregarDados = async () => {
-    try {
-      const dadosSalvos = await AsyncStorage.getItem('dadosMoto');
-      if (dadosSalvos) {
-        const dados = JSON.parse(dadosSalvos);
-        setPlaca(dados.placa || '');
-        setModelo(dados.modelo || '');
-        setNumeroChassi(dados.numeroChassi || '');
-        setCodigoBeacon(dados.codigoBeacon || '');
-        setCondicaoMecanica(dados.condicaoMecanica || '');
-        setAparatoFisico(dados.aparatoFisico || '');
-        setStatus(dados.status || '');
-        setAnoFabricacao(dados.anoFabricacao?.toString() || '');
-      }
-    } catch (error) {
-      console.log('Erro ao carregar dados: ', error);
-    }
-  };
+      if (resultado.success) {
+        console.log('✅ Cadastro na API bem-sucedido!');
+        
+        // Atualizar dados locais com ID da API
+        dadosCompletosLocais.sincronizadoComAPI = true;
+        dadosCompletosLocais.apiId = resultado.data.id || null;
+        
+        // Salvar localmente com todos os dados
+        await salvarLocalmente(dadosCompletosLocais);
+        
+        // Enviar notificação de sucesso
+        await enviarNotificacaoCadastro(placa.toUpperCase(), true);
 
-  useEffect(() => {
-    carregarDados();
-  }, []);
-
-  // Função para fazer o cadastro
-  const handleCadastro = async () => {
-    if (!placa || !modelo || !numeroChassi || !condicaoMecanica || !aparatoFisico || !status || !anoFabricacao) {
-      Alert.alert(t('campos_obrigatorios'), t('preencha_todos_campos'));
-      return;
-    }
-
-    setCarregando(true);
-
-    try {
-      const sucesso = await salvarDados();
-      
-      if (sucesso) {
         Alert.alert(
-          t('cadastro_realizado'), 
-          t('moto_cadastrada_sucesso'),
+          '✅ Cadastro Completo!', 
+          `A moto ${placa.toUpperCase()} foi cadastrada com sucesso!\n\n` +
+          `📡 Sincronizada com API\n` +
+          `💾 Todos os dados salvos localmente\n\n` +
+          `Dados extras (beacon, ano, aparato físico) estão disponíveis apenas no app.`,
+          [
+            {
+              text: 'OK',
+              onPress: () => {
+                limparFormulario();
+                navigation.navigate('TelaFuncionario');
+              }
+            }
+          ]
+        );
+      } else {
+        console.log('⚠️ Falha na API, salvando apenas localmente...');
+        
+        // Se falhar na API, salvar apenas localmente
+        dadosCompletosLocais.sincronizadoComAPI = false;
+        dadosCompletosLocais.apiId = null;
+        dadosCompletosLocais.erroAPI = resultado.error;
+        
+        await salvarLocalmente(dadosCompletosLocais);
+        
+        // Enviar notificação de salvamento local
+        await enviarNotificacaoCadastro(placa.toUpperCase(), false);
+
+        Alert.alert(
+          '💾 Salvo Localmente',
+          `A moto ${placa.toUpperCase()} foi salva no dispositivo!\n\n` +
+          `⚠️ Não foi possível conectar com o servidor.\n` +
+          `Erro: ${resultado.error}\n\n` +
+          `✅ Todos os dados estão seguros no app.\n` +
+          `🔄 A sincronização será feita quando o servidor estiver disponível.`,
           [
             {
               text: 'OK',
@@ -124,12 +205,33 @@ export default function TelaCadastroM() {
         );
       }
     } catch (error) {
-      console.log('Erro ao cadastrar moto:', error);
-      Alert.alert(t('erro_cadastro'), t('nao_conseguir_cadastrar_moto'));
+      console.log('❌ Erro ao cadastrar moto:', error);
+      Alert.alert(
+        'Erro no Cadastro', 
+        error.message || 'Não foi possível cadastrar a moto. Tente novamente.'
+      );
     } finally {
       setCarregando(false);
     }
   };
+
+  // Função para carregar dados do AsyncStorage (se necessário)
+  const carregarDados = async () => {
+    try {
+      const dadosSalvos = await AsyncStorage.getItem('dadosMoto');
+      if (dadosSalvos) {
+        const dados = JSON.parse(dadosSalvos);
+        // Não carrega automaticamente, apenas mantém disponível
+        console.log('Dados anteriores disponíveis:', dados);
+      }
+    } catch (error) {
+      console.log('Erro ao carregar dados: ', error);
+    }
+  };
+
+  useEffect(() => {
+    carregarDados();
+  }, []);
 
   // Função para limpar formulário
   const limparFormulario = () => {
@@ -141,6 +243,7 @@ export default function TelaCadastroM() {
     setAparatoFisico('');
     setStatus('');
     setAnoFabricacao('');
+    setParkingId('1');
   };
 
   if (!fontsLoaded) return null;
@@ -153,6 +256,13 @@ export default function TelaCadastroM() {
 
       <View style={[styles.card, { backgroundColor: colors.cardBackground }]}>
         <Text style={[styles.titulo, { color: colors.text }]}>{t('cadastro_nova_moto')}</Text>
+
+        <View style={[styles.infoBox, { backgroundColor: colors.primary + '15', borderColor: colors.primary + '30' }]}>
+          <Ionicons name="information-circle" size={20} color={colors.primary} />
+          <Text style={[styles.infoText, { color: colors.text }]}>
+            Os dados serão salvos localmente e sincronizados com a API
+          </Text>
+        </View>
 
         <View style={[styles.separador, { backgroundColor: colors.border }]} />
 
@@ -167,6 +277,9 @@ export default function TelaCadastroM() {
             autoCapitalize="characters"
             maxLength={7}
           />
+          <Text style={[styles.helperText, { color: colors.textSecondary }]}>
+            Formato: ABC1234 ou ABC1D23
+          </Text>
         </View>
 
         <View style={styles.inputContainer}>
@@ -197,6 +310,9 @@ export default function TelaCadastroM() {
             autoCapitalize="characters"
             maxLength={17}
           />
+          <Text style={[styles.helperText, { color: colors.textSecondary }]}>
+            {numeroChassi.length}/17 caracteres
+          </Text>
         </View>
 
         <View style={styles.inputContainer}>
@@ -219,7 +335,25 @@ export default function TelaCadastroM() {
         </View>
 
         <View style={styles.inputContainer}>
-          <Text style={[styles.label, { color: colors.primary }]}>Ano de Fabricação</Text>
+          <Text style={[styles.label, { color: colors.primary }]}>ID do Pátio</Text>
+          <TextInput
+            style={[styles.input, { backgroundColor: colors.inputBackground, color: colors.text, borderColor: colors.border }]}
+            value={parkingId}
+            onChangeText={setParkingId}
+            placeholder="ID do Pátio"
+            placeholderTextColor={colors.textSecondary}
+            keyboardType="numeric"
+          />
+        </View>
+
+        <View style={[styles.separador, { backgroundColor: colors.border }]} />
+
+        <Text style={[styles.sectionLabel, { color: colors.primary }]}>
+          📋 Dados Adicionais (Apenas Local)
+        </Text>
+
+        <View style={styles.inputContainer}>
+          <Text style={[styles.label, { color: colors.text }]}>Ano de Fabricação</Text>
           <TextInput
             style={[styles.input, { backgroundColor: colors.inputBackground, color: colors.text, borderColor: colors.border }]}
             value={anoFabricacao}
@@ -232,7 +366,7 @@ export default function TelaCadastroM() {
         </View>
 
         <View style={styles.inputContainer}>
-          <Text style={[styles.label, { color: colors.primary }]}>Código Beacon (Opcional)</Text>
+          <Text style={[styles.label, { color: colors.text }]}>Código Beacon (Opcional)</Text>
           <TextInput
             style={[styles.input, { backgroundColor: colors.inputBackground, color: colors.text, borderColor: colors.border }]}
             value={codigoBeacon}
@@ -293,14 +427,24 @@ export default function TelaCadastroM() {
           onPress={handleCadastro}
           disabled={carregando}
         >
-          <Text style={[styles.textoBotao, { color: colors.primaryText }]}>
-            {carregando ? 'CADASTRANDO...' : t('cadastrar_moto')}
-          </Text>
+          {carregando ? (
+            <View style={styles.loadingContainer}>
+              <ActivityIndicator size="small" color={colors.primaryText} />
+              <Text style={[styles.textoBotao, { color: colors.primaryText, marginLeft: 10 }]}>
+                CADASTRANDO...
+              </Text>
+            </View>
+          ) : (
+            <Text style={[styles.textoBotao, { color: colors.primaryText }]}>
+              {t('cadastrar_moto')}
+            </Text>
+          )}
         </TouchableOpacity>
 
         <TouchableOpacity 
           style={[styles.botaoLimpar, { backgroundColor: colors.inputBackground, borderColor: colors.border }]} 
           onPress={limparFormulario}
+          disabled={carregando}
         >
           <Text style={[styles.textoBotaoLimpar, { color: colors.text }]}>
             LIMPAR FORMULÁRIO
@@ -341,13 +485,33 @@ const styles = StyleSheet.create({
     fontSize: 28,
     fontFamily: 'DarkerGrotesque_700Bold',
     textAlign: 'center',
-    marginBottom: 10,
+    marginBottom: 15,
     letterSpacing: 0.5,
+  },
+  infoBox: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 12,
+    borderRadius: 8,
+    borderWidth: 1,
+    marginBottom: 10,
+  },
+  infoText: {
+    fontSize: 12,
+    marginLeft: 8,
+    flex: 1,
+    fontFamily: 'DarkerGrotesque_500Medium',
   },
   separador: {
     height: 1,
     marginVertical: 15,
     width: '100%',
+  },
+  sectionLabel: {
+    fontSize: 16,
+    fontFamily: 'DarkerGrotesque_700Bold',
+    marginBottom: 15,
+    marginTop: 5,
   },
   inputContainer: {
     marginBottom: 20,
@@ -372,6 +536,11 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: 'DarkerGrotesque_500Medium',
     borderWidth: 1,
+  },
+  helperText: {
+    fontSize: 12,
+    marginTop: 4,
+    fontFamily: 'DarkerGrotesque_500Medium',
   },
   pickerContainer: {
     borderRadius: 8,
@@ -403,6 +572,10 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 4,
     elevation: 5,
+  },
+  loadingContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   textoBotao: {
     fontSize: 18,
