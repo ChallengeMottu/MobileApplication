@@ -198,7 +198,7 @@ function CustomDrawerContent(props) {
           <DrawerItem
             label="Cadastro Moto"
             icon={() => (
-              <Ionicons name="add-circle" size={24} color={colors.primary} style={{ marginRight: 10 }} />
+              <Ionicons name="bicycle" size={24} color={colors.primary} style={{ marginRight: 10 }} />
             )}
             onPress={() => navigation.navigate('TelaCadastroM')}
             labelStyle={dynamicStyles.drawerLabel}
@@ -208,7 +208,7 @@ function CustomDrawerContent(props) {
           <DrawerItem
             label="Rastrear Moto"
             icon={() => (
-              <Ionicons name="locate" size={24} color={colors.primary} style={{ marginRight: 10 }} />
+              <Ionicons name="navigate" size={24} color={colors.primary} style={{ marginRight: 10 }} />
             )}
             onPress={() => navigation.navigate('Tela')}
             labelStyle={dynamicStyles.drawerLabel}
@@ -228,7 +228,7 @@ function CustomDrawerContent(props) {
           <DrawerItem
             label="Entrada Moto Pátio"
             icon={() => (
-              <Ionicons name="enter" size={24} color={colors.primary} style={{ marginRight: 10 }} />
+              <Ionicons name="arrow-forward-circle" size={24} color={colors.primary} style={{ marginRight: 10 }} />
             )}
             onPress={() => navigation.navigate('TelaEntradaMotoPatio')}
             labelStyle={dynamicStyles.drawerLabel}
@@ -238,7 +238,7 @@ function CustomDrawerContent(props) {
           <DrawerItem
             label="Saída da Moto"
             icon={() => (
-              <Ionicons name="exit" size={24} color={colors.primary} style={{ marginRight: 10 }} />
+              <Ionicons name="arrow-back-circle" size={24} color={colors.primary} style={{ marginRight: 10 }} />
             )}
             onPress={() => handleNavigation('TelaScanner')}
             labelStyle={dynamicStyles.drawerLabel}
@@ -248,7 +248,7 @@ function CustomDrawerContent(props) {
           <DrawerItem
             label="Dados da Moto"
             icon={() => (
-              <Ionicons name="information-circle" size={24} color={colors.primary} style={{ marginRight: 10 }} />
+              <Ionicons name="document-text" size={24} color={colors.primary} style={{ marginRight: 10 }} />
             )}
             onPress={() => handleNavigation('TelaDadosM')}
             labelStyle={dynamicStyles.drawerLabel}
@@ -258,7 +258,7 @@ function CustomDrawerContent(props) {
           <DrawerItem
             label="Tela ADM"
             icon={() => (
-              <Ionicons name="information-circle" size={24} color={colors.primary} style={{ marginRight: 10 }} />
+              <Ionicons name="shield-checkmark" size={24} color={colors.primary} style={{ marginRight: 10 }} />
             )}
             onPress={() => handleNavigation('TelaAdm')}
             labelStyle={dynamicStyles.drawerLabel}
@@ -266,9 +266,9 @@ function CustomDrawerContent(props) {
           />
 
           <DrawerItem
-            label="Tela Mecanico"
+            label="Tela Mecânico"
             icon={() => (
-              <Ionicons name="information-circle" size={24} color={colors.primary} style={{ marginRight: 10 }} />
+              <Ionicons name="construct" size={24} color={colors.primary} style={{ marginRight: 10 }} />
             )}
             onPress={() => handleNavigation('TelaMecanico')}
             labelStyle={dynamicStyles.drawerLabel}
@@ -278,7 +278,7 @@ function CustomDrawerContent(props) {
           <DrawerItem
             label="Tela Dashboard"
             icon={() => (
-              <Ionicons name="information-circle" size={24} color={colors.primary} style={{ marginRight: 10 }} />
+              <Ionicons name="bar-chart" size={24} color={colors.primary} style={{ marginRight: 10 }} />
             )}
             onPress={() => handleNavigation('TelaDashboard')}
             labelStyle={dynamicStyles.drawerLabel}
@@ -289,7 +289,7 @@ function CustomDrawerContent(props) {
           <DrawerItem
             label="Tela Registro Fluxos"
             icon={() => (
-              <Ionicons name="information-circle" size={24} color={colors.primary} style={{ marginRight: 10 }} />
+              <Ionicons name="list" size={24} color={colors.primary} style={{ marginRight: 10 }} />
             )}
             onPress={() => handleNavigation('TelaRegistroFluxos')}
             labelStyle={dynamicStyles.drawerLabel}
@@ -299,7 +299,7 @@ function CustomDrawerContent(props) {
           <DrawerItem
             label="Tela Status Motos"
             icon={() => (
-              <Ionicons name="information-circle" size={24} color={colors.primary} style={{ marginRight: 10 }} />
+              <Ionicons name="checkmark-circle" size={24} color={colors.primary} style={{ marginRight: 10 }} />
             )}
             onPress={() => handleNavigation('TelaStatusMotos')}
             labelStyle={dynamicStyles.drawerLabel}

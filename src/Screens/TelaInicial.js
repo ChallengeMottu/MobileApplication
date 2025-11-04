@@ -1,9 +1,149 @@
-import { Image, ScrollView, StyleSheet, Text, View, ImageBackground } from "react-native";
+import { Image, ScrollView, StyleSheet, Text, View, ImageBackground, TouchableOpacity, Alert, Platform } from "react-native";
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
+import { useEffect, useState } from 'react';
+import * as Notifications from 'expo-notifications';
+
+// Configuração do handler de notificações
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: false,
+  }),
+});
 
 export default function TelaInicial() {
   const { t } = useTranslation();
+  const [hasPermission, setHasPermission] = useState(false);
+
+  // Configurar notificações ao montar o componente
+  useEffect(() => {
+    const setupNotifications = async () => {
+      // Criar canal de notificação para Android
+      if (Platform.OS === 'android') {
+        await Notifications.setNotificationChannelAsync('default', {
+          name: 'Notificações Pulse',
+          importance: Notifications.AndroidImportance.HIGH,
+          vibrationPattern: [0, 250, 250, 250],
+          lightColor: '#01743A',
+        });
+      }
+
+      // Solicitar permissão para notificações
+      const { status } = await Notifications.requestPermissionsAsync();
+      setHasPermission(status === 'granted');
+    };
+
+    setupNotifications();
+
+    // Listener para quando uma notificação é recebida
+    const notificationListener = Notifications.addNotificationReceivedListener(notification => {
+      console.log('Notificação recebida:', notification);
+    });
+
+    // Listener para quando o usuário interage com uma notificação
+    const responseListener = Notifications.addNotificationResponseReceivedListener(response => {
+      console.log('Usuário interagiu com a notificação:', response);
+    });
+
+    return () => {
+      notificationListener.remove();
+      responseListener.remove();
+    };
+  }, []);
+
+  // Função para mostrar menu de notificações
+  const mostrarMenuNotificacoes = () => {
+    Alert.alert(
+      '🔔 Sistema de Notificações',
+      hasPermission 
+        ? 'Escolha uma opção de notificação:' 
+        : 'Permissões de notificação desativadas. Ative nas configurações do app.',
+      [
+        {
+          text: '🏍️ Testar Entrada de Moto',
+          onPress: () => enviarNotificacaoEntrada(),
+        },
+        {
+          text: '✅ Testar Saída de Moto',
+          onPress: () => enviarNotificacaoSaida(),
+        },
+        {
+          text: '📊 Lembrete Diário (18h)',
+          onPress: () => agendarNotificacaoDiaria(),
+        },
+        {
+          text: 'Cancelar',
+          style: 'cancel',
+        },
+      ]
+    );
+  };
+
+  // Notificação de entrada de moto
+  const enviarNotificacaoEntrada = async () => {
+    if (!hasPermission) {
+      Alert.alert('Permissão Necessária', 'Ative as notificações nas configurações.');
+      return;
+    }
+
+    await Notifications.scheduleNotificationAsync({
+      content: {
+        title: '🏍️ Nova Moto no Pátio',
+        body: 'Uma nova moto acabou de ser registrada no sistema!',
+        data: { tipo: 'entrada_moto' },
+      },
+      trigger: null, // Envia imediatamente
+    });
+
+    Alert.alert('✅ Notificação Enviada', 'Verifique a barra de notificações!');
+  };
+
+  // Notificação de saída de moto
+  const enviarNotificacaoSaida = async () => {
+    if (!hasPermission) {
+      Alert.alert('Permissão Necessária', 'Ative as notificações nas configurações.');
+      return;
+    }
+
+    await Notifications.scheduleNotificationAsync({
+      content: {
+        title: '✅ Moto Liberada',
+        body: 'Uma moto foi liberada do pátio com sucesso!',
+        data: { tipo: 'saida_moto' },
+      },
+      trigger: null,
+    });
+
+    Alert.alert('✅ Notificação Enviada', 'Verifique a barra de notificações!');
+  };
+
+  // Agendar notificação diária
+  const agendarNotificacaoDiaria = async () => {
+    if (!hasPermission) {
+      Alert.alert('Permissão Necessária', 'Ative as notificações nas configurações.');
+      return;
+    }
+
+    await Notifications.scheduleNotificationAsync({
+      content: {
+        title: '📊 Relatório Pulse',
+        body: 'Confira o relatório diário da gestão de motos!',
+        data: { tipo: 'relatorio_diario' },
+      },
+      trigger: {
+        hour: 18,
+        minute: 0,
+        repeats: true,
+      },
+    });
+
+    Alert.alert(
+      '✅ Lembrete Configurado', 
+      'Você receberá uma notificação todos os dias às 18:00!'
+    );
+  };
 
   // Array dos itens da lista de mapeamento
   const mappingItems = [
@@ -16,6 +156,23 @@ export default function TelaInicial() {
 
   return (
     <ScrollView style={styles.container}>
+      {/* BOTÃO DE NOTIFICAÇÕES - FIXO NO TOPO */}
+      <TouchableOpacity 
+        style={styles.notificationButton}
+        onPress={mostrarMenuNotificacoes}
+      >
+        <Ionicons 
+          name={hasPermission ? "notifications" : "notifications-off"} 
+          size={24} 
+          color="#fff" 
+        />
+        {hasPermission && (
+          <View style={styles.notificationBadge}>
+            <Text style={styles.notificationBadgeText}>•</Text>
+          </View>
+        )}
+      </TouchableOpacity>
+
       {/* SEÇÃO 1 - Hero com fundo */}
       <ImageBackground 
         source={require('../../assets/fundo.png')} 
@@ -185,6 +342,41 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#000',
+  },
+
+  // BOTÃO DE NOTIFICAÇÕES
+  notificationButton: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
+    backgroundColor: '#01743A',
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 1000,
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+  },
+  notificationBadge: {
+    position: 'absolute',
+    top: 8,
+    right: 8,
+    backgroundColor: '#ff4444',
+    width: 12,
+    height: 12,
+    borderRadius: 6,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  notificationBadgeText: {
+    color: '#fff',
+    fontSize: 8,
+    fontWeight: 'bold',
   },
 
   // SEÇÃO HERO
