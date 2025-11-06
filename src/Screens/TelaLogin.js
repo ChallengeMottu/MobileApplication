@@ -25,9 +25,78 @@ export default function TelaLogin({ navigation }) {
 
   if (!fontsLoaded) return null;
 
-  // Função para trocar idioma
-  const changeLanguage = (lng) => {
-    i18n.changeLanguage(lng);
+  // Função para determinar o tipo de usuário
+  const determinarTipoUsuario = (email, cargo) => {
+    // Verificar por email específico (administradores)
+    const emailsAdmin = [
+      'admin@pulse.com',
+      'administrador@pulse.com',
+      'gerente@pulse.com'
+    ];
+    
+    // Verificar por email específico (mecânicos)
+    const emailsMecanico = [
+      'mecanico@pulse.com',
+      'mecanico1@pulse.com',
+      'oficina@pulse.com'
+    ];
+
+    // Verificar por domínio de email
+    if (emailsAdmin.includes(email.toLowerCase())) {
+      return 'adm';
+    }
+    
+    if (emailsMecanico.includes(email.toLowerCase())) {
+      return 'mecanico';
+    }
+
+    // Verificar pelo cargo cadastrado
+    if (cargo) {
+      const cargoLower = cargo.toLowerCase();
+      
+      if (cargoLower.includes('admin') || 
+          cargoLower.includes('gerente') || 
+          cargoLower.includes('diretor')) {
+        return 'adm';
+      }
+      
+      if (cargoLower.includes('mecanico') || 
+          cargoLower.includes('mecânico') || 
+          cargoLower.includes('técnico')) {
+        return 'mecanico';
+      }
+    }
+
+    // Por padrão, é funcionário
+    return 'funcionario';
+  };
+
+  // Função para obter a tela inicial baseada no tipo de usuário
+  const getTelaInicial = (tipoUsuario) => {
+    switch (tipoUsuario) {
+      case 'adm':
+        return 'TelaDashboard';
+      case 'mecanico':
+        return 'TelaStatusMotos';
+      case 'funcionario':
+      default:
+        return 'TelaInfos';
+    }
+  };
+
+  // Função para obter mensagem de boas-vindas baseada no tipo
+  const getMensagemBoasVindas = (tipoUsuario, nome) => {
+    const nomeUsuario = nome || 'Usuário';
+    
+    switch (tipoUsuario) {
+      case 'adm':
+        return `Bem-vindo, Administrador ${nomeUsuario}! 🛡️`;
+      case 'mecanico':
+        return `Bem-vindo, Mecânico ${nomeUsuario}! 🔧`;
+      case 'funcionario':
+      default:
+        return `Bem-vindo, ${nomeUsuario}! 👋`;
+    }
   };
 
   const handleLogin = async () => {
@@ -64,22 +133,42 @@ export default function TelaLogin({ navigation }) {
         }
       }
 
+      // 🔐 DETERMINAR TIPO DE USUÁRIO
+      const tipoUsuario = determinarTipoUsuario(user.email, usuarioCompleto.cargo);
+      
+      console.log('========== LOGIN INFO ==========');
+      console.log('Email:', user.email);
+      console.log('Cargo:', usuarioCompleto.cargo);
+      console.log('Tipo detectado:', tipoUsuario);
+      console.log('================================');
+
       // Salvar dados completos no AsyncStorage
       await AsyncStorage.setItem('usuarioLogado', JSON.stringify(usuarioCompleto));
+      
+      // 🔑 SALVAR TIPO DE USUÁRIO
+      await AsyncStorage.setItem('tipoUsuario', tipoUsuario);
 
-      Alert.alert(t('login_sucesso'), 'Você entrou no sistema com sucesso!', [
-        {
-          text: 'OK',
-          onPress: () => {
-            navigation.dispatch(
-              CommonActions.reset({
-                index: 0,
-                routes: [{ name: 'TelaInfos' }],
-              })
-            );
+      // Obter tela inicial e mensagem
+      const telaInicial = getTelaInicial(tipoUsuario);
+      const mensagemBoasVindas = getMensagemBoasVindas(tipoUsuario, usuarioCompleto.nome);
+
+      Alert.alert(
+        t('login_sucesso'), 
+        mensagemBoasVindas,
+        [
+          {
+            text: 'OK',
+            onPress: () => {
+              navigation.dispatch(
+                CommonActions.reset({
+                  index: 0,
+                  routes: [{ name: telaInicial }],
+                })
+              );
+            },
           },
-        },
-      ]);
+        ]
+      );
     } catch (error) {
       console.error('Erro ao fazer login:', error);
       
@@ -147,7 +236,6 @@ export default function TelaLogin({ navigation }) {
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       <View style={[styles.card, { backgroundColor: colors.cardBackground }]}>
         <Text style={[styles.titulo, { color: colors.text }]}>{t('bem_vindo')}</Text>
-
         {/* Texto informativo acima dos inputs */}
         <View style={styles.textoInfoContainer}>
           <Text style={[styles.textoInfo, { color: colors.textSecondary }]}>
@@ -272,7 +360,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   textoInfoContainer: {
-    marginBottom: 25,
+    marginBottom: 20,
     paddingHorizontal: 10,
   },
   textoInfo: {

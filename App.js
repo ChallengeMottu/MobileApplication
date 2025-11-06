@@ -28,8 +28,17 @@ import TelaMecanico from './src/Screens/TelaMecanico';
 import TelaDashboard from './src/Screens/TelaDashboard';
 import TelaRegistroFluxos from './src/Screens/TelaRegistroFluxos';
 import TelaStatusMotos from './src/Screens/TelaStatusMotos';
+import TelaCadastroMecanico from './src/Screens/TelaCadastroMecanico';
 
 const Drawer = createDrawerNavigator();
+
+// Tipos de usuário
+const USER_TYPES = {
+  VISITOR: 'visitante',
+  EMPLOYEE: 'funcionario',
+  ADMIN: 'adm',
+  MECHANIC: 'mecanico',
+};
 
 function LanguageToggle() {
   const { i18n } = useTranslation();
@@ -103,23 +112,45 @@ function LanguageToggle() {
 function CustomDrawerContent(props) {
   const navigation = useNavigation();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userType, setUserType] = useState(null);
   const { colors, theme } = useTheme();
 
   useEffect(() => {
     const checkLoginStatus = async () => {
       const usuarioLogado = await AsyncStorage.getItem('usuarioLogado');
+      const tipoUsuario = await AsyncStorage.getItem('tipoUsuario');
       setIsLoggedIn(!!usuarioLogado);
+      setUserType(tipoUsuario);
+      
+      console.log('Status do usuário:', { isLoggedIn: !!usuarioLogado, userType: tipoUsuario });
     };
 
     checkLoginStatus();
   }, [navigation, props.state]);
 
   const handleNavigation = (routeName) => {
-    if (routeName === 'TelaFuncionarios' && !isLoggedIn) {
-      Alert.alert('Acesso negado', 'Você precisa fazer login primeiro');
-      return;
-    }
     navigation.navigate(routeName);
+  };
+
+  const handleLogout = async () => {
+    Alert.alert(
+      'Sair da Conta',
+      'Tem certeza que deseja sair?',
+      [
+        { text: 'Cancelar', style: 'cancel' },
+        {
+          text: 'Sair',
+          style: 'destructive',
+          onPress: async () => {
+            await AsyncStorage.removeItem('usuarioLogado');
+            await AsyncStorage.removeItem('tipoUsuario');
+            setIsLoggedIn(false);
+            setUserType(null);
+            navigation.navigate('TelaInicial');
+          }
+        }
+      ]
+    );
   };
 
   const dynamicStyles = StyleSheet.create({
@@ -145,14 +176,32 @@ function CustomDrawerContent(props) {
     },
   });
 
+  // Função para obter o título e ícone do usuário
+  const getUserInfo = () => {
+    if (!isLoggedIn) return { title: 'Visitante', icon: 'person' };
+    
+    switch(userType) {
+      case USER_TYPES.ADMIN:
+        return { title: 'Administrador', icon: 'shield-checkmark' };
+      case USER_TYPES.MECHANIC:
+        return { title: 'Mecânico', icon: 'construct' };
+      case USER_TYPES.EMPLOYEE:
+        return { title: 'Funcionário', icon: 'person-circle' };
+      default:
+        return { title: 'Usuário', icon: 'person' };
+    }
+  };
+
+  const userInfo = getUserInfo();
+
   return (
     <DrawerContentScrollView {...props} style={dynamicStyles.drawerContainer}>
       <View style={dynamicStyles.drawerHeader}>
         <View style={dynamicStyles.userIconContainer}>
-          <Ionicons name="person" size={48} color="white" />
+          <Ionicons name={userInfo.icon} size={48} color="white" />
         </View>
         <Text style={dynamicStyles.drawerTitle}>
-          {isLoggedIn ? 'Funcionário' : 'Visitante'}
+          {userInfo.title}
         </Text>
       </View>
 
@@ -163,28 +212,155 @@ function CustomDrawerContent(props) {
 
       <View style={[styles.divider, { backgroundColor: colors.primary + '30' }]} />
 
-      <DrawerItem
-        label="Início"
-        icon={() => (
-          <Ionicons name="home" size={24} color={colors.primary} style={{ marginRight: 10 }} />
-        )}
-        onPress={() => navigation.navigate('TelaInicial')}
-        labelStyle={dynamicStyles.drawerLabel}
-        style={styles.drawerItem}
-      />
-
-      <DrawerItem
-        label="Nossa Equipe"
-        icon={() => (
-          <Ionicons name="people" size={24} color={colors.primary} style={{ marginRight: 10 }} />
-        )}
-        onPress={() => navigation.navigate('TelaEquipe')}
-        labelStyle={dynamicStyles.drawerLabel}
-        style={styles.drawerItem}
-      />
-
-      {isLoggedIn ? (
+      {/* ========== MENU PARA VISITANTE (não logado) ========== */}
+      {!isLoggedIn && (
         <>
+          <DrawerItem
+            label="Início"
+            icon={() => (
+              <Ionicons name="home" size={24} color={colors.primary} style={{ marginRight: 10 }} />
+            )}
+            onPress={() => navigation.navigate('TelaInicial')}
+            labelStyle={dynamicStyles.drawerLabel}
+            style={styles.drawerItem}
+          />
+
+          <DrawerItem
+            label="Nossa Equipe"
+            icon={() => (
+              <Ionicons name="people" size={24} color={colors.primary} style={{ marginRight: 10 }} />
+            )}
+            onPress={() => navigation.navigate('TelaEquipe')}
+            labelStyle={dynamicStyles.drawerLabel}
+            style={styles.drawerItem}
+          />
+
+          <DrawerItem
+            label="Login"
+            icon={() => (
+              <Ionicons name="log-in" size={24} color={colors.primary} style={{ marginRight: 10 }} />
+            )}
+            onPress={() => navigation.navigate('TelaLogin')}
+            labelStyle={dynamicStyles.drawerLabel}
+            style={styles.drawerItem}
+          />
+        </>
+      )}
+
+      {/* ========== MENU PARA ADMINISTRADOR ========== */}
+      {isLoggedIn && userType === USER_TYPES.ADMIN && (
+        <>
+          <DrawerItem
+            label="Tela ADM"
+            icon={() => (
+              <Ionicons name="bar-chart" size={24} color={colors.primary} style={{ marginRight: 10 }} />
+            )}
+            onPress={() => handleNavigation('TelaAdm')}
+            labelStyle={dynamicStyles.drawerLabel}
+            style={styles.drawerItem}
+          />
+
+          <DrawerItem
+            label="Dashboard"
+            icon={() => (
+              <Ionicons name="bar-chart" size={24} color={colors.primary} style={{ marginRight: 10 }} />
+            )}
+            onPress={() => handleNavigation('TelaDashboard')}
+            labelStyle={dynamicStyles.drawerLabel}
+            style={styles.drawerItem}
+          />
+
+          <DrawerItem
+            label="Registro de Fluxos"
+            icon={() => (
+              <Ionicons name="list" size={24} color={colors.primary} style={{ marginRight: 10 }} />
+            )}
+            onPress={() => handleNavigation('TelaRegistroFluxos')}
+            labelStyle={dynamicStyles.drawerLabel}
+            style={styles.drawerItem}
+          />
+
+          <DrawerItem
+            label="TelaCadastroMecanico"
+            icon={() => (
+              <Ionicons name="list" size={24} color={colors.primary} style={{ marginRight: 10 }} />
+            )}
+            onPress={() => handleNavigation('TelaCadastroMecanico')}
+            labelStyle={dynamicStyles.drawerLabel}
+            style={styles.drawerItem}
+          />
+
+          <DrawerItem
+            label="Sair"
+            icon={() => (
+              <Ionicons name="log-out" size={24} color="#ff4444" style={{ marginRight: 10 }} />
+            )}
+            onPress={handleLogout}
+            labelStyle={[dynamicStyles.drawerLabel, { color: '#ff4444' }]}
+            style={styles.drawerItem}
+          />
+        </>
+      )}
+
+      {/* ========== MENU PARA MECÂNICO ========== */}
+      {isLoggedIn && userType === USER_TYPES.MECHANIC && (
+        <>
+
+          <DrawerItem
+            label="Tela Mecanico"
+            icon={() => (
+              <Ionicons name="checkmark-circle" size={24} color={colors.primary} style={{ marginRight: 10 }} />
+            )}
+            onPress={() => handleNavigation('TelaMecanico')}
+            labelStyle={dynamicStyles.drawerLabel}
+            style={styles.drawerItem}
+          />
+
+          <DrawerItem
+            label="Status das Motos"
+            icon={() => (
+              <Ionicons name="checkmark-circle" size={24} color={colors.primary} style={{ marginRight: 10 }} />
+            )}
+            onPress={() => handleNavigation('TelaStatusMotos')}
+            labelStyle={dynamicStyles.drawerLabel}
+            style={styles.drawerItem}
+          />
+
+          <DrawerItem
+            label="Sair"
+            icon={() => (
+              <Ionicons name="log-out" size={24} color="#ff4444" style={{ marginRight: 10 }} />
+            )}
+            onPress={handleLogout}
+            labelStyle={[dynamicStyles.drawerLabel, { color: '#ff4444' }]}
+            style={styles.drawerItem}
+          />
+        </>
+      )}
+
+      {/* ========== MENU PARA FUNCIONÁRIO ========== */}
+      {isLoggedIn && userType === USER_TYPES.EMPLOYEE && (
+        <>
+          <DrawerItem
+            label="Início"
+            icon={() => (
+              <Ionicons name="home" size={24} color={colors.primary} style={{ marginRight: 10 }} />
+            )}
+            onPress={() => navigation.navigate('TelaInicial')}
+            labelStyle={dynamicStyles.drawerLabel}
+            style={styles.drawerItem}
+          />
+
+          <DrawerItem
+            label="Nossa Equipe"
+            icon={() => (
+              <Ionicons name="people" size={24} color={colors.primary} style={{ marginRight: 10 }} />
+            )}
+            onPress={() => navigation.navigate('TelaEquipe')}
+            labelStyle={dynamicStyles.drawerLabel}
+            style={styles.drawerItem}
+          />
+
           <DrawerItem
             label="Funcionalidades"
             icon={() => (
@@ -256,79 +432,15 @@ function CustomDrawerContent(props) {
           />
 
           <DrawerItem
-            label="Tela ADM"
-            icon={() => (
-              <Ionicons name="shield-checkmark" size={24} color={colors.primary} style={{ marginRight: 10 }} />
-            )}
-            onPress={() => handleNavigation('TelaAdm')}
-            labelStyle={dynamicStyles.drawerLabel}
-            style={styles.drawerItem}
-          />
-
-          <DrawerItem
-            label="Tela Mecânico"
-            icon={() => (
-              <Ionicons name="construct" size={24} color={colors.primary} style={{ marginRight: 10 }} />
-            )}
-            onPress={() => handleNavigation('TelaMecanico')}
-            labelStyle={dynamicStyles.drawerLabel}
-            style={styles.drawerItem}
-          />
-
-          <DrawerItem
-            label="Tela Dashboard"
-            icon={() => (
-              <Ionicons name="bar-chart" size={24} color={colors.primary} style={{ marginRight: 10 }} />
-            )}
-            onPress={() => handleNavigation('TelaDashboard')}
-            labelStyle={dynamicStyles.drawerLabel}
-            style={styles.drawerItem}
-          />
-          
-
-          <DrawerItem
-            label="Tela Registro Fluxos"
-            icon={() => (
-              <Ionicons name="list" size={24} color={colors.primary} style={{ marginRight: 10 }} />
-            )}
-            onPress={() => handleNavigation('TelaRegistroFluxos')}
-            labelStyle={dynamicStyles.drawerLabel}
-            style={styles.drawerItem}
-          />
-
-          <DrawerItem
-            label="Tela Status Motos"
-            icon={() => (
-              <Ionicons name="checkmark-circle" size={24} color={colors.primary} style={{ marginRight: 10 }} />
-            )}
-            onPress={() => handleNavigation('TelaStatusMotos')}
-            labelStyle={dynamicStyles.drawerLabel}
-            style={styles.drawerItem}
-          />
-
-          <DrawerItem
             label="Sair"
             icon={() => (
               <Ionicons name="log-out" size={24} color="#ff4444" style={{ marginRight: 10 }} />
             )}
-            onPress={async () => {
-              await AsyncStorage.removeItem('usuarioLogado');
-              navigation.navigate('TelaInicial');
-            }}
+            onPress={handleLogout}
             labelStyle={[dynamicStyles.drawerLabel, { color: '#ff4444' }]}
             style={styles.drawerItem}
           />
         </>
-      ) : (
-        <DrawerItem
-          label="Login"
-          icon={() => (
-            <Ionicons name="log-in" size={24} color={colors.primary} style={{ marginRight: 10 }} />
-          )}
-          onPress={() => navigation.navigate('TelaLogin')}
-          labelStyle={dynamicStyles.drawerLabel}
-          style={styles.drawerItem}
-        />
       )}
     </DrawerContentScrollView>
   );
@@ -456,6 +568,11 @@ function MainNavigator() {
         component={TelaStatusMotos}
         options={{ title: 'Tela Status Motos' }}
       />
+      <Drawer.Screen
+        name="TelaCadastroMecanico"
+        component={TelaCadastroMecanico}
+        options={{ title: 'Tela Cadastro Mecanico' }}
+      />
     </Drawer.Navigator>
   );
 }
@@ -528,7 +645,6 @@ const styles = StyleSheet.create({
     marginVertical: 15,
     marginHorizontal: 15,
   },
-  // ESTILOS DO BOTÃO DE IDIOMA
   languageSection: {
     paddingHorizontal: 20,
     paddingVertical: 20,

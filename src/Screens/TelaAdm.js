@@ -162,6 +162,39 @@ export default function TelaAdm({ navigation }) {
                     </View>
                 </TouchableOpacity>
             </View>
+
+            {/* Seção Gerenciamento de Usuários */}
+            <View style={styles.userManagementSection}>
+                <View style={styles.sectionHeader}>
+                    <Ionicons name="people" size={24} color={colors.primary} />
+                    <Text style={[styles.flowTitle, { color: colors.text }]}>
+                        Gerenciar Usuários
+                    </Text>
+                </View>
+
+                <TouchableOpacity 
+                    style={[
+                        styles.flowButton,
+                        { 
+                            backgroundColor: colors.cardBackground,
+                            borderColor: colors.success || '#01743A',
+                            shadowColor: colors.success || '#01743A'
+                        }
+                    ]}
+                    onPress={() => handleNavigate('TelaCadastroMecanico')}
+                    activeOpacity={0.8}
+                >
+                    <View style={styles.flowButtonContent}>
+                        <View style={[styles.flowIconContainer, { backgroundColor: colors.success || '#01743A' }]}>
+                            <Ionicons name="person-add" size={22} color="#fff" />
+                        </View>
+                        <Text style={[styles.flowButtonText, { color: colors.text }]}>
+                            Adicionar Mecânico
+                        </Text>
+                        <Ionicons name="chevron-forward" size={20} color={colors.success || '#01743A'} />
+                    </View>
+                </TouchableOpacity>
+            </View>
         </ScrollView>
     );
 }
@@ -291,6 +324,10 @@ const styles = StyleSheet.create({
         marginLeft: 5,
     },
     flowSection: {
+        paddingHorizontal: 20,
+        paddingTop: 20,
+    },
+    userManagementSection: {
         paddingHorizontal: 20,
         paddingTop: 20,
     },
