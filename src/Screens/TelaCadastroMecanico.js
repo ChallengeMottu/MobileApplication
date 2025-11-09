@@ -5,10 +5,12 @@ import { Ionicons } from "@expo/vector-icons";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../configurations/firebaseConfig";
 import { useTheme } from '../context/ContextTheme';
+import { useTranslation } from 'react-i18next';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function TelaCadastroMecanico({ navigation }) {
   const { colors } = useTheme();
+  const { t } = useTranslation();
   
   let [fontsLoaded] = useFonts({
     DarkerGrotesque_500Medium,
@@ -28,25 +30,25 @@ export default function TelaCadastroMecanico({ navigation }) {
   const handleCadastroMecanico = async () => {
     // Validações
     if (!email || !senha || !confirmarSenha || !nome) {
-      Alert.alert('Campos Obrigatórios', 'Preencha Email, Nome e Senha!');
+      Alert.alert(t('campos_obrigatorios'), t('preencha_email_nome_senha'));
       return;
     }
 
     if (senha !== confirmarSenha) {
-      Alert.alert('Erro', 'As senhas não coincidem!');
+      Alert.alert(t('erro'), t('senhas_nao_coincidem'));
       return;
     }
 
     if (senha.length < 6) {
-      Alert.alert('Senha Fraca', 'A senha deve ter no mínimo 6 caracteres!');
+      Alert.alert(t('senha_fraca'), t('senha_minimo_caracteres'));
       return;
     }
 
     // Validar email de mecânico
     if (!email.toLowerCase().includes('mecanico')) {
       Alert.alert(
-        '⚠️ Atenção',
-        'O email deve conter "mecanico" para identificação do sistema.\n\nExemplo: mecanico1@pulse.com'
+        t('atencao'),
+        t('email_deve_conter_mecanico')
       );
     }
 
@@ -68,7 +70,7 @@ export default function TelaCadastroMecanico({ navigation }) {
         dataCadastro: new Date().toISOString(),
       };
 
-      // Salvar dados localmente (você pode adicionar salvamento em banco depois)
+      // Salvar dados localmente
       const mecanicosSalvos = await AsyncStorage.getItem('mecanicosCadastrados');
       let listaMecanicos = mecanicosSalvos ? JSON.parse(mecanicosSalvos) : [];
       listaMecanicos.push(dadosMecanico);
@@ -81,16 +83,16 @@ export default function TelaCadastroMecanico({ navigation }) {
       console.log('=====================================');
 
       Alert.alert(
-        '✅ Mecânico Cadastrado!',
-        `O mecânico ${nome} foi cadastrado com sucesso!\n\nEmail: ${email}\n\nAgora ele pode fazer login no sistema.`,
+        t('mecanico_cadastrado'),
+        t('mecanico_cadastrado_sucesso', { nome: nome, email: email }),
         [
           {
-            text: 'Cadastrar Outro',
+            text: t('cadastrar_outro'),
             style: 'default',
             onPress: () => limparFormulario()
           },
           {
-            text: 'Voltar',
+            text: t('voltar'),
             onPress: () => navigation.goBack()
           }
         ]
@@ -99,19 +101,19 @@ export default function TelaCadastroMecanico({ navigation }) {
     } catch (error) {
       console.error('Erro ao cadastrar mecânico:', error);
       
-      let errorMessage = 'Erro ao criar mecânico.';
+      let errorMessage = t('erro_criar_mecanico');
       
       if (error.code === 'auth/email-already-in-use') {
-        errorMessage = 'Este email já está cadastrado no sistema!';
+        errorMessage = t('email_em_uso');
       } else if (error.code === 'auth/invalid-email') {
-        errorMessage = 'Email inválido!';
+        errorMessage = t('email_invalido');
       } else if (error.code === 'auth/weak-password') {
-        errorMessage = 'Senha muito fraca!';
+        errorMessage = t('senha_muito_fraca');
       } else if (error.code === 'auth/network-request-failed') {
-        errorMessage = 'Erro de conexão. Verifique sua internet.';
+        errorMessage = t('erro_conexao');
       }
       
-      Alert.alert('Erro no Cadastro', errorMessage);
+      Alert.alert(t('erro_cadastro'), errorMessage);
     } finally {
       setCarregando(false);
     }
@@ -142,10 +144,10 @@ export default function TelaCadastroMecanico({ navigation }) {
           </View>
           
           <Text style={[styles.titulo, { color: colors.text }]}>
-            Cadastrar Mecânico
+            {t('cadastrar_mecanico')}
           </Text>
           <Text style={[styles.subtitulo, { color: colors.textSecondary }]}>
-            Adicione um novo mecânico ao sistema
+            {t('adicione_novo_mecanico')}
           </Text>
         </View>
 
@@ -154,10 +156,10 @@ export default function TelaCadastroMecanico({ navigation }) {
           <Ionicons name="information-circle" size={24} color={colors.primary} />
           <View style={styles.infoTextContainer}>
             <Text style={[styles.infoTitle, { color: colors.text }]}>
-              ℹ️ Informação
+              {t('informacao')}
             </Text>
             <Text style={[styles.infoText, { color: colors.textSecondary }]}>
-              O mecânico terá acesso apenas à tela de Status das Motos.
+              {t('mecanico_acesso_status')}
             </Text>
           </View>
         </View>
@@ -167,7 +169,7 @@ export default function TelaCadastroMecanico({ navigation }) {
           {/* Campo Nome */}
           <View style={styles.inputContainer}>
             <Text style={[styles.label, { color: colors.primary }]}>
-              Nome Completo *
+              {t('nome_completo')} *
             </Text>
             <View style={styles.inputWrapper}>
               <TextInput
@@ -176,7 +178,7 @@ export default function TelaCadastroMecanico({ navigation }) {
                   color: colors.text,
                   borderColor: colors.border
                 }]}
-                placeholder="João da Silva"
+                placeholder={t('placeholder_nome')}
                 placeholderTextColor={colors.textSecondary}
                 value={nome}
                 onChangeText={setNome}
@@ -194,7 +196,7 @@ export default function TelaCadastroMecanico({ navigation }) {
           {/* Campo Email */}
           <View style={styles.inputContainer}>
             <Text style={[styles.label, { color: colors.primary }]}>
-              Email *
+              {t('email')} *
             </Text>
             <View style={styles.inputWrapper}>
               <TextInput
@@ -203,7 +205,7 @@ export default function TelaCadastroMecanico({ navigation }) {
                   color: colors.text,
                   borderColor: colors.border
                 }]}
-                placeholder="mecanico1@pulse.com"
+                placeholder={t('placeholder_email_mecanico')}
                 placeholderTextColor={colors.textSecondary}
                 value={email}
                 onChangeText={setEmail}
@@ -219,14 +221,14 @@ export default function TelaCadastroMecanico({ navigation }) {
               />
             </View>
             <Text style={[styles.helperText, { color: colors.textSecondary }]}>
-              Deve conter "mecanico" no email
+              {t('deve_conter_mecanico_email')}
             </Text>
           </View>
 
           {/* Campo Telefone */}
           <View style={styles.inputContainer}>
             <Text style={[styles.label, { color: colors.primary }]}>
-              Telefone (Opcional)
+              {t('telefone')} ({t('opcional')})
             </Text>
             <View style={styles.inputWrapper}>
               <TextInput
@@ -235,7 +237,7 @@ export default function TelaCadastroMecanico({ navigation }) {
                   color: colors.text,
                   borderColor: colors.border
                 }]}
-                placeholder="(11) 99999-9999"
+                placeholder={t('placeholder_telefone')}
                 placeholderTextColor={colors.textSecondary}
                 value={telefone}
                 onChangeText={setTelefone}
@@ -254,7 +256,7 @@ export default function TelaCadastroMecanico({ navigation }) {
           {/* Campo Senha */}
           <View style={styles.inputContainer}>
             <Text style={[styles.label, { color: colors.primary }]}>
-              Senha *
+              {t('senha')} *
             </Text>
             <View style={styles.inputWrapper}>
               <TextInput
@@ -263,7 +265,7 @@ export default function TelaCadastroMecanico({ navigation }) {
                   color: colors.text,
                   borderColor: colors.border
                 }]}
-                placeholder="Mínimo 6 caracteres"
+                placeholder={t('placeholder_senha_minimo')}
                 placeholderTextColor={colors.textSecondary}
                 secureTextEntry={!mostrarSenha}
                 value={senha}
@@ -283,14 +285,14 @@ export default function TelaCadastroMecanico({ navigation }) {
               </TouchableOpacity>
             </View>
             <Text style={[styles.helperText, { color: colors.textSecondary }]}>
-              Mínimo 6 caracteres
+              {t('minimo_caracteres')}
             </Text>
           </View>
 
           {/* Campo Confirmar Senha */}
           <View style={styles.inputContainer}>
             <Text style={[styles.label, { color: colors.primary }]}>
-              Confirmar Senha *
+              {t('confirmar_senha')} *
             </Text>
             <View style={styles.inputWrapper}>
               <TextInput
@@ -299,7 +301,7 @@ export default function TelaCadastroMecanico({ navigation }) {
                   color: colors.text,
                   borderColor: colors.border
                 }]}
-                placeholder="Digite a senha novamente"
+                placeholder={t('placeholder_confirmar_senha')}
                 placeholderTextColor={colors.textSecondary}
                 secureTextEntry={!mostrarSenha}
                 value={confirmarSenha}
@@ -326,13 +328,13 @@ export default function TelaCadastroMecanico({ navigation }) {
           >
             {carregando ? (
               <Text style={[styles.textoBotao, { color: '#fff' }]}>
-                CADASTRANDO...
+                {t('cadastrando')}
               </Text>
             ) : (
               <>
                 <Ionicons name="person-add" size={20} color="#fff" style={{ marginRight: 8 }} />
                 <Text style={[styles.textoBotao, { color: '#fff' }]}>
-                  CADASTRAR MECÂNICO
+                  {t('cadastrar_mecanico')}
                 </Text>
               </>
             )}
@@ -348,7 +350,7 @@ export default function TelaCadastroMecanico({ navigation }) {
             disabled={carregando}
           >
             <Text style={[styles.textoBotaoLimpar, { color: colors.text }]}>
-              LIMPAR CAMPOS
+              {t('limpar_campos')}
             </Text>
           </TouchableOpacity>
         </View>
@@ -358,7 +360,7 @@ export default function TelaCadastroMecanico({ navigation }) {
           <Ionicons name="people" size={20} color={colors.warning} />
           <View style={styles.infoTextContainer}>
             <Text style={[styles.infoTitle, { color: colors.text }]}>
-              📋 Sugestões de Email:
+              {t('sugestoes_email')}
             </Text>
             <Text style={[styles.helperText, { color: colors.textSecondary }]}>
               • mecanico1@pulse.com

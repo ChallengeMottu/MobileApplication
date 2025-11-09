@@ -43,6 +43,7 @@ const USER_TYPES = {
 function LanguageToggle() {
   const { i18n } = useTranslation();
   const { colors } = useTheme();
+  const { t } = useTranslation();
   const [slideAnim] = useState(new Animated.Value(i18n.language === 'pt' ? 0 : 1));
 
   const changeLanguage = (lng) => {
@@ -62,7 +63,7 @@ function LanguageToggle() {
   return (
     <View style={styles.languageContainer}>
       <Text style={[styles.languageLabel, { color: colors.text }]}>
-        Idioma / Language
+        {t('idioma_language')}
       </Text>
       
       <View style={[styles.toggleContainer, { 
@@ -114,6 +115,7 @@ function CustomDrawerContent(props) {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userType, setUserType] = useState(null);
   const { colors, theme } = useTheme();
+  const { t } = useTranslation();
 
   useEffect(() => {
     const checkLoginStatus = async () => {
@@ -134,12 +136,12 @@ function CustomDrawerContent(props) {
 
   const handleLogout = async () => {
     Alert.alert(
-      'Sair da Conta',
-      'Tem certeza que deseja sair?',
+      t('sair_conta'),
+      t('deseja_sair_conta'),
       [
-        { text: 'Cancelar', style: 'cancel' },
+        { text: t('cancelar'), style: 'cancel' },
         {
-          text: 'Sair',
+          text: t('sair'),
           style: 'destructive',
           onPress: async () => {
             await AsyncStorage.removeItem('usuarioLogado');
@@ -178,17 +180,17 @@ function CustomDrawerContent(props) {
 
   // Função para obter o título e ícone do usuário
   const getUserInfo = () => {
-    if (!isLoggedIn) return { title: 'Visitante', icon: 'person' };
+    if (!isLoggedIn) return { title: t('visitante'), icon: 'person' };
     
     switch(userType) {
       case USER_TYPES.ADMIN:
-        return { title: 'Administrador', icon: 'shield-checkmark' };
+        return { title: t('administrador'), icon: 'shield-checkmark' };
       case USER_TYPES.MECHANIC:
-        return { title: 'Mecânico', icon: 'construct' };
+        return { title: t('mecanico'), icon: 'construct' };
       case USER_TYPES.EMPLOYEE:
-        return { title: 'Funcionário', icon: 'person-circle' };
+        return { title: t('funcionario'), icon: 'person-circle' };
       default:
-        return { title: 'Usuário', icon: 'person' };
+        return { title: t('usuario'), icon: 'person' };
     }
   };
 
@@ -216,7 +218,7 @@ function CustomDrawerContent(props) {
       {!isLoggedIn && (
         <>
           <DrawerItem
-            label="Início"
+            label={t('inicio')}
             icon={() => (
               <Ionicons name="home" size={24} color={colors.primary} style={{ marginRight: 10 }} />
             )}
@@ -226,7 +228,7 @@ function CustomDrawerContent(props) {
           />
 
           <DrawerItem
-            label="Nossa Equipe"
+            label={t('nossa_equipe')}
             icon={() => (
               <Ionicons name="people" size={24} color={colors.primary} style={{ marginRight: 10 }} />
             )}
@@ -236,7 +238,7 @@ function CustomDrawerContent(props) {
           />
 
           <DrawerItem
-            label="Login"
+            label={t('login')}
             icon={() => (
               <Ionicons name="log-in" size={24} color={colors.primary} style={{ marginRight: 10 }} />
             )}
@@ -251,7 +253,7 @@ function CustomDrawerContent(props) {
       {isLoggedIn && userType === USER_TYPES.ADMIN && (
         <>
           <DrawerItem
-            label="Tela ADM"
+            label={t('tela_adm')}
             icon={() => (
               <Ionicons name="bar-chart" size={24} color={colors.primary} style={{ marginRight: 10 }} />
             )}
@@ -261,7 +263,7 @@ function CustomDrawerContent(props) {
           />
 
           <DrawerItem
-            label="Dashboard"
+            label={t('dashboard')}
             icon={() => (
               <Ionicons name="bar-chart" size={24} color={colors.primary} style={{ marginRight: 10 }} />
             )}
@@ -271,7 +273,7 @@ function CustomDrawerContent(props) {
           />
 
           <DrawerItem
-            label="Registro de Fluxos"
+            label={t('registro_fluxos')}
             icon={() => (
               <Ionicons name="list" size={24} color={colors.primary} style={{ marginRight: 10 }} />
             )}
@@ -281,9 +283,9 @@ function CustomDrawerContent(props) {
           />
 
           <DrawerItem
-            label="TelaCadastroMecanico"
+            label={t('cadastrar_mecanico')}
             icon={() => (
-              <Ionicons name="list" size={24} color={colors.primary} style={{ marginRight: 10 }} />
+              <Ionicons name="construct" size={24} color={colors.primary} style={{ marginRight: 10 }} />
             )}
             onPress={() => handleNavigation('TelaCadastroMecanico')}
             labelStyle={dynamicStyles.drawerLabel}
@@ -291,7 +293,7 @@ function CustomDrawerContent(props) {
           />
 
           <DrawerItem
-            label="Sair"
+            label={t('sair')}
             icon={() => (
               <Ionicons name="log-out" size={24} color="#ff4444" style={{ marginRight: 10 }} />
             )}
@@ -305,11 +307,10 @@ function CustomDrawerContent(props) {
       {/* ========== MENU PARA MECÂNICO ========== */}
       {isLoggedIn && userType === USER_TYPES.MECHANIC && (
         <>
-
           <DrawerItem
-            label="Tela Mecanico"
+            label={t('tela_mecanico')}
             icon={() => (
-              <Ionicons name="checkmark-circle" size={24} color={colors.primary} style={{ marginRight: 10 }} />
+              <Ionicons name="construct" size={24} color={colors.primary} style={{ marginRight: 10 }} />
             )}
             onPress={() => handleNavigation('TelaMecanico')}
             labelStyle={dynamicStyles.drawerLabel}
@@ -317,7 +318,7 @@ function CustomDrawerContent(props) {
           />
 
           <DrawerItem
-            label="Status das Motos"
+            label={t('status_motos')}
             icon={() => (
               <Ionicons name="checkmark-circle" size={24} color={colors.primary} style={{ marginRight: 10 }} />
             )}
@@ -327,7 +328,7 @@ function CustomDrawerContent(props) {
           />
 
           <DrawerItem
-            label="Sair"
+            label={t('sair')}
             icon={() => (
               <Ionicons name="log-out" size={24} color="#ff4444" style={{ marginRight: 10 }} />
             )}
@@ -342,7 +343,7 @@ function CustomDrawerContent(props) {
       {isLoggedIn && userType === USER_TYPES.EMPLOYEE && (
         <>
           <DrawerItem
-            label="Início"
+            label={t('inicio')}
             icon={() => (
               <Ionicons name="home" size={24} color={colors.primary} style={{ marginRight: 10 }} />
             )}
@@ -352,7 +353,7 @@ function CustomDrawerContent(props) {
           />
 
           <DrawerItem
-            label="Nossa Equipe"
+            label={t('nossa_equipe')}
             icon={() => (
               <Ionicons name="people" size={24} color={colors.primary} style={{ marginRight: 10 }} />
             )}
@@ -362,7 +363,7 @@ function CustomDrawerContent(props) {
           />
 
           <DrawerItem
-            label="Funcionalidades"
+            label={t('funcionalidades')}
             icon={() => (
               <Ionicons name="apps" size={24} color={colors.primary} style={{ marginRight: 10 }} />
             )}
@@ -372,7 +373,7 @@ function CustomDrawerContent(props) {
           />
 
           <DrawerItem
-            label="Cadastro Moto"
+            label={t('cadastro_moto')}
             icon={() => (
               <Ionicons name="bicycle" size={24} color={colors.primary} style={{ marginRight: 10 }} />
             )}
@@ -382,7 +383,7 @@ function CustomDrawerContent(props) {
           />
 
           <DrawerItem
-            label="Rastrear Moto"
+            label={t('rastrear_moto')}
             icon={() => (
               <Ionicons name="navigate" size={24} color={colors.primary} style={{ marginRight: 10 }} />
             )}
@@ -392,7 +393,7 @@ function CustomDrawerContent(props) {
           />
 
           <DrawerItem
-            label="Minhas Informações"
+            label={t('minhas_informacoes')}
             icon={() => (
               <Ionicons name="person-circle" size={24} color={colors.primary} style={{ marginRight: 10 }} />
             )}
@@ -402,7 +403,7 @@ function CustomDrawerContent(props) {
           />
 
           <DrawerItem
-            label="Entrada Moto Pátio"
+            label={t('entrada_moto_patio')}
             icon={() => (
               <Ionicons name="arrow-forward-circle" size={24} color={colors.primary} style={{ marginRight: 10 }} />
             )}
@@ -412,7 +413,7 @@ function CustomDrawerContent(props) {
           />
 
           <DrawerItem
-            label="Saída da Moto"
+            label={t('saida_moto')}
             icon={() => (
               <Ionicons name="arrow-back-circle" size={24} color={colors.primary} style={{ marginRight: 10 }} />
             )}
@@ -422,7 +423,7 @@ function CustomDrawerContent(props) {
           />
 
           <DrawerItem
-            label="Dados da Moto"
+            label={t('dados_moto')}
             icon={() => (
               <Ionicons name="document-text" size={24} color={colors.primary} style={{ marginRight: 10 }} />
             )}
@@ -432,7 +433,7 @@ function CustomDrawerContent(props) {
           />
 
           <DrawerItem
-            label="Sair"
+            label={t('sair')}
             icon={() => (
               <Ionicons name="log-out" size={24} color="#ff4444" style={{ marginRight: 10 }} />
             )}
@@ -450,6 +451,7 @@ function MainNavigator() {
   const navigation = useNavigation();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const { colors } = useTheme();
+  const { t } = useTranslation();
 
   useEffect(() => {
     const checkLoginStatus = async () => {
@@ -482,7 +484,7 @@ function MainNavigator() {
         name="TelaInicial"
         component={TelaInicial}
         options={{
-          title: 'Início',
+          title: t('inicio'),
           drawerIcon: ({ color }) => (
             <Ionicons name="home" size={24} color={color} />
           )
@@ -491,87 +493,87 @@ function MainNavigator() {
       <Drawer.Screen
         name="TelaEquipe"
         component={TelaEquipe}
-        options={{ title: 'Equipe' }}
+        options={{ title: t('nossa_equipe') }}
       />
       <Drawer.Screen
         name="TelaLogin"
         component={TelaLogin}
-        options={{ title: 'Login' }}
+        options={{ title: t('login') }}
       />
       <Drawer.Screen
         name="TelaCadastroF"
         component={TelaCadastroF}
-        options={{ title: 'Cadastro' }}
+        options={{ title: t('cadastro') }}
       />
       <Drawer.Screen
         name="TelaFuncionario"
         component={TelaFuncionario}
-        options={{ title: 'Informações' }}
+        options={{ title: t('funcionalidades') }}
       />
       <Drawer.Screen
         name="TelaScanner"
         component={TelaScanner}
-        options={{ title: 'Informações' }}
+        options={{ title: t('saida_moto') }}
       />
       <Drawer.Screen
         name="TelaEntradaMotoPatio"
         component={TelaEntradaMotoPatio}
-        options={{ title: 'Entrada da Moto' }}
+        options={{ title: t('entrada_moto_patio') }}
       />
       <Drawer.Screen
         name="TelaNovaSenha"
         component={TelaNovaSenha}
-        options={{ title: 'Nova Senha' }}
+        options={{ title: t('nova_senha') }}
       />
       <Drawer.Screen
         name="TelaInfos"
         component={TelaInfos}
-        options={{ title: 'Minhas Informações' }}
+        options={{ title: t('minhas_informacoes') }}
       />
       <Drawer.Screen
         name="Tela"
         component={Tela}
-        options={{ title: 'Tela' }}
+        options={{ title: t('rastrear_moto') }}
       />
       <Drawer.Screen
         name="TelaCadastroM"
         component={TelaCadastroM}
-        options={{ title: 'Cadastro Moto' }}
+        options={{ title: t('cadastro_moto') }}
       />
       <Drawer.Screen
         name="TelaDadosM"
         component={TelaDadosM}
-        options={{ title: 'Cadastro Moto' }}
+        options={{ title: t('dados_moto') }}
       />
       <Drawer.Screen
         name="TelaAdm"
         component={TelaAdm}
-        options={{ title: 'Tela ADM' }}
+        options={{ title: t('tela_adm') }}
       />
       <Drawer.Screen
         name="TelaMecanico"
         component={TelaMecanico}
-        options={{ title: 'Tela Mecanico' }}
+        options={{ title: t('tela_mecanico') }}
       />
       <Drawer.Screen
         name="TelaDashboard"
         component={TelaDashboard}
-        options={{ title: 'Tela Dashboard' }}
+        options={{ title: t('dashboard') }}
       />
       <Drawer.Screen
         name="TelaRegistroFluxos"
         component={TelaRegistroFluxos}
-        options={{ title: 'Tela Registro Fluxos' }}
+        options={{ title: t('registro_fluxos') }}
       />
       <Drawer.Screen
         name="TelaStatusMotos"
         component={TelaStatusMotos}
-        options={{ title: 'Tela Status Motos' }}
+        options={{ title: t('status_motos') }}
       />
       <Drawer.Screen
         name="TelaCadastroMecanico"
         component={TelaCadastroMecanico}
-        options={{ title: 'Tela Cadastro Mecanico' }}
+        options={{ title: t('cadastrar_mecanico') }}
       />
     </Drawer.Navigator>
   );

@@ -27,6 +27,8 @@ export default function TelaLogin({ navigation }) {
 
   // Função para determinar o tipo de usuário
   const determinarTipoUsuario = (email, cargo) => {
+    const emailLower = email.toLowerCase();
+    
     // Verificar por email específico (administradores)
     const emailsAdmin = [
       'admin@pulse.com',
@@ -34,23 +36,17 @@ export default function TelaLogin({ navigation }) {
       'gerente@pulse.com'
     ];
     
-    // Verificar por email específico (mecânicos)
-    const emailsMecanico = [
-      'mecanico@pulse.com',
-      'mecanico1@pulse.com',
-      'oficina@pulse.com'
-    ];
-
-    // Verificar por domínio de email
-    if (emailsAdmin.includes(email.toLowerCase())) {
+    // 1. PRIMEIRO: Verificar emails específicos de admin
+    if (emailsAdmin.includes(emailLower)) {
       return 'adm';
     }
     
-    if (emailsMecanico.includes(email.toLowerCase())) {
+    // 2. SEGUNDO: Verificar se contém "mecanico" ou "oficina" no email (MAIS IMPORTANTE)
+    if (emailLower.includes('mecanico') || emailLower.includes('oficina')) {
       return 'mecanico';
     }
-
-    // Verificar pelo cargo cadastrado
+    
+    // 3. TERCEIRO: Verificar pelo cargo cadastrado
     if (cargo) {
       const cargoLower = cargo.toLowerCase();
       
@@ -62,12 +58,13 @@ export default function TelaLogin({ navigation }) {
       
       if (cargoLower.includes('mecanico') || 
           cargoLower.includes('mecânico') || 
-          cargoLower.includes('técnico')) {
+          cargoLower.includes('técnico') ||
+          cargoLower.includes('tecnico')) {
         return 'mecanico';
       }
     }
 
-    // Por padrão, é funcionário
+    // 4. Por padrão, é funcionário
     return 'funcionario';
   };
 
@@ -136,11 +133,14 @@ export default function TelaLogin({ navigation }) {
       // 🔐 DETERMINAR TIPO DE USUÁRIO
       const tipoUsuario = determinarTipoUsuario(user.email, usuarioCompleto.cargo);
       
-      console.log('========== LOGIN INFO ==========');
-      console.log('Email:', user.email);
+      console.log('========== DETECÇÃO DE TIPO ==========');
+      console.log('Email completo:', user.email);
+      console.log('Email em lowercase:', user.email.toLowerCase());
+      console.log('Contém "mecanico"?:', user.email.toLowerCase().includes('mecanico'));
+      console.log('Contém "oficina"?:', user.email.toLowerCase().includes('oficina'));
       console.log('Cargo:', usuarioCompleto.cargo);
       console.log('Tipo detectado:', tipoUsuario);
-      console.log('================================');
+      console.log('======================================');
 
       // Salvar dados completos no AsyncStorage
       await AsyncStorage.setItem('usuarioLogado', JSON.stringify(usuarioCompleto));
@@ -236,6 +236,8 @@ export default function TelaLogin({ navigation }) {
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       <View style={[styles.card, { backgroundColor: colors.cardBackground }]}>
         <Text style={[styles.titulo, { color: colors.text }]}>{t('bem_vindo')}</Text>
+
+        
         {/* Texto informativo acima dos inputs */}
         <View style={styles.textoInfoContainer}>
           <Text style={[styles.textoInfo, { color: colors.textSecondary }]}>
@@ -358,6 +360,29 @@ const styles = StyleSheet.create({
     fontFamily: 'DarkerGrotesque_700Bold',
     textAlign: 'center',
     marginBottom: 20,
+  },
+  infoBox: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    padding: 12,
+    borderRadius: 8,
+    borderWidth: 1,
+    marginBottom: 15,
+    width: '100%',
+  },
+  infoBoxText: {
+    marginLeft: 10,
+    flex: 1,
+  },
+  infoBoxTitle: {
+    fontSize: 14,
+    fontFamily: 'DarkerGrotesque_700Bold',
+    marginBottom: 5,
+  },
+  infoBoxItem: {
+    fontSize: 12,
+    fontFamily: 'DarkerGrotesque_500Medium',
+    marginBottom: 2,
   },
   textoInfoContainer: {
     marginBottom: 20,
